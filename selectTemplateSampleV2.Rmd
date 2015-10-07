@@ -1,0 +1,149 @@
+
+---
+title: "Selecting Subjects for PNC Template"
+author: "Satterthwaite/Avants, et al"
+date: "October 10, 2015"
+output: pdf_document
+---
+
+*Selecting Subjects for PNC Template*
+=========================
+
+
+Goal here is to select a relatively matched sample (n=120) for the PNC template.
+
+Data pulled from the July 30 PNC data release on Galton:
+
+/home/analysis/redcap_data/201507//n1601_go1_datarel_073015.csv
+
+_Stratgegy is as follows:_
+
+1.  Remove subjects who failied visual QA (could be debated) & health problems
+2.  Divide into 5 age bins (quantiles)
+3.  In each age bin, select 12 subjects who are healthy (no psychopathology/meds) and 12 who are not healthy (any psychopathology, meds ok)
+4.  For each of those 12 subjects , evenly matched on sex*race
+
+
+```{r, echo=FALSE,eval=TRUE,warning=FALSE}
+library(knitr)
+
+#load data
+go1Name<-"/Users/sattertt/Documents/Magic Briefcase/ACTIVE_PROTOCOLS/EONS/1601/dataReleases/n1601_go1_datarel_073015.csv"
+data<-read.csv(go1Name)
+
+#fix certain variables
+data$male<-NA
+data$male[which(data$sex==2)]<-"female"
+data$male[which(data$sex==1)]<-"male"
+data$male<-as.factor(data$male)
+
+data$age<-data$ageAtGo1Scan/12
+
+data$white<-NA
+data$white[which(data$race==1)]<-"caucasian"
+data$white[which(data$race!=1)]<-"notCaucaisian"
+data$white<-as.factor(data$white)
+
+data$healthy<-"notHealthy"
+data$healthy[which(data$goassessSmryPsychOverallRtg<4 & data$goassessPstd!="4PS" & data$ltnExclude==0)]<-"healthy"
+data$health<-as.factor(data$healthy)
+
+#create age bin quantiles
+ageBins<-quantile(data$age,probs = seq(0, 1, 0.20))
+data$ageBin<-NA
+for (j in 1:length(ageBins)){
+  data$ageBin[which(data$age>=ageBins[j] & data$age<ageBins[j+1] )]<-j
+}
+data$ageBin[which(data$age==ageBins[6])]<-5
+
+#remove subjects who failed visual QA or have health problems
+dataQa<-data[which(data$mprageSbiaExclude==0 & data$healthExclude==0),c("bblid","scanid","age","male","white","ageBin","healthy")]
+
+#goal is to have 60 healthy, 60 non healthy
+#10 each per quantile, 6 male, 6 female, 3 whtie, 3 non-white
+templateSubj<-matrix(nrow=120,ncol=1,NA)
+rowStart=1
+for (i in 1:max(data$ageBin)){
+    idsTmp<-NA
+    rowStart<-(i-1)*24+1
+    rowEnd<-rowStart+23
+  #  print(rowStart)
+   # print(rowEnd)
+    
+    #no healthy
+    idsTmp<-which(dataQa$ageBin==i & dataQa$healthy=="notHealthy" & dataQa$male=="male" & dataQa$white=="caucasian")
+    ids1<-dataQa$bblid[idsTmp[1:3]]
+    
+    idsTmp<-which(dataQa$ageBin==i & dataQa$healthy=="notHealthy" & dataQa$male=="male"  & dataQa$white!="caucasian")
+    ids2<-dataQa$bblid[idsTmp[1:3]]
+    
+    idsTmp<-which(dataQa$ageBin==i & dataQa$healthy=="notHealthy" & dataQa$male=="female" & dataQa$white=="caucasian")
+    ids3<-dataQa$bblid[idsTmp[1:3]]
+    
+    idsTmp<-which(dataQa$ageBin==i & dataQa$healthy=="notHealthy" & dataQa$male=="female" & dataQa$white!="caucasian")
+    ids4<-dataQa$bblid[idsTmp[1:3]]
+    
+    #healthy
+    
+    idsTmp<-which(dataQa$ageBin==i & dataQa$healthy=="healthy" & dataQa$male=="male"  & dataQa$white=="caucasian")
+    ids5<-dataQa$bblid[idsTmp[1:3]]
+    
+    idsTmp<-which(dataQa$ageBin==i & dataQa$healthy=="healthy"  & dataQa$male=="male"  & dataQa$white!="caucasian")
+    ids6<-dataQa$bblid[idsTmp[1:3]]
+    
+    idsTmp<-which(dataQa$ageBin==i & dataQa$healthy=="healthy"  & dataQa$male=="female" & dataQa$white=="caucasian")
+    ids7<-dataQa$bblid[idsTmp[1:3]]
+    
+    idsTmp<-which(dataQa$ageBin==i & dataQa$healthy=="healthy"  & dataQa$male=="female" & dataQa$white!="caucasian")
+    ids8<-dataQa$bblid[idsTmp[1:3]]
+    
+    idComb<-c(ids1,ids2,ids3,ids4,ids5,ids6,ids7,ids8)
+    
+    
+    templateSubj[rowStart:rowEnd]<-idComb
+}
+
+templateSubjData<-dataQa[which(dataQa$bblid %in% templateSubj),]
+```
+
+
+=========================
+
+### Now sanity checking to make sure this worked as planned . . . .
+
+```{r, echo=FALSE}
+#tables for sanity checking
+kable(table(templateSubjData$ageBin,templateSubjData$male))
+kable(table(templateSubjData$ageBin,templateSubjData$white))
+kable(table(templateSubjData$ageBin,templateSubjData$healthy))
+kable(table(templateSubjData$male,templateSubjData$healthy))
+kable(table(templateSubjData$white,templateSubjData$healthy))
+kable(table(templateSubjData$white,templateSubjData$male))
+```
+
+=========================
+
+### Check to see if age is similar across the different divisions. . . . 
+````{r, echo=FALSE}
+#tables for sanity checking
+ageMeanSex<-tapply(templateSubjData$age,templateSubjData$male,mean)
+kable(as.data.frame(ageMeanSex))
+
+ageMeanHealth<-tapply(templateSubjData$age,templateSubjData$healthy,mean)
+kable(as.data.frame(ageMeanHealth))
+
+ageMeanRace<-tapply(templateSubjData$age,templateSubjData$white,mean)
+kable(as.data.frame(ageMeanRace))
+
+```
+
+=========================
+
+### Finally check that age is reasonably balanced over the range 
+
+````{r, echo=FALSE}
+hist(templateSubjData$age)
+```
+
+
+
