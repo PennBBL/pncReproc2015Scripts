@@ -2,24 +2,61 @@
 
 re-processing PNC data on CFN in consistent/reproducible fashion which can be applied across all developmental datasets
 
-Starting path is:
+project directory for this is here:
 
-/data/jag/BBL/studies/pnc/processedData/
+/data/jag/BBL/projects/pncReproc2015
 
-Provisional to-do's:
+This github repo is cloned and operates from here:
 
-1) template & prior creation.  Provisional subject list:
+/data/jag/BBL/projects/pncReproc2015/pncReproc2015Scripts
 
-/data/jag/BBL/templates/adolescentTemplate/subjects/
+Steps thus far:
 
-Need input from Brian.
+1) Some re-organization to ensure consistent naming of T1
 
-2) Run antsCt
+/data/jag/BBL/projects/pncReproc2015/pncReproc2015Scripts/reOrg/renameRawT1.sh
 
-3) ?Recalculate B0 maps
+1) Select template subject sample:
 
-4) Verify that all other modalities can be reproduced before transfering subject level data over from monstrum
+/data/jag/BBL/projects/pncReproc2015/pncReproc2015Scripts/template//selectTemplateSampleV2.R
 
-5) recalculate co-registration to t1s & apply registration to new template
+Associated markdown file is here (executed locally rather than on cluster)
 
-6) Calculate ROI level measures
+/data/jag/BBL/projects/pncReproc2015/pncReproc2015Scripts/template//selectTemplateSampleV2.Rmd 
+
+PDF output w/ sanity checking is here:
+
+/data/jag/BBL/projects/pncReproc2015/pncReproc2015Scripts/template//selectTemplateSampleV2.pdf
+
+Subject lists and demo data for 120 subjects are here:
+
+/data/jag/BBL/projects/pncReproc2015/template/subjectLists
+
+Symlinked images to be used for template are here:
+
+/data/jag/BBL/projects/pncReproc2015/template/images/
+
+
+2) Creating an initial template with buildTemplateParallel
+
+Initially ran this without a target, rigid + affine only
+
+//data/jag/BBL/projects/pncReproc2015/pncReproc2015Scripts/template/initialTemplate1Btp.sh
+
+Output here:
+
+/data/jag/BBL/projects/pncReproc2015/template/initialTemplate1
+
+Second iteration using that as a target, default parameters
+
+//data/jag/BBL/projects/pncReproc2015/pncReproc2015Scripts/template/initialTemplate2Btp.sh
+
+Output here:
+
+/data/jag/BBL/projects/pncReproc2015/template/initialTemplate2/
+
+
+
+
+
+
