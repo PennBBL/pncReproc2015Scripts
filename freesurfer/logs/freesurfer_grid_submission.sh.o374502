@@ -1,0 +1,986 @@
+Subject Stamp: freesurfer-Linux-centos6_x86_64-stable-pub-v5.3.0
+Current Stamp: freesurfer-Linux-centos6_x86_64-stable-pub-v5.3.0
+INFO: SUBJECTS_DIR is /data/BBL-extend/processedData/structural/freesurfer53/110825
+Actual FREESURFER_HOME /share/apps/freesurfer/5.3.0
+Linux compute-0-4.local 2.6.32-504.16.2.el6.x86_64 #1 SMP Wed Apr 22 06:48:29 UTC 2015 x86_64 x86_64 x86_64 GNU/Linux
+/data/BBL-extend/processedData/structural/freesurfer53/110825/20110106x4330
+
+ mri_convert /data/jag/BBL/studies/pnc/rawData/110825/20110106x4330/mprage/110825_20110106x4330_t1.nii.gz /data/BBL-extend/processedData/structural/freesurfer53/110825/20110106x4330/mri/orig/001.mgz 
+
+mri_convert /data/jag/BBL/studies/pnc/rawData/110825/20110106x4330/mprage/110825_20110106x4330_t1.nii.gz /data/BBL-extend/processedData/structural/freesurfer53/110825/20110106x4330/mri/orig/001.mgz 
+$Id: mri_convert.c,v 1.179.2.7 2012/09/05 21:55:16 mreuter Exp $
+reading from /data/jag/BBL/studies/pnc/rawData/110825/20110106x4330/mprage/110825_20110106x4330_t1.nii.gz...
+TR=0.00, TE=0.00, TI=0.00, flip angle=0.00
+i_ras = (-1, -0, 0)
+j_ras = (-0, 1, 0)
+k_ras = (-0, -0, 1)
+writing to /data/BBL-extend/processedData/structural/freesurfer53/110825/20110106x4330/mri/orig/001.mgz...
+
+#------------------------------------------
+
+Started at Thu Oct 15 12:19:56 EDT 2015 
+Ended   at Thu Oct 15 12:20:04 EDT 2015
+#@#%# recon-all-run-time-hours 0.002
+recon-all -s 20110106x4330 finished without error at Thu Oct 15 12:20:04 EDT 2015
+done
+Subject Stamp: freesurfer-Linux-centos6_x86_64-stable-pub-v5.3.0
+Current Stamp: freesurfer-Linux-centos6_x86_64-stable-pub-v5.3.0
+INFO: SUBJECTS_DIR is /data/BBL-extend/processedData/structural/freesurfer53/110825
+Actual FREESURFER_HOME /share/apps/freesurfer/5.3.0
+-rw-rw-r-- 1 mquarmley bbl_group 17847 Oct 15 12:20 /data/BBL-extend/processedData/structural/freesurfer53/110825/20110106x4330/scripts/recon-all.log
+Linux compute-0-4.local 2.6.32-504.16.2.el6.x86_64 #1 SMP Wed Apr 22 06:48:29 UTC 2015 x86_64 x86_64 x86_64 GNU/Linux
+#--------------------------------------------
+#@# MotionCor Thu Oct 15 12:20:07 EDT 2015
+Found 1 runs
+/data/BBL-extend/processedData/structural/freesurfer53/110825/20110106x4330/mri/orig/001.mgz
+Checking for (invalid) multi-frame inputs...
+WARNING: only one run found. This is OK, but motion
+correction cannot be performed on one run, so I'll
+copy the run to rawavg and continue.
+
+ cp /data/BBL-extend/processedData/structural/freesurfer53/110825/20110106x4330/mri/orig/001.mgz /data/BBL-extend/processedData/structural/freesurfer53/110825/20110106x4330/mri/rawavg.mgz 
+
+/data/BBL-extend/processedData/structural/freesurfer53/110825/20110106x4330
+
+ mri_convert /data/BBL-extend/processedData/structural/freesurfer53/110825/20110106x4330/mri/rawavg.mgz /data/BBL-extend/processedData/structural/freesurfer53/110825/20110106x4330/mri/orig.mgz --conform 
+
+mri_convert /data/BBL-extend/processedData/structural/freesurfer53/110825/20110106x4330/mri/rawavg.mgz /data/BBL-extend/processedData/structural/freesurfer53/110825/20110106x4330/mri/orig.mgz --conform 
+$Id: mri_convert.c,v 1.179.2.7 2012/09/05 21:55:16 mreuter Exp $
+reading from /data/BBL-extend/processedData/structural/freesurfer53/110825/20110106x4330/mri/rawavg.mgz...
+TR=0.00, TE=0.00, TI=0.00, flip angle=0.00
+i_ras = (-1, -0, 0)
+j_ras = (-0, 1, 0)
+k_ras = (-0, -0, 1)
+Original Data has (0.9375, 0.9375, 1) mm size and (192, 256, 160) voxels.
+Data is conformed to 1 mm size and 256 voxels for all directions
+changing data type from short to uchar (noscale = 0)...
+MRIchangeType: Building histogram 
+Reslicing using trilinear interpolation 
+writing to /data/BBL-extend/processedData/structural/freesurfer53/110825/20110106x4330/mri/orig.mgz...
+
+ mri_add_xform_to_header -c /data/BBL-extend/processedData/structural/freesurfer53/110825/20110106x4330/mri/transforms/talairach.xfm /data/BBL-extend/processedData/structural/freesurfer53/110825/20110106x4330/mri/orig.mgz /data/BBL-extend/processedData/structural/freesurfer53/110825/20110106x4330/mri/orig.mgz 
+
+INFO: extension is mgz
+#--------------------------------------------
+#@# Talairach Thu Oct 15 12:20:19 EDT 2015
+/data/BBL-extend/processedData/structural/freesurfer53/110825/20110106x4330/mri
+
+ mri_nu_correct.mni --n 1 --proto-iters 1000 --distance 50 --no-rescale --i orig.mgz --o orig_nu.mgz 
+
+
+ talairach_avi --i orig_nu.mgz --xfm transforms/talairach.auto.xfm 
+
+
+ cp transforms/talairach.auto.xfm transforms/talairach.xfm 
+
+#--------------------------------------------
+#@# Talairach Failure Detection Thu Oct 15 12:23:58 EDT 2015
+/data/BBL-extend/processedData/structural/freesurfer53/110825/20110106x4330/mri
+
+ talairach_afd -T 0.005 -xfm transforms/talairach.xfm 
+
+talairach_afd: Talairach Transform: transforms/talairach.xfm OK (p=0.7466, pval=0.6675 >= threshold=0.0050)
+
+ awk -f /share/apps/freesurfer/5.3.0/bin/extract_talairach_avi_QA.awk /data/BBL-extend/processedData/structural/freesurfer53/110825/20110106x4330/mri/transforms/talairach_avi.log 
+
+
+ tal_QC_AZS /data/BBL-extend/processedData/structural/freesurfer53/110825/20110106x4330/mri/transforms/talairach_avi.log 
+
+TalAviQA: 0.97689
+z-score: 0
+#--------------------------------------------
+#@# Nu Intensity Correction Thu Oct 15 12:23:58 EDT 2015
+
+ mri_nu_correct.mni --i orig.mgz --o nu.mgz --uchar transforms/talairach.xfm --n 2 
+
+/data/BBL-extend/processedData/structural/freesurfer53/110825/20110106x4330/mri
+/share/apps/freesurfer/5.3.0/bin/mri_nu_correct.mni
+--i orig.mgz --o nu.mgz --uchar transforms/talairach.xfm --n 2
+nIters 2
+$Id: mri_nu_correct.mni,v 1.18.2.1 2013/01/09 21:23:42 nicks Exp $
+Linux compute-0-4.local 2.6.32-504.16.2.el6.x86_64 #1 SMP Wed Apr 22 06:48:29 UTC 2015 x86_64 x86_64 x86_64 GNU/Linux
+Thu Oct 15 12:23:59 EDT 2015
+Program nu_correct, built from:
+Package MNI N3, version 1.10, compiled by nicks@minerva (x86_64-unknown-linux-gnu) on 2010-02-20 at 17:32:37
+tmpdir is ./tmp.mri_nu_correct.mni.1985
+/data/BBL-extend/processedData/structural/freesurfer53/110825/20110106x4330/mri
+mri_convert orig.mgz ./tmp.mri_nu_correct.mni.1985/nu0.mnc -odt float
+mri_convert orig.mgz ./tmp.mri_nu_correct.mni.1985/nu0.mnc -odt float 
+$Id: mri_convert.c,v 1.179.2.7 2012/09/05 21:55:16 mreuter Exp $
+reading from orig.mgz...
+TR=0.00, TE=0.00, TI=0.00, flip angle=0.00
+i_ras = (-1, 0, 0)
+j_ras = (0, 0, -1)
+k_ras = (0, 1, 0)
+changing data type from uchar to float (noscale = 0)...
+writing to ./tmp.mri_nu_correct.mni.1985/nu0.mnc...
+ 
+--------------------------------------------------------
+Iteration 1 Thu Oct 15 12:24:01 EDT 2015
+nu_correct -clobber ./tmp.mri_nu_correct.mni.1985/nu0.mnc ./tmp.mri_nu_correct.mni.1985/nu1.mnc -tmpdir ./tmp.mri_nu_correct.mni.1985/0/
+[mquarmley@compute-0-4.local:/data/BBL-extend/processedData/structural/freesurfer53/110825/20110106x4330/mri/] [2015-10-15 12:24:01] running:
+  /share/apps/freesurfer/5.3.0/mni/bin/nu_estimate_np_and_em -parzen -log -sharpen 0.15 0.01 -iterations 50 -stop 0.001 -shrink 4 -auto_mask -nonotify -b_spline 1 -distance 200 -quiet -execute -clobber -nokeeptmp -tmpdir ./tmp.mri_nu_correct.mni.1985/0/ ./tmp.mri_nu_correct.mni.1985/nu0.mnc ./tmp.mri_nu_correct.mni.1985/nu1.imp
+
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Number of iterations: 47 
+CV of field change: 0.000998852
+[mquarmley@compute-0-4.local:/data/BBL-extend/processedData/structural/freesurfer53/110825/20110106x4330/mri/] [2015-10-15 12:25:39] running:
+  /share/apps/freesurfer/5.3.0/mni/bin/make_template -quiet -shrink 3 ./tmp.mri_nu_correct.mni.1985/nu0.mnc ./tmp.mri_nu_correct.mni.1985/0//template.mnc
+
+Transforming slices:......................................................................................Done
+Transforming slices:................................................................................................................................................................................................................................................................Done
+ 
+ 
+--------------------------------------------------------
+Iteration 2 Thu Oct 15 12:25:48 EDT 2015
+nu_correct -clobber ./tmp.mri_nu_correct.mni.1985/nu1.mnc ./tmp.mri_nu_correct.mni.1985/nu2.mnc -tmpdir ./tmp.mri_nu_correct.mni.1985/1/
+[mquarmley@compute-0-4.local:/data/BBL-extend/processedData/structural/freesurfer53/110825/20110106x4330/mri/] [2015-10-15 12:25:48] running:
+  /share/apps/freesurfer/5.3.0/mni/bin/nu_estimate_np_and_em -parzen -log -sharpen 0.15 0.01 -iterations 50 -stop 0.001 -shrink 4 -auto_mask -nonotify -b_spline 1 -distance 200 -quiet -execute -clobber -nokeeptmp -tmpdir ./tmp.mri_nu_correct.mni.1985/1/ ./tmp.mri_nu_correct.mni.1985/nu1.mnc ./tmp.mri_nu_correct.mni.1985/nu2.imp
+
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Processing:.................................................................Done
+Number of iterations: 44 
+CV of field change: 0.000989472
+[mquarmley@compute-0-4.local:/data/BBL-extend/processedData/structural/freesurfer53/110825/20110106x4330/mri/] [2015-10-15 12:27:42] running:
+  /share/apps/freesurfer/5.3.0/mni/bin/make_template -quiet -shrink 3 ./tmp.mri_nu_correct.mni.1985/nu1.mnc ./tmp.mri_nu_correct.mni.1985/1//template.mnc
+
+Transforming slices:......................................................................................Done
+Transforming slices:................................................................................................................................................................................................................................................................Done
+ 
+ 
+ 
+mri_binarize --i ./tmp.mri_nu_correct.mni.1985/nu2.mnc --min -1 --o ./tmp.mri_nu_correct.mni.1985/ones.mgz
+
+$Id: mri_binarize.c,v 1.26.2.1 2011/04/08 15:40:50 greve Exp $
+cwd /data/BBL-extend/processedData/structural/freesurfer53/110825/20110106x4330/mri
+cmdline mri_binarize --i ./tmp.mri_nu_correct.mni.1985/nu2.mnc --min -1 --o ./tmp.mri_nu_correct.mni.1985/ones.mgz 
+sysname  Linux
+hostname compute-0-4.local
+machine  x86_64
+user     mquarmley
+
+input      ./tmp.mri_nu_correct.mni.1985/nu2.mnc
+frame      0
+nErode3d   0
+nErode2d   0
+output     ./tmp.mri_nu_correct.mni.1985/ones.mgz
+Binarizing based on threshold
+min        -1
+max        +infinity
+binval        1
+binvalnot     0
+Found 16777216 values in range
+Counting number of voxels
+Found 16777216 voxels in final mask
+mri_binarize done
+mri_segstats --id 1 --seg ./tmp.mri_nu_correct.mni.1985/ones.mgz --i orig.mgz --sum ./tmp.mri_nu_correct.mni.1985/sum.junk --avgwf ./tmp.mri_nu_correct.mni.1985/input.mean.dat
+
+$Id: mri_segstats.c,v 1.75.2.9 2013/02/16 00:09:33 greve Exp $
+cwd 
+cmdline mri_segstats --id 1 --seg ./tmp.mri_nu_correct.mni.1985/ones.mgz --i orig.mgz --sum ./tmp.mri_nu_correct.mni.1985/sum.junk --avgwf ./tmp.mri_nu_correct.mni.1985/input.mean.dat 
+sysname  Linux
+hostname compute-0-4.local
+machine  x86_64
+user     mquarmley
+UseRobust  0
+Loading ./tmp.mri_nu_correct.mni.1985/ones.mgz
+Loading orig.mgz
+Voxel Volume is 1 mm^3
+Generating list of segmentation ids
+Found   1 segmentations
+Computing statistics for each segmentation
+  0     1                                     16777216  16777216.000
+
+Reporting on   1 segmentations
+Computing spatial average of each frame
+  0
+Writing to ./tmp.mri_nu_correct.mni.1985/input.mean.dat
+mri_segstats done
+mri_segstats --id 1 --seg ./tmp.mri_nu_correct.mni.1985/ones.mgz --i ./tmp.mri_nu_correct.mni.1985/nu2.mnc --sum ./tmp.mri_nu_correct.mni.1985/sum.junk --avgwf ./tmp.mri_nu_correct.mni.1985/output.mean.dat
+
+$Id: mri_segstats.c,v 1.75.2.9 2013/02/16 00:09:33 greve Exp $
+cwd 
+cmdline mri_segstats --id 1 --seg ./tmp.mri_nu_correct.mni.1985/ones.mgz --i ./tmp.mri_nu_correct.mni.1985/nu2.mnc --sum ./tmp.mri_nu_correct.mni.1985/sum.junk --avgwf ./tmp.mri_nu_correct.mni.1985/output.mean.dat 
+sysname  Linux
+hostname compute-0-4.local
+machine  x86_64
+user     mquarmley
+UseRobust  0
+Loading ./tmp.mri_nu_correct.mni.1985/ones.mgz
+Loading ./tmp.mri_nu_correct.mni.1985/nu2.mnc
+Voxel Volume is 1 mm^3
+Generating list of segmentation ids
+Found   1 segmentations
+Computing statistics for each segmentation
+  0     1                                     16777216  16777216.000
+
+Reporting on   1 segmentations
+Computing spatial average of each frame
+  0
+Writing to ./tmp.mri_nu_correct.mni.1985/output.mean.dat
+mri_segstats done
+mris_calc -o ./tmp.mri_nu_correct.mni.1985/nu2.mnc ./tmp.mri_nu_correct.mni.1985/nu2.mnc mul .84762721677781828319
+Saving result to './tmp.mri_nu_correct.mni.1985/nu2.mnc' (type = MINC )                       [ ok ]
+mri_convert ./tmp.mri_nu_correct.mni.1985/nu2.mnc nu.mgz --like orig.mgz
+mri_convert ./tmp.mri_nu_correct.mni.1985/nu2.mnc nu.mgz --like orig.mgz 
+$Id: mri_convert.c,v 1.179.2.7 2012/09/05 21:55:16 mreuter Exp $
+reading from ./tmp.mri_nu_correct.mni.1985/nu2.mnc...
+TR=0.00, TE=0.00, TI=0.00, flip angle=0.00
+i_ras = (-1, 0, 0)
+j_ras = (0, 0, -1)
+k_ras = (0, 1, 0)
+INFO: transform src into the like-volume: orig.mgz
+writing to nu.mgz...
+mri_make_uchar nu.mgz transforms/talairach.xfm nu.mgz
+type change took 0 minutes and 7 seconds.
+mapping (12, 161) to ( 3, 110)
+ 
+ 
+Thu Oct 15 12:28:23 EDT 2015
+mri_nu_correct.mni done
+
+ mri_add_xform_to_header -c /data/BBL-extend/processedData/structural/freesurfer53/110825/20110106x4330/mri/transforms/talairach.xfm nu.mgz nu.mgz 
+
+INFO: extension is mgz
+#--------------------------------------------
+#@# Intensity Normalization Thu Oct 15 12:28:24 EDT 2015
+/data/BBL-extend/processedData/structural/freesurfer53/110825/20110106x4330/mri
+
+ mri_normalize -g 1 nu.mgz T1.mgz 
+
+using max gradient = 1.000
+reading from nu.mgz...
+normalizing image...
+talairach transform
+ 1.102  -0.020   0.014  -2.887;
+ 0.002   1.052   0.062  -16.123;
+-0.032  -0.031   1.119  -34.155;
+ 0.000   0.000   0.000   1.000;
+processing without aseg, no1d=0
+MRInormInit(): 
+INFO: Modifying talairach volume c_(r,a,s) based on average_305
+MRInormalize(): 
+MRIsplineNormalize(): npeaks = 13
+Starting OpenSpline(): npoints = 13
+building Voronoi diagram...
+performing soap bubble smoothing, sigma = 8...
+
+Iterating 2 times
+---------------------------------
+3d normalization pass 1 of 2
+white matter peak found at 111
+white matter peak found at 109
+gm peak at 83 (83), valley at 51 (51)
+csf peak at 36, setting threshold to 67
+building Voronoi diagram...
+performing soap bubble smoothing, sigma = 8...
+---------------------------------
+3d normalization pass 2 of 2
+white matter peak found at 111
+white matter peak found at 110
+gm peak at 83 (83), valley at 58 (58)
+csf peak at 36, setting threshold to 67
+building Voronoi diagram...
+performing soap bubble smoothing, sigma = 8...
+Done iterating ---------------------------------
+writing output to T1.mgz
+3D bias adjustment took 2 minutes and 8 seconds.
+#--------------------------------------------
+#@# Skull Stripping Thu Oct 15 12:30:32 EDT 2015
+/data/BBL-extend/processedData/structural/freesurfer53/110825/20110106x4330/mri
+
+ mri_em_register -skull nu.mgz /share/apps/freesurfer/5.3.0/average/RB_all_withskull_2008-03-26.gca transforms/talairach_with_skull.lta 
+
+
+
+ ======= NUMBER OF OPENMP THREADS = 1 ======= 
+aligning to atlas containing skull, setting unknown_nbr_spacing = 5
+reading 1 input volumes...
+logging results to talairach_with_skull.log
+reading '/share/apps/freesurfer/5.3.0/average/RB_all_withskull_2008-03-26.gca'...
+average std = 23.1   using min determinant for regularization = 53.4
+0 singular and 5702 ill-conditioned covariance matrices regularized
+reading 'nu.mgz'...
+freeing gibbs priors...done.
+bounding unknown intensity as < 20.2 or > 943.7 
+total sample mean = 92.0 (1443 zeros)
+************************************************
+spacing=8, using 3481 sample points, tol=1.00e-05...
+************************************************
+register_mri: find_optimal_transform
+find_optimal_transform: nsamples 3481, passno 0, spacing 8
+resetting wm mean[0]: 117 --> 126
+resetting gm mean[0]: 74 --> 74
+input volume #1 is the most T1-like
+using real data threshold=8.0
+skull bounding box = (53, 48, 30) --> (204, 211, 223)
+using (103, 102, 127) as brain centroid...
+mean wm in atlas = 126, using box (84,82,103) --> (121, 122,150) to find MRI wm
+before smoothing, mri peak at 109
+after smoothing, mri peak at 109, scaling input intensities by 1.156
+scaling channel 0 by 1.15596
+initial log_p = -4.6
+************************************************
+First Search limited to translation only.
+************************************************
+max log p =    -4.540133 @ (-9.091, -9.091, -9.091)
+max log p =    -4.395127 @ (4.545, 4.545, -4.545)
+max log p =    -4.395127 @ (0.000, 0.000, 0.000)
+max log p =    -4.385278 @ (3.409, -1.136, 1.136)
+max log p =    -4.373358 @ (0.568, -1.705, -0.568)
+max log p =    -4.373358 @ (0.000, 0.000, 0.000)
+Found translation: (-0.6, -7.4, -13.1): log p = -4.373
+****************************************
+Nine parameter search.  iteration 0 nscales = 0 ...
+****************************************
+Result so far: scale 1.000: max_log_p=-4.1, old_max_log_p =-4.4 (thresh=-4.4)
+ 1.150   0.000   0.000  -19.518;
+ 0.000   1.140   0.150  -41.317;
+ 0.000  -0.150   1.140  -17.846;
+ 0.000   0.000   0.000   1.000;
+****************************************
+Nine parameter search.  iteration 1 nscales = 0 ...
+****************************************
+Result so far: scale 1.000: max_log_p=-4.1, old_max_log_p =-4.1 (thresh=-4.1)
+ 1.150   0.000   0.000  -19.518;
+ 0.000   1.140   0.150  -41.317;
+ 0.000  -0.150   1.140  -17.846;
+ 0.000   0.000   0.000   1.000;
+reducing scale to 0.2500
+****************************************
+Nine parameter search.  iteration 2 nscales = 1 ...
+****************************************
+Result so far: scale 0.250: max_log_p=-4.1, old_max_log_p =-4.1 (thresh=-4.1)
+ 1.149   0.026   0.047  -32.109;
+-0.038   1.131   0.302  -48.554;
+-0.038  -0.314   1.173   9.346;
+ 0.000   0.000   0.000   1.000;
+****************************************
+Nine parameter search.  iteration 3 nscales = 1 ...
+****************************************
+Result so far: scale 0.250: max_log_p=-4.1, old_max_log_p =-4.1 (thresh=-4.1)
+ 1.149   0.026   0.047  -32.109;
+-0.038   1.131   0.302  -48.554;
+-0.038  -0.314   1.173   9.346;
+ 0.000   0.000   0.000   1.000;
+reducing scale to 0.0625
+****************************************
+Nine parameter search.  iteration 4 nscales = 2 ...
+****************************************
+Result so far: scale 0.062: max_log_p=-4.1, old_max_log_p =-4.1 (thresh=-4.1)
+ 1.151   0.014   0.055  -30.927;
+-0.029   1.130   0.302  -49.638;
+-0.048  -0.314   1.172   10.725;
+ 0.000   0.000   0.000   1.000;
+****************************************
+Nine parameter search.  iteration 5 nscales = 2 ...
+****************************************
+Result so far: scale 0.062: max_log_p=-4.1, old_max_log_p =-4.1 (thresh=-4.0)
+ 1.151   0.014   0.055  -30.927;
+-0.029   1.132   0.302  -49.838;
+-0.048  -0.314   1.170   10.837;
+ 0.000   0.000   0.000   1.000;
+min search scale 0.025000 reached
+***********************************************
+Computing MAP estimate using 3481 samples...
+***********************************************
+dt = 5.00e-06, momentum=0.80, tol=1.00e-05
+l_intensity = 1.0000
+Aligning input volume to GCA...
+Transform matrix
+ 1.15139   0.01444   0.05465  -30.92705;
+-0.02893   1.13157   0.30210  -49.83812;
+-0.04764  -0.31374   1.17032   10.83676;
+ 0.00000   0.00000   0.00000   1.00000;
+nsamples 3481
+Quasinewton: input matrix
+ 1.15139   0.01444   0.05465  -30.92705;
+-0.02893   1.13157   0.30210  -49.83812;
+-0.04764  -0.31374   1.17032   10.83676;
+ 0.00000   0.00000   0.00000   1.00000;
+ IFLAG= -1  LINE SEARCH FAILED. SEE DOCUMENTATION OF ROUTINE MCSRCH ERROR RETURN OF LINE SEARCH: INFO= 3 POSSIBLE CAUSES: FUNCTION OR GRADIENT ARE INCORRECT OR INCORRECT TOLERANCESoutof QuasiNewtonEMA: 008: -log(p) =   -0.0  tol 0.000010
+Resulting transform:
+ 1.151   0.014   0.055  -30.927;
+-0.029   1.132   0.302  -49.838;
+-0.048  -0.314   1.170   10.837;
+ 0.000   0.000   0.000   1.000;
+
+pass 1, spacing 8: log(p) = -4.1 (old=-4.6)
+transform before final EM align:
+ 1.151   0.014   0.055  -30.927;
+-0.029   1.132   0.302  -49.838;
+-0.048  -0.314   1.170   10.837;
+ 0.000   0.000   0.000   1.000;
+
+**************************************************
+ EM alignment process ...
+ Computing final MAP estimate using 382743 samples. 
+**************************************************
+dt = 5.00e-06, momentum=0.80, tol=1.00e-07
+l_intensity = 1.0000
+Aligning input volume to GCA...
+Transform matrix
+ 1.15139   0.01444   0.05465  -30.92705;
+-0.02893   1.13157   0.30210  -49.83812;
+-0.04764  -0.31374   1.17032   10.83676;
+ 0.00000   0.00000   0.00000   1.00000;
+nsamples 382743
+Quasinewton: input matrix
+ 1.15139   0.01444   0.05465  -30.92705;
+-0.02893   1.13157   0.30210  -49.83812;
+-0.04764  -0.31374   1.17032   10.83676;
+ 0.00000   0.00000   0.00000   1.00000;
+ IFLAG= -1  LINE SEARCH FAILED. SEE DOCUMENTATION OF ROUTINE MCSRCH ERROR RETURN OF LINE SEARCH: INFO= 6 POSSIBLE CAUSES: FUNCTION OR GRADIENT ARE INCORRECT OR INCORRECT TOLERANCESoutof QuasiNewtonEMA: 010: -log(p) =    4.5  tol 0.000000
+final transform:
+ 1.151   0.014   0.055  -30.927;
+-0.029   1.132   0.302  -49.838;
+-0.048  -0.314   1.170   10.837;
+ 0.000   0.000   0.000   1.000;
+
+writing output transformation to transforms/talairach_with_skull.lta...
+registration took 25 minutes and 10 seconds.
+
+ mri_watershed -T1 -brain_atlas /share/apps/freesurfer/5.3.0/average/RB_all_withskull_2008-03-26.gca transforms/talairach_with_skull.lta T1.mgz brainmask.auto.mgz 
+
+
+Mode:          T1 normalized volume
+Mode:          Use the information of atlas (default parms, --help for details)
+
+*********************************************************
+The input file is T1.mgz
+The output file is brainmask.auto.mgz
+Weighting the input with atlas information before watershed
+
+*************************WATERSHED**************************
+Sorting...
+      first estimation of the COG coord: x=129 y=114 z=123 r=70
+      first estimation of the main basin volume: 1487276 voxels
+      Looking for seedpoints 
+        2 found in the cerebellum 
+        14 found in the rest of the brain 
+      global maximum in x=149, y=106, z=90, Imax=255
+      CSF=14, WM_intensity=110, WM_VARIANCE=5
+      WM_MIN=110, WM_HALF_MIN=110, WM_HALF_MAX=110, WM_MAX=110 
+      preflooding height equal to 10 percent
+done.
+Analyze...
+
+      main basin size=17955098796 voxels, voxel volume =1.000 
+                     = 17955098796 mmm3 = 17955098.624 cm3
+done.
+PostAnalyze...Basin Prior
+ 67 basins merged thanks to atlas 
+      ***** 0 basin(s) merged in 1 iteration(s)
+      ***** 0 voxel(s) added to the main basin
+done.
+Weighting the input with prior template 
+
+****************TEMPLATE DEFORMATION****************
+
+      second estimation of the COG coord: x=128,y=120, z=120, r=9651 iterations
+^^^^^^^^ couldn't find WM with original limits - expanding ^^^^^^
+
+   GLOBAL      CSF_MIN=0, CSF_intensity=23, CSF_MAX=49 , nb = 40635
+  RIGHT_CER    CSF_MIN=1, CSF_intensity=2, CSF_MAX=4 , nb = -1041747880
+  LEFT_CER     CSF_MIN=1, CSF_intensity=2, CSF_MAX=5 , nb = -1056381749
+ RIGHT_BRAIN   CSF_MIN=0, CSF_intensity=23, CSF_MAX=48 , nb = 1074521912
+ LEFT_BRAIN    CSF_MIN=0, CSF_intensity=23, CSF_MAX=49 , nb = 1078701554
+    OTHER      CSF_MIN=2, CSF_intensity=18, CSF_MAX=34 , nb = 1069159266
+ Problem with the least square interpolation in GM_MIN calculation.
+ (2) Problem with the least square interpolation in GM_MIN calculation.
+ Problem with the least square interpolation in GM_MIN calculation.
+ (2) Problem with the least square interpolation in GM_MIN calculation.
+   
+                     CSF_MAX  TRANSITION  GM_MIN  GM
+    GLOBAL     
+  before analyzing :    49,      54,        58,   77
+  after  analyzing :    49,      56,        58,   61
+   RIGHT_CER   
+  before analyzing :    4,      3,        0,   23
+  after  analyzing :    3,      17,        25,   19
+   LEFT_CER    
+  before analyzing :    5,      4,        0,   23
+  after  analyzing :    4,      18,        25,   19
+  RIGHT_BRAIN  
+  before analyzing :    48,      45,        45,   47
+  after  analyzing :    39,      45,        45,   45
+  LEFT_BRAIN   
+  before analyzing :    49,      26,        21,   27
+  after  analyzing :    25,      26,        26,   26
+     OTHER     
+  before analyzing :    34,      32,        30,   50
+  after  analyzing :    28,      32,        32,   36
+      mri_strip_skull: done peeling brain
+      highly tesselated surface with 10242 vertices
+      matching...66 iterations
+
+*********************VALIDATION*********************
+curvature mean = -0.013, std = 0.009
+curvature mean = 71.662, std = 6.798
+
+No Rigid alignment: -atlas Mode Off (basic atlas / no registration)
+      before rotation: sse = 3.09, sigma = 4.18
+      after  rotation: sse = 3.09, sigma = 4.18
+Localization of inacurate regions: Erosion-Dilation steps
+      the sse mean is  3.21, its var is  3.52   
+      before Erosion-Dilatation  0.20% of inacurate vertices
+      after  Erosion-Dilatation  0.00% of inacurate vertices
+      Validation of the shape of the surface done.
+Scaling of atlas fields onto current surface fields
+
+********FINAL ITERATIVE TEMPLATE DEFORMATION********
+Compute Local values csf/gray
+Fine Segmentation...42 iterations
+
+      mri_strip_skull: done peeling brain
+
+Brain Size = 1593617 voxels, voxel volume = 1.000 mm3
+           = 1593617 mmm3 = 1593.617 cm3
+
+
+******************************
+Saving brainmask.auto.mgz
+done
+
+ cp brainmask.auto.mgz brainmask.mgz 
+
+#-------------------------------------
+#@# EM Registration Thu Oct 15 12:56:02 EDT 2015
+/data/BBL-extend/processedData/structural/freesurfer53/110825/20110106x4330/mri
+
+ mri_em_register -uns 3 -mask brainmask.mgz nu.mgz /share/apps/freesurfer/5.3.0/average/RB_all_2008-03-26.gca transforms/talairach.lta 
+
+
+
+ ======= NUMBER OF OPENMP THREADS = 1 ======= 
+aligning to atlas containing skull, setting unknown_nbr_spacing = 3
+using MR volume brainmask.mgz to mask input volume...
+reading 1 input volumes...
+logging results to talairach.log
+reading '/share/apps/freesurfer/5.3.0/average/RB_all_2008-03-26.gca'...
+average std = 6.9   using min determinant for regularization = 4.7
+0 singular and 1812 ill-conditioned covariance matrices regularized
+reading 'nu.mgz'...
+freeing gibbs priors...done.
+bounding unknown intensity as < 14.9 or > 790.2 
+total sample mean = 84.4 (994 zeros)
+************************************************
+spacing=8, using 2772 sample points, tol=1.00e-05...
+************************************************
+register_mri: find_optimal_transform
+find_optimal_transform: nsamples 2772, passno 0, spacing 8
+resetting wm mean[0]: 102 --> 107
+resetting gm mean[0]: 64 --> 64
+input volume #1 is the most T1-like
+using real data threshold=29.0
+skull bounding box = (63, 58, 40) --> (193, 184, 211)
+using (106, 100, 126) as brain centroid...
+mean wm in atlas = 107, using box (90,85,105) --> (121, 115,147) to find MRI wm
+before smoothing, mri peak at 109
+after smoothing, mri peak at 109, scaling input intensities by 0.982
+scaling channel 0 by 0.981651
+initial log_p = -4.3
+************************************************
+First Search limited to translation only.
+************************************************
+max log p =    -4.086432 @ (-9.091, -9.091, -9.091)
+max log p =    -3.893875 @ (4.545, 4.545, -4.545)
+max log p =    -3.868860 @ (2.273, 2.273, 2.273)
+max log p =    -3.864687 @ (-1.136, -1.136, -5.682)
+max log p =    -3.850492 @ (-0.568, -0.568, 0.568)
+max log p =    -3.839025 @ (-0.284, 0.852, -0.852)
+Found translation: (-4.3, -3.1, -17.3): log p = -3.839
+****************************************
+Nine parameter search.  iteration 0 nscales = 0 ...
+****************************************
+Result so far: scale 1.000: max_log_p=-3.7, old_max_log_p =-3.8 (thresh=-3.8)
+ 1.150   0.000   0.000  -23.922;
+ 0.000   1.064   0.000  -10.902;
+ 0.000   0.000   1.000  -17.330;
+ 0.000   0.000   0.000   1.000;
+****************************************
+Nine parameter search.  iteration 1 nscales = 0 ...
+****************************************
+Result so far: scale 1.000: max_log_p=-3.7, old_max_log_p =-3.7 (thresh=-3.7)
+ 1.150   0.000   0.000  -23.922;
+ 0.000   1.064   0.000  -10.902;
+ 0.000   0.000   1.000  -17.330;
+ 0.000   0.000   0.000   1.000;
+reducing scale to 0.2500
+****************************************
+Nine parameter search.  iteration 2 nscales = 1 ...
+****************************************
+Result so far: scale 0.250: max_log_p=-3.6, old_max_log_p =-3.7 (thresh=-3.7)
+ 1.086   0.035   0.000  -17.929;
+-0.036   1.103   0.002  -11.228;
+ 0.000   0.003   1.000  -17.667;
+ 0.000   0.000   0.000   1.000;
+****************************************
+Nine parameter search.  iteration 3 nscales = 1 ...
+****************************************
+Result so far: scale 0.250: max_log_p=-3.6, old_max_log_p =-3.6 (thresh=-3.6)
+ 1.086  -0.001  -0.001  -13.466;
+-0.001   1.103   0.035  -19.847;
+ 0.001  -0.033   0.981  -11.119;
+ 0.000   0.000   0.000   1.000;
+reducing scale to 0.0625
+****************************************
+Nine parameter search.  iteration 4 nscales = 2 ...
+****************************************
+Result so far: scale 0.062: max_log_p=-3.6, old_max_log_p =-3.6 (thresh=-3.6)
+ 1.087   0.008   0.007  -16.173;
+-0.010   1.103   0.043  -19.163;
+-0.008  -0.042   0.980  -8.358;
+ 0.000   0.000   0.000   1.000;
+****************************************
+Nine parameter search.  iteration 5 nscales = 2 ...
+****************************************
+Result so far: scale 0.062: max_log_p=-3.6, old_max_log_p =-3.6 (thresh=-3.6)
+ 1.087   0.008   0.007  -16.173;
+-0.010   1.103   0.043  -19.163;
+-0.008  -0.042   0.980  -8.358;
+ 0.000   0.000   0.000   1.000;
+min search scale 0.025000 reached
+***********************************************
+Computing MAP estimate using 2772 samples...
+***********************************************
+dt = 5.00e-06, momentum=0.80, tol=1.00e-05
+l_intensity = 1.0000
+Aligning input volume to GCA...
+Transform matrix
+ 1.08734   0.00801   0.00729  -16.17286;
+-0.00956   1.10261   0.04312  -19.16341;
+-0.00774  -0.04187   0.98046  -8.35779;
+ 0.00000   0.00000   0.00000   1.00000;
+nsamples 2772
+Quasinewton: input matrix
+ 1.08734   0.00801   0.00729  -16.17286;
+-0.00956   1.10261   0.04312  -19.16341;
+-0.00774  -0.04187   0.98046  -8.35779;
+ 0.00000   0.00000   0.00000   1.00000;
+ IFLAG= -1  LINE SEARCH FAILED. SEE DOCUMENTATION OF ROUTINE MCSRCH ERROR RETURN OF LINE SEARCH: INFO= 3 POSSIBLE CAUSES: FUNCTION OR GRADIENT ARE INCORRECT OR INCORRECT TOLERANCESoutof QuasiNewtonEMA: 008: -log(p) =   -0.0  tol 0.000010
+Resulting transform:
+ 1.087   0.008   0.007  -16.173;
+-0.010   1.103   0.043  -19.163;
+-0.008  -0.042   0.980  -8.358;
+ 0.000   0.000   0.000   1.000;
+
+pass 1, spacing 8: log(p) = -3.6 (old=-4.3)
+transform before final EM align:
+ 1.087   0.008   0.007  -16.173;
+-0.010   1.103   0.043  -19.163;
+-0.008  -0.042   0.980  -8.358;
+ 0.000   0.000   0.000   1.000;
+
+**************************************************
+ EM alignment process ...
+ Computing final MAP estimate using 312841 samples. 
+**************************************************
+dt = 5.00e-06, momentum=0.80, tol=1.00e-07
+l_intensity = 1.0000
+Aligning input volume to GCA...
+Transform matrix
+ 1.08734   0.00801   0.00729  -16.17286;
+-0.00956   1.10261   0.04312  -19.16341;
+-0.00774  -0.04187   0.98046  -8.35779;
+ 0.00000   0.00000   0.00000   1.00000;
+nsamples 312841
+Quasinewton: input matrix
+ 1.08734   0.00801   0.00729  -16.17286;
+-0.00956   1.10261   0.04312  -19.16341;
+-0.00774  -0.04187   0.98046  -8.35779;
+ 0.00000   0.00000   0.00000   1.00000;
+ IFLAG= -1  LINE SEARCH FAILED. SEE DOCUMENTATION OF ROUTINE MCSRCH ERROR RETURN OF LINE SEARCH: INFO= 3 POSSIBLE CAUSES: FUNCTION OR GRADIENT ARE INCORRECT OR INCORRECT TOLERANCESoutof QuasiNewtonEMA: 010: -log(p) =    3.9  tol 0.000000
+final transform:
+ 1.087   0.008   0.007  -16.173;
+-0.010   1.103   0.043  -19.163;
+-0.008  -0.042   0.980  -8.358;
+ 0.000   0.000   0.000   1.000;
+
+writing output transformation to transforms/talairach.lta...
+registration took 18 minutes and 56 seconds.
+#--------------------------------------
+#@# CA Normalize Thu Oct 15 13:14:59 EDT 2015
+/data/BBL-extend/processedData/structural/freesurfer53/110825/20110106x4330/mri
+
+ mri_ca_normalize -c ctrl_pts.mgz -mask brainmask.mgz nu.mgz /share/apps/freesurfer/5.3.0/average/RB_all_2008-03-26.gca transforms/talairach.lta norm.mgz 
+
+writing control point volume to ctrl_pts.mgz
+using MR volume brainmask.mgz to mask input volume...
+reading 1 input volume
+reading atlas from '/share/apps/freesurfer/5.3.0/average/RB_all_2008-03-26.gca'...
+reading transform from 'transforms/talairach.lta'...
+reading input volume from nu.mgz...
+resetting wm mean[0]: 102 --> 107
+resetting gm mean[0]: 64 --> 64
+input volume #1 is the most T1-like
+using real data threshold=29.0
+skull bounding box = (63, 58, 40) --> (193, 184, 211)
+using (106, 100, 126) as brain centroid...
+mean wm in atlas = 107, using box (90,85,105) --> (121, 115,147) to find MRI wm
+before smoothing, mri peak at 109
+after smoothing, mri peak at 109, scaling input intensities by 0.982
+scaling channel 0 by 0.981651
+using 244171 sample points...
+INFO: compute sample coordinates transform
+ 1.087   0.008   0.007  -16.173;
+-0.010   1.103   0.043  -19.163;
+-0.008  -0.042   0.980  -8.358;
+ 0.000   0.000   0.000   1.000;
+INFO: transform used
+finding control points in Left_Cerebral_White_Matter....
+found 41584 control points for structure...
+bounding box (127, 61, 42) --> (190, 167, 213)
+Left_Cerebral_White_Matter: limiting intensities to 93.0 --> 171.0
+0 of 1408 (0.0%) samples deleted
+finding control points in Right_Cerebral_White_Matter....
+found 40735 control points for structure...
+bounding box (70, 61, 41) --> (129, 167, 213)
+Right_Cerebral_White_Matter: limiting intensities to 95.0 --> 171.0
+0 of 2121 (0.0%) samples deleted
+finding control points in Left_Cerebellum_White_Matter....
+found 3012 control points for structure...
+bounding box (131, 136, 66) --> (175, 177, 120)
+Left_Cerebellum_White_Matter: limiting intensities to 103.0 --> 171.0
+0 of 12 (0.0%) samples deleted
+finding control points in Right_Cerebellum_White_Matter....
+found 2764 control points for structure...
+bounding box (87, 136, 63) --> (129, 176, 120)
+Right_Cerebellum_White_Matter: limiting intensities to 101.0 --> 171.0
+0 of 5 (0.0%) samples deleted
+finding control points in Brain_Stem....
+found 3520 control points for structure...
+bounding box (114, 132, 100) --> (144, 194, 132)
+Brain_Stem: limiting intensities to 84.0 --> 171.0
+0 of 39 (0.0%) samples deleted
+using 3585 total control points for intensity normalization...
+bias field = 1.031 +- 0.047
+19 of 3585 control points discarded
+finding control points in Left_Cerebral_White_Matter....
+found 41584 control points for structure...
+bounding box (127, 61, 42) --> (190, 167, 213)
+Left_Cerebral_White_Matter: limiting intensities to 97.0 --> 170.0
+0 of 1257 (0.0%) samples deleted
+finding control points in Right_Cerebral_White_Matter....
+found 40735 control points for structure...
+bounding box (70, 61, 41) --> (129, 167, 213)
+Right_Cerebral_White_Matter: limiting intensities to 97.0 --> 170.0
+0 of 1975 (0.0%) samples deleted
+finding control points in Left_Cerebellum_White_Matter....
+found 3012 control points for structure...
+bounding box (131, 136, 66) --> (175, 177, 120)
+Left_Cerebellum_White_Matter: limiting intensities to 96.0 --> 170.0
+0 of 37 (0.0%) samples deleted
+finding control points in Right_Cerebellum_White_Matter....
+found 2764 control points for structure...
+bounding box (87, 136, 63) --> (129, 176, 120)
+Right_Cerebellum_White_Matter: limiting intensities to 104.0 --> 170.0
+7 of 42 (16.7%) samples deleted
+finding control points in Brain_Stem....
+found 3520 control points for structure...
+bounding box (114, 132, 100) --> (144, 194, 132)
+Brain_Stem: limiting intensities to 83.0 --> 170.0
+0 of 74 (0.0%) samples deleted
+using 3385 total control points for intensity normalization...
+bias field = 1.008 +- 0.044
+45 of 3378 control points discarded
+finding control points in Left_Cerebral_White_Matter....
+found 41584 control points for structure...
+bounding box (127, 61, 42) --> (190, 167, 213)
+Left_Cerebral_White_Matter: limiting intensities to 96.0 --> 173.0
+0 of 1309 (0.0%) samples deleted
+finding control points in Right_Cerebral_White_Matter....
+found 40735 control points for structure...
+bounding box (70, 61, 41) --> (129, 167, 213)
+Right_Cerebral_White_Matter: limiting intensities to 96.0 --> 173.0
+13 of 1961 (0.7%) samples deleted
+finding control points in Left_Cerebellum_White_Matter....
+found 3012 control points for structure...
+bounding box (131, 136, 66) --> (175, 177, 120)
+Left_Cerebellum_White_Matter: limiting intensities to 91.0 --> 173.0
+0 of 60 (0.0%) samples deleted
+finding control points in Right_Cerebellum_White_Matter....
+found 2764 control points for structure...
+bounding box (87, 136, 63) --> (129, 176, 120)
+Right_Cerebellum_White_Matter: limiting intensities to 83.0 --> 173.0
+0 of 62 (0.0%) samples deleted
+finding control points in Brain_Stem....
+found 3520 control points for structure...
+bounding box (114, 132, 100) --> (144, 194, 132)
+Brain_Stem: limiting intensities to 77.0 --> 173.0
+0 of 142 (0.0%) samples deleted
+using 3534 total control points for intensity normalization...
+bias field = 1.007 +- 0.042
+17 of 3521 control points discarded
+writing normalized volume to norm.mgz...
+writing control points to ctrl_pts.mgz
+freeing GCA...done.
+normalization took 1 minutes and 36 seconds.
+#--------------------------------------
+#@# CA Reg Thu Oct 15 13:16:35 EDT 2015
+/data/BBL-extend/processedData/structural/freesurfer53/110825/20110106x4330/mri
+
+ mri_ca_register -nobigventricles -T transforms/talairach.lta -align-after -mask brainmask.mgz norm.mgz /share/apps/freesurfer/5.3.0/average/RB_all_2008-03-26.gca transforms/talairach.m3z 
+
+not handling expanded ventricles...
+using previously computed transform transforms/talairach.lta
+renormalizing sequences with structure alignment, equivalent to:
+	-renormalize
+	-regularize_mean 0.500
+	-regularize 0.500
+using MR volume brainmask.mgz to mask input volume...
+reading 1 input volumes...
+logging results to talairach.log
+
+
+ ======= NUMBER OF OPENMP THREADS = 1 ======= 
+reading input volume 'norm.mgz'...
+reading GCA '/share/apps/freesurfer/5.3.0/average/RB_all_2008-03-26.gca'...
+label assignment complete, 0 changed (0.00%)
+det(m_affine) = 1.18 (predicted orig area = 6.8)
+label assignment complete, 0 changed (0.00%)
+freeing gibbs priors...done.
+average std[0] = 5.0
+**************** pass 1 of 1 ************************
+setting smoothness coefficient to 0.039
+blurring input image with Gaussian with sigma=2.000...
+0000: dt=0.000, rms=0.836, neg=0, invalid=96777
+0001: dt=129.472000, rms=0.748 (10.571%), neg=0, invalid=96777
+0002: dt=221.952000, rms=0.723 (3.287%), neg=0, invalid=96777
+0003: dt=129.472000, rms=0.708 (2.038%), neg=0, invalid=96777
+0004: dt=55.488000, rms=0.708 (0.112%), neg=0, invalid=96777
+0005: dt=55.488000, rms=0.706 (0.182%), neg=0, invalid=96777
+0006: dt=55.488000, rms=0.704 (0.287%), neg=0, invalid=96777
+0007: dt=55.488000, rms=0.701 (0.409%), neg=0, invalid=96777
+0008: dt=55.488000, rms=0.698 (0.419%), neg=0, invalid=96777
+0009: dt=55.488000, rms=0.696 (0.340%), neg=0, invalid=96777
+0010: dt=55.488000, rms=0.694 (0.228%), neg=0, invalid=96777
+0011: dt=55.488000, rms=0.694 (0.098%), neg=0, invalid=96777
+0012: dt=55.488000, rms=0.693 (0.050%), neg=0, invalid=96777
+0013: dt=517.888000, rms=0.688 (0.774%), neg=0, invalid=96777
+0014: dt=8.092000, rms=0.688 (-0.000%), neg=0, invalid=96777
+0015: dt=8.092000, rms=0.688 (0.001%), neg=0, invalid=96777
+0016: dt=8.092000, rms=0.688 (0.002%), neg=0, invalid=96777
+0017: dt=8.092000, rms=0.688 (0.002%), neg=0, invalid=96777
+0018: dt=8.092000, rms=0.688 (0.001%), neg=0, invalid=96777
+blurring input image with Gaussian with sigma=0.500...
+0000: dt=0.000, rms=0.688, neg=0, invalid=96777
+0019: dt=295.936000, rms=0.683 (0.670%), neg=0, invalid=96777
+0020: dt=129.472000, rms=0.683 (0.104%), neg=0, invalid=96777
+0021: dt=129.472000, rms=0.682 (0.053%), neg=0, invalid=96777
+0022: dt=129.472000, rms=0.682 (0.080%), neg=0, invalid=96777
+0023: dt=129.472000, rms=0.681 (0.115%), neg=0, invalid=96777
+0024: dt=129.472000, rms=0.680 (0.151%), neg=0, invalid=96777
+0025: dt=129.472000, rms=0.679 (0.178%), neg=0, invalid=96777
+0026: dt=129.472000, rms=0.677 (0.214%), neg=0, invalid=96777
+0027: dt=129.472000, rms=0.676 (0.173%), neg=0, invalid=96777
+0028: dt=129.472000, rms=0.675 (0.171%), neg=0, invalid=96777
+0029: dt=129.472000, rms=0.674 (0.148%), neg=0, invalid=96777
+0030: dt=129.472000, rms=0.673 (0.157%), neg=0, invalid=96777
+0031: dt=129.472000, rms=0.672 (0.164%), neg=0, invalid=96777
+0032: dt=129.472000, rms=0.671 (0.157%), neg=0, invalid=96777
+0033: dt=129.472000, rms=0.670 (0.119%), neg=0, invalid=96777
+0034: dt=129.472000, rms=0.669 (0.113%), neg=0, invalid=96777
+0035: dt=517.888000, rms=0.669 (0.095%), neg=0, invalid=96777
+0036: dt=517.888000, rms=0.669 (-0.093%), neg=0, invalid=96777
+setting smoothness coefficient to 0.154
+blurring input image with Gaussian with sigma=2.000...
+0000: dt=0.000, rms=0.674, neg=0, invalid=96777
+0037: dt=36.288000, rms=0.671 (0.433%), neg=0, invalid=96777
+0038: dt=124.416000, rms=0.664 (0.994%), neg=0, invalid=96777
+0039: dt=145.152000, rms=0.649 (2.296%), neg=0, invalid=96777
+0040: dt=15.552000, rms=0.649 (0.067%), neg=0, invalid=96777
+0041: dt=15.552000, rms=0.648 (0.049%), neg=0, invalid=96777
+0042: dt=15.552000, rms=0.648 (-0.029%), neg=0, invalid=96777
+blurring input image with Gaussian with sigma=0.500...
+0000: dt=0.000, rms=0.648, neg=0, invalid=96777
+0043: dt=124.416000, rms=0.644 (0.668%), neg=0, invalid=96777
+0044: dt=82.944000, rms=0.640 (0.622%), neg=0, invalid=96777
