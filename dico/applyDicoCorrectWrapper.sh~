@@ -143,7 +143,7 @@ for indexValue in `seq 1 ${fileLength}` ; do
       echo "SERIES: ${indScan}"
       echo "Check ${exampleDicomBase} to ensure that all Dicom files are present"
       echo "Here is a list of all of the sample Dicoms:"
-      echo "${scanIdentifiers[@]}"
+      echo "${#scanIdentifiers[@]}"
     fi
     # Now go thorugh the steps to submit the qsub job
     if [ "${indScan}" == "restbold" ] ; then
