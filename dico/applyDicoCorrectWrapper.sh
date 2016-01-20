@@ -109,6 +109,43 @@ exampleDicomArray=("${exampleDicomBase}bbl1_frac2back1_231_S008_I000000.dcm" "${
 baseQSubCall="qsub -V -q all.q -S /bin/bash -o ${outputDir} -e ${errorOutputDir}"
 fileLength=`cat ${rpsImageText} | wc -l`
 
+# Now go through some checks to ensure that the provided text input is correct
+# First check to make sure that the provided input file is a text file
+fileExtensionCheck=`echo ${rpsImageText} | rev | cut -f 1 -d '.' | rev`
+if [ ! "${fileExtensionCheck}" == "txt" ]   ; then 
+  echo "Provided file type for ${rpsImageText} is not a .txt file"
+  echo "This file should be a text file which contains the paths to the rps images"
+  echo "would you like to continue running this script?"
+  read -r -p "Enter a y or n:" answer
+  answer=${answer,,}
+  if [[ ${answer} =~ ^(no|n)$ ]] ; then  
+    echo "rpsmaps.txt can be created with either the ls command by running:"
+    echo "ls /data/joy/BBL/studies/pnc/processedData/b0map/<BBLID>/<SCANDATE>x<SCANID>/<BBLID>_<SCANDATE>x<SCANID>_rpsmap.nii > example.txt"
+    echo "OR:"
+    echo "find /data/joy/BBL/studies/pnc/processedData/b0map/<BBLID>/<SCANDATE>x<SCANID>/ -type f -name '*rps*'" 
+    exit 2; 
+  fi
+fi
+
+# Now check to make sure that the provided input file uses the correct paths for this script
+providedFilePathCheck=`sed -n "1p" ${rpsImageText} | cut -f 1-8 -d /`
+if [ ! "${providedFilePathCheck}" == "/data/joy/BBL/studies/pnc/processedData/b0map" ] ; then
+  echo "The provided file path for the rps image was not correct"
+  echo "RPS images must be stored in '/data/joy/BBL/studies/pnc/processedData/b0map'"
+  echo "Following the <BBLID>/<SCANDATE>x<SCANID> file structure"
+  echo "RPS images should be created, and then stored in the proper directory using the script seen below:"
+  echo "/data/joy/BBL/applications/scripts/bin/dico_correct_v2.sh"
+  echo "Creating the proper text file can be performed by following the logic of one of these script calls:"
+  echo "ls /data/joy/BBL/studies/pnc/processedData/b0map/<BBLID>/<SCANDATE>x<SCANID>/<BBLID>_<SCANDATE>x<SCANID>_rpsmap.nii > example.txt"
+  echo "OR:"
+  echo "find /data/joy/BBL/studies/pnc/processedData/b0map/<BBLID>/<SCANDATE>x<SCANID>/ -type f -name '*rps*' > example.txt" 
+  echo
+  echo
+  echo "Script will now exit"
+  exit 2 ; 
+fi
+
+
 # Now prime the output finish log
 echo "BBLID, SCANID, SEQUENCE, STATUS, QSUB_CALL" > ${finishedFile}
 
@@ -136,7 +173,7 @@ for indexValue in `seq 1 ${fileLength}` ; do
     indScan=${scanIdentifiers[${seriesID}]}
     indExampleDicom=${exampleDicomArray[${seriesID}]}
     # Perform a quick sanity check to ensure that the indScan matchs up with the correct indExampleDicom
-    ls ${indExampleDicom} | grep ${indScan} > /dev/null
+    ls ${indExampleDicom} | grep ${indScan} 2> /dev/null
     if [ ${?} -ne 0 ] ; then
       echo "A dicom does not match up with the current scan sequence"
       echo "DICOM FILE: ${indExampleDicom}"
