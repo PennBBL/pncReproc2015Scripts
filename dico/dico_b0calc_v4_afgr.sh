@@ -311,7 +311,7 @@ if [ -n "$t1whole" ]; then
 	echo "Coregistering T1head to B0map magnitude image."
     T1orient=`@GetAfniOrient $t1whole 2> /dev/null`
     B0orient=`@GetAfniOrient ${outfroot}_mag1.nii 2>/dev/null`
-    if [ $T1orient != $B0orient ]; then
+    if [[ $T1orient != $B0orient ]]; then
         echo "ERROR: T1head orientation ($T1orient) does not match b0map orientation ($B0orient). Don't want to flirt them." >&2
         exit 1
     fi
