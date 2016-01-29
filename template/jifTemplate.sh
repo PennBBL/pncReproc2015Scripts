@@ -32,7 +32,8 @@ fi
 
 #assemble list of images for jlf call
 rm -f $jifCall
-echo -n "$ANTSDIR/antsJointFusion -v -d 3 -t $outDir/initialTemplate2template_padded.nii.gz -o $outDir/jifTemplate.nii.gz" >> $jifCall
+params=" -r 1 -v 1 -s 2 -p 2 -a 0.05 -b 4 -c 0 "
+echo -n "$ANTSDIR/antsJointFusion -v -d 3 -t $outDir/initialTemplate2template_padded.nii.gz -o $outDir/jifTemplate_20151021.nii.gz $params" >> $jifCall
 imgs=$(ls $btpDir/*_normalized_padded.nii.gz)
 for i in $imgs; do 
 	echo -n " -g $i" >> $jifCall
