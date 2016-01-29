@@ -1,0 +1,181 @@
+
+Running antsJointFusion for 3-dimensional images.
+
+*********10*********20*********30*********40*********50*********60*********70*********80*********90*********
+
+   WeightedVotingFusionImageFilter (0x21c46e0)
+     RTTI typeinfo:   itk::WeightedVotingFusionImageFilter<itk::Image<float, 3u>, itk::Image<unsigned int, 3u> >
+     Reference Count: 1
+     Modified Time: 11762
+     Debug: Off
+     Object Name: 
+     Observers: 
+       ProgressEvent(Command)
+     Inputs: 
+       Primary: (0x21db220) *
+       _1: (0x21dbce0)
+       _10: (0x2210a90)
+       _11: (0x2215f90)
+       _12: (0x221b430)
+       _13: (0x22208d0)
+       _14: (0x2225b10)
+       _15: (0x222afb0)
+       _16: (0x2230220)
+       _17: (0x22356a0)
+       _18: (0x21d7190)
+       _19: (0x21d8920)
+       _2: (0x21e3290)
+       _20: (0x2245560)
+       _21: (0x224aa00)
+       _22: (0x224fc50)
+       _23: (0x22550f0)
+       _24: (0x225a360)
+       _25: (0x225f7e0)
+       _26: (0x2264c80)
+       _27: (0x2269e50)
+       _28: (0x226f310)
+       _29: (0x22747b0)
+       _3: (0x21e5c60)
+       _30: (0x2279980)
+       _31: (0x21dd560)
+       _32: (0x21e8720)
+       _33: (0x21e98c0)
+       _34: (0x21eeca0)
+       _35: (0x21f9270)
+       _36: (0x21fe710)
+       _37: (0x2203960)
+       _38: (0x2208e00)
+       _39: (0x220e2a0)
+       _4: (0x21ec230)
+       _40: (0x22137d0)
+       _41: (0x22189e0)
+       _42: (0x221de80)
+       _43: (0x2223320)
+       _44: (0x2228560)
+       _45: (0x222da00)
+       _46: (0x2232c50)
+       _47: (0x2238110)
+       _48: (0x21d8690)
+       _49: (0x2242b10)
+       _5: (0x21f6820)
+       _50: (0x2247fb0)
+       _51: (0x224d200)
+       _52: (0x22526a0)
+       _53: (0x2257b40)
+       _54: (0x225cd90)
+       _55: (0x2262230)
+       _56: (0x22676d0)
+       _57: (0x226c8c0)
+       _58: (0x2271d60)
+       _59: (0x2277200)
+       _6: (0x21fbcc0)
+       _60: (0x227c410)
+       _7: (0x2201160)
+       _8: (0x22063b0)
+       _9: (0x220b850)
+     Indexed Inputs: 
+       0: Primary (0x21db220)
+       1: _1 (0x21dbce0)
+       2: _2 (0x21e3290)
+       3: _3 (0x21e5c60)
+       4: _4 (0x21ec230)
+       5: _5 (0x21f6820)
+       6: _6 (0x21fbcc0)
+       7: _7 (0x2201160)
+       8: _8 (0x22063b0)
+       9: _9 (0x220b850)
+       10: _10 (0x2210a90)
+       11: _11 (0x2215f90)
+       12: _12 (0x221b430)
+       13: _13 (0x22208d0)
+       14: _14 (0x2225b10)
+       15: _15 (0x222afb0)
+       16: _16 (0x2230220)
+       17: _17 (0x22356a0)
+       18: _18 (0x21d7190)
+       19: _19 (0x21d8920)
+       20: _20 (0x2245560)
+       21: _21 (0x224aa00)
+       22: _22 (0x224fc50)
+       23: _23 (0x22550f0)
+       24: _24 (0x225a360)
+       25: _25 (0x225f7e0)
+       26: _26 (0x2264c80)
+       27: _27 (0x2269e50)
+       28: _28 (0x226f310)
+       29: _29 (0x22747b0)
+       30: _30 (0x2279980)
+       31: _31 (0x21dd560)
+       32: _32 (0x21e8720)
+       33: _33 (0x21e98c0)
+       34: _34 (0x21eeca0)
+       35: _35 (0x21f9270)
+       36: _36 (0x21fe710)
+       37: _37 (0x2203960)
+       38: _38 (0x2208e00)
+       39: _39 (0x220e2a0)
+       40: _40 (0x22137d0)
+       41: _41 (0x22189e0)
+       42: _42 (0x221de80)
+       43: _43 (0x2223320)
+       44: _44 (0x2228560)
+       45: _45 (0x222da00)
+       46: _46 (0x2232c50)
+       47: _47 (0x2238110)
+       48: _48 (0x21d8690)
+       49: _49 (0x2242b10)
+       50: _50 (0x2247fb0)
+       51: _51 (0x224d200)
+       52: _52 (0x22526a0)
+       53: _53 (0x2257b40)
+       54: _54 (0x225cd90)
+       55: _55 (0x2262230)
+       56: _56 (0x22676d0)
+       57: _57 (0x226c8c0)
+       58: _58 (0x2271d60)
+       59: _59 (0x2277200)
+       60: _60 (0x227c410)
+     Required Input Names: Primary
+     NumberOfRequiredInputs: 1
+     Outputs: 
+       Primary: (0x21c4a20)
+     Indexed Outputs: 
+       0: Primary (0x21c4a20)
+     NumberOfRequiredOutputs: 1
+     Number Of Threads: 1
+     ReleaseDataFlag: Off
+     ReleaseDataBeforeUpdateFlag: Off
+     AbortGenerateData: Off
+     Progress: 1
+     Multithreader: 
+       RTTI typeinfo:   itk::MultiThreader
+       Reference Count: 1
+       Modified Time: 453
+       Debug: Off
+       Object Name: 
+       Observers: 
+         none
+       Thread Count: 1
+       Global Maximum Number Of Threads: 128
+       Global Default Number Of Threads: 1
+     CoordinateTolerance: 1e-06
+     DirectionTolerance: 1e-06
+Number of atlases = 30
+Number of atlas segmentations = 30
+Number of atlas modalities = 1
+Alpha = 0.1
+Beta = 2
+Search neighborhood radius = [3, 3, 3]
+Patch neighborhood radius = [2, 2, 2]
+Using Pearson correlation to measure the patch similarity.
+Label set: 0 1 2 3 4 5 6 
+
+Writing output:
+  Writing intensity fusion image (modality 1)
+  Writing label probability image (label 1)
+  Writing label probability image (label 2)
+  Writing label probability image (label 3)
+  Writing label probability image (label 4)
+  Writing label probability image (label 5)
+  Writing label probability image (label 6)
+Elapsed time: 12645.3
