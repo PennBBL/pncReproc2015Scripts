@@ -5,14 +5,21 @@
 
 #! /bin/bash
 #set freesurfer specific variables (unique to GO1/GO2 and cfn)
-export SUBJECTS_DIR=/data/jag/BBL/studies/pnc/processedData/structural/freesurfer53
-export QA_TOOLS=/data/jag/BBL/applications/QAtools_v1.1/
+#export SUBJECTS_DIR=/data/joy/BBL/studies/pnc/processedData/structural/freesurfer53
+export SUBJECTS_DIR=$2
+export OUTPUT_DIR=$3
+export QA_TOOLS=/data/joy/BBL/applications/QAtools_v1.1/
 export FREESURFER_HOME=/share/apps/freesurfer/5.3.0/
 export PATH=$FREESURFER_HOME/bin/:$PATH
 
+
 #set subject list, directory to output aggregated files to, and the filenames of those aggregate files
-slist=/data/jag/BBL/studies/pnc/subjectData/go1_go2_freesurfer53_qa_run_list.txt
-outdir=/data/jag/BBL/projects/pncReproc2015/freesurfer/stats5_3/cnr
+#slist=/data/joy/BBL/studies/pnc/subjectData/go1_go2_freesurfer53_qa_run_list.txt
+slist=$1
+#outdir=/data/joy/BBL/projects/pncReproc2015/freesurfer/stats5_3/cnr
+outdir=$OUTPUT_DIR/cnr
+
+
 file=$outdir/cnr_buckner.csv
 euler_file=$outdir/euler_number.csv
 
