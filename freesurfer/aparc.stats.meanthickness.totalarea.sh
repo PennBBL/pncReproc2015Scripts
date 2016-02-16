@@ -1,14 +1,15 @@
 #! /bin/bash
 # gets mean thickness and total surface area for each subject in list
 # returns NA if not available.
-export SUBJECTS_DIR=$2
+export OUTPUT_DIR=$2
+export SUBJECTS_DIR=$3
 slist=$1
 
-if [ ! -e $SUBJECTS_DIR/stats/aparc.stats ]; then
-	mkdir $SUBJECTS_DIR/stats/aparc.stats
+if [ ! -e $OUTPUT_DIR/aparc.stats ]; then
+	mkdir $OUTPUT_DIR/aparc.stats
 fi
 # header
-echo bblid,scanid,rh.meanthickness,rh.totalarea,lh.meanthickness,lh.totalarea > $SUBJECTS_DIR/stats/aparc.stats/bilateral.meanthickness.totalarea.csv
+echo bblid,scanid,rh.meanthickness,rh.totalarea,lh.meanthickness,lh.totalarea > $OUTPUT_DIR/aparc.stats/bilateral.meanthickness.totalarea.csv
 for i in $(cat $slist); do
 	bblid=$(echo $i | cut -d"/" -f1)
 	scanid=$(echo $i | cut -d"/" -f2)
@@ -41,6 +42,6 @@ for i in $(cat $slist); do
 			string=`grep SurfArea,  $subdir/stats/lh.aparc.stats` 
 			lta=`echo $string | cut -d "," -f 4`
 		fi
-		echo $bblid,$scanid,$rmt,$rta,$lmt,$lta >> $SUBJECTS_DIR/stats/aparc.stats/bilateral.meanthickness.totalarea.csv
+		echo $bblid,$scanid,$rmt,$rta,$lmt,$lta >> $OUTPUT_DIR/aparc.stats/bilateral.meanthickness.totalarea.csv
 	fi
 done
