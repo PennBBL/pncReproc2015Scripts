@@ -20,7 +20,7 @@ nsub=$2
 
 isub=$3
 
-scriptdir=/data/jag/BBL/projects/pncReproc2015/pncReproc2015Scripts/antsCT
+scriptdir=/data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts/antsCT
 logdir=${scriptdir}/logs/
 
 allsubj=$(cat ${cohortlist})
@@ -35,7 +35,7 @@ for subj in ${allsubj}
       scanid=$(echo ${subj}|cut -d"," -f2)
       dovisit=$(echo ${subj}|cut -d"," -f3)
       echo "Processing ${bblid},${scanid}.${dovisit}"
-      out=/data/jag/BBL/projects/pncReproc2015/antsCT/${bblid}/${dovisit}x${scanid}/
+      out=/data/joy/BBL/projects/pncReproc2015/antsCT/${bblid}/${dovisit}x${scanid}/
       #if [ ! -d ${out} ]
          #then
          echo "Processing ${bblid},${scanid}.${dovisit}" >> ${logdir}/antsCT_${isub}
@@ -44,7 +44,7 @@ for subj in ${allsubj}
             -V \
             -l h_vmem=10G,s_vmem=10.0G \
             -cwd \
-            -v ANTSPATH=/data/jag/BBL/applications/ants_20151007/bin \
+            -v ANTSPATH=/data/joy/BBL/applications/ants_20151007/bin \
             -S /bin/bash \
             -o ${out}/sge \
             -e ${out}/sge \

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-OUTDIR=/data/jag/BBL/projects/pncReproc2015/antsCT
+OUTDIR=/data/joy/BBL/projects/pncReproc2015/antsCT
 
 allsubj=$(ls ${OUTDIR})
 rm -f logs/success
