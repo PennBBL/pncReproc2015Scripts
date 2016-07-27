@@ -17,8 +17,8 @@ library(ggplot2)
 
 #read in data
 output.dir<-commandArgs(TRUE)[1]
-cnr_data<- read.csv("output.dir/cnr/cnr_buckner.csv")
-euler_data<- read.csv("output.dir/cnr/euler_number.csv")
+cnr_data<- read.csv(paste(output.dir,"/cnr/cnr_buckner.csv",sep=""))
+euler_data<- read.csv(paste(output.dir,"/cnr/euler_number.csv",sep=""))
 #cnr_data<- read.csv("/data/joy/BBL/projects/pncReproc2015/freesurfer/stats5_3/cnr/cnr_buckner.csv")
 #euler_data<- read.csv("/data/joy/BBL/projects/pncReproc2015/freesurfer/stats5_3/cnr/euler_number.csv")
 
@@ -42,12 +42,12 @@ data<- data[which(! data$scanid %in% exclude_list),]
 cor_cnr_euler_table<- data.frame("measure"=c("gray/csf lh","gray/csf rh", "gray/white lh","gray/white rh","left_euler","right_euler"),"gray_csf_lh"=c(cor(data$graycsflh,data$graycsflh),cor(data$graycsflh,data$graycsfrh),cor(data$graycsflh,data$graywhitelh),cor(data$graycsflh,data$graywhiterh),cor(data$graycsflh,data$left_euler),cor(data$graycsflh,data$right_euler)),"gray_csf_rh"=c(cor(data$graycsfrh,data$graycsflh),cor(data$graycsfrh,data$graycsfrh),cor(data$graycsfrh,data$graywhitelh),cor(data$graycsfrh,data$graywhiterh),cor(data$graycsfrh,data$left_euler),cor(data$graycsfrh,data$right_euler)),"gray_white_lh"=c(cor(data$graywhitelh,data$graycsflh),cor(data$graywhitelh,data$graycsfrh),cor(data$graywhitelh,data$graywhitelh),cor(data$graywhitelh,data$graywhiterh),cor(data$graywhitelh,data$left_euler),cor(data$graywhitelh,data$right_euler)),"gray_white_rh"=c(cor(data$graywhiterh,data$graycsflh),cor(data$graywhiterh,data$graycsfrh),cor(data$graywhiterh,data$graywhitelh),cor(data$graywhiterh,data$graywhiterh),cor(data$graywhiterh,data$left_euler),cor(data$graywhiterh,data$right_euler)),"left_euler"=c(cor(data$left_euler,data$graycsflh),cor(data$left_euler,data$graycsfrh),cor(data$left_euler,data$graywhitelh),cor(data$left_euler,data$graywhiterh),cor(data$left_euler,data$left_euler),cor(data$left_euler,data$right_euler)),"right_euler"=c(cor(data$right_euler,data$graycsflh),cor(data$right_euler,data$graycsfrh),cor(data$right_euler,data$graywhitelh),cor(data$right_euler,data$graywhiterh),cor(data$right_euler,data$left_euler),cor(data$right_euler,data$right_euler)))
 
 #write table out
-write.csv(cor_cnr_euler_table,"/data/joy/BBL/studies/pnc/subjectData/freesurfer/go1_go2_fs53_cnr_euler_correlation_table.csv")
+write.csv(cor_cnr_euler_table,"/data/joy/BBL/studies/pnc/subjectData/freesurfer/go1_go2_go3_fs53_cnr_euler_correlation_table.csv")
 
 ####EULER AND AUTO QA MEASURES
 
 #read in auto qa csv
-auto_qa<- read.csv("/data/joy/BBL/projects/pncReproc2015/freesurfer/stats5_3/all.flags.n2140.csv")
+auto_qa<- read.csv("/data/joy/BBL/projects/pncReproc2015/freesurfer/stats5_3/all.flags.n2496.csv")
 
 #subset auto qa to exclude those that failed freesurfer
 auto_qa<- auto_qa[which(! auto_qa$scanid %in% exclude_list),]
@@ -56,7 +56,7 @@ auto_qa<- auto_qa[which(! auto_qa$scanid %in% exclude_list),]
 cor_autoqa_table<- data.frame("measure"=c("gray/csf lh","gray/csf rh", "gray/white lh","gray/white rh","left_euler","right_euler"),"meanthickness_outlier"=c(cor(auto_qa$meanthickness_outlier,data$graycsflh),cor(auto_qa$meanthickness_outlier,data$graycsfrh),cor(auto_qa$meanthickness_outlier,data$graywhitelh),cor(auto_qa$meanthickness_outlier,data$graywhiterh),cor(auto_qa$meanthickness_outlier,data$left_euler),cor(auto_qa$meanthickness_outlier,data$right_euler)),"totalarea_outlier"=c(cor(auto_qa$totalarea_outlier,data$graycsflh),cor(auto_qa$totalarea_outlier,data$graycsfrh),cor(auto_qa$totalarea_outlier,data$graywhitelh),cor(auto_qa$totalarea_outlier,data$graywhiterh),cor(auto_qa$totalarea_outlier,data$left_euler),cor(auto_qa$totalarea_outlier,data$right_euler)),"cnr_outlier"=c(cor(auto_qa$cnr_outlier,data$graycsflh),cor(auto_qa$cnr_outlier,data$graycsfrh),cor(auto_qa$cnr_outlier,data$graywhitelh),cor(auto_qa$cnr_outlier,data$graywhiterh),cor(auto_qa$cnr_outlier,data$left_euler),cor(auto_qa$cnr_outlier,data$right_euler)),"snr_outlier"=c(cor(auto_qa$snr_outlier,data$graycsflh),cor(auto_qa$snr_outlier,data$graycsfrh),cor(auto_qa$snr_outlier,data$graywhitelh),cor(auto_qa$snr_outlier,data$graywhiterh),cor(auto_qa$snr_outlier,data$left_euler),cor(auto_qa$snr_outlier,data$right_euler)),"noutliers.thickness.rois_outlier"=c(cor(auto_qa$noutliers.thickness.rois_outlier,data$graycsflh),cor(auto_qa$noutliers.thickness.rois_outlier,data$graycsfrh),cor(auto_qa$noutliers.thickness.rois_outlier,data$graywhitelh),cor(auto_qa$noutliers.thickness.rois_outlier,data$graywhiterh),cor(auto_qa$noutliers.thickness.rois_outlier,data$left_euler),cor(auto_qa$noutliers.thickness.rois_outlier,data$right_euler)),"noutliers.lat.thickness.rois_outlier"=c(cor(auto_qa$noutliers.lat.thickness.rois_outlier,data$graycsflh),cor(auto_qa$noutliers.lat.thickness.rois_outlier,data$graycsfrh),cor(auto_qa$noutliers.lat.thickness.rois_outlier,data$graywhitelh),cor(auto_qa$noutliers.lat.thickness.rois_outlier,data$graywhiterh),cor(auto_qa$noutliers.lat.thickness.rois_outlier,data$left_euler),cor(auto_qa$noutliers.lat.thickness.rois_outlier,data$right_euler)))
 
 #write out table
-write.csv(cor_autoqa_table,"/data/joy/BBL/studies/pnc/subjectData/freesurfer/go1_go2_fs53_cnr_euler_autoqa_correlation_table.csv")
+write.csv(cor_autoqa_table,"/data/joy/BBL/studies/pnc/subjectData/freesurfer/go1_go2_go3_fs53_cnr_euler_autoqa_correlation_table.csv")
 
 ############################################
 ###########DEMOGRAPHICS###############
@@ -80,7 +80,7 @@ data2<- data2[! is.na(data2$dxpmr4),]
 ###########DISTRIBUTION PLOTS###############
 
 #write graphs to a pdf
-pdf("/data/joy/BBL/studies/pnc/subjectData/freesurfer/go1_go2_fs53_cnr_euler_distribution_plots.pdf")
+pdf("/data/joy/BBL/studies/pnc/subjectData/freesurfer/go1_go2_go3_fs53_cnr_euler_distribution_plots.pdf")
 
 #loop through columns in data and plot histogram and scatterplot for each measure
 for (i in 3:ncol(data)){
@@ -170,7 +170,7 @@ flags$flagged<- flags$total_outliers
 flags$flagged[flags$flagged>0]<- 1
 
 #write out flagged data
-write.csv(flags,"/data/joy/BBL/projects/pncReproc2015/freesurfer/stats5_3/cnr_euler_flags_n2136.csv")
+write.csv(flags,"/data/joy/BBL/projects/pncReproc2015/freesurfer/stats5_3/cnr_euler_flags_n2496.csv")
 
 #################################################
 ###########EXCLUSIONS BY DIAGNOSIS###############

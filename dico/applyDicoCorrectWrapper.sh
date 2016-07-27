@@ -152,14 +152,14 @@ echo "BBLID, SCANID, SEQUENCE, STATUS, QSUB_CALL" > ${finishedFile}
 # Now cycle through each rps image in the input file
 for indexValue in `seq 1 ${fileLength}` ; do
  
- # Now find the subject specific details
+  # Now find the subject specific details
   rpsImage=`sed -n "${indexValue}p" ${rpsImageText}`
   allSubjInfo=`basename ${rpsImage} | xargs remove_ext`
   bblid=`echo ${allSubjInfo} | cut -f 1 -d '_'`
   scanid=`echo ${allSubjInfo} | cut -f 2 -d 'x' | cut -f 1 -d '_'`
   dateid=`echo ${allSubjInfo} | cut -f 1 -d 'x' | cut -f 2 -d '_'`
   magImage="${b0DataBase}${bblid}/${dateid}x${scanid}/${bblid}_${dateid}x${scanid}_mag1_brain.nii"
-  rpsMaskImage="${b0DataBase}${bblid}/${dateid}x${scanid}/${bblid}_${dateid}x${scanid}_rpsmap.nii"
+  rpsMaskImage="${b0DataBase}${bblid}/${dateid}x${scanid}/${bblid}_${dateid}x${scanid}_mask.nii"
   
   # Now do some quick sanity checks to make sure that all of the variables are present
   checkFileStatus ${magImage} ${logFile} ${bblid}
@@ -216,6 +216,8 @@ for indexValue in `seq 1 ${fileLength}` ; do
       else     
         qSubCall="${baseQSubCall} ${scriptToCall} -n -FS -e ${indExampleDicom} -f ${magImage} ${output} ${rpsImage} ${rpsMaskImage} ${niftiSeries}"
         ${qSubCall}
+        ${baseQSubCall} /share/apps/fsl/5.0.8/bin/fslchfiletype NIFTI_GZ ${output}_dico.nii
+        ${baseQSubCall} /share/apps/fsl/5.0.8/bin/fslchfiletype NIFTI_GZ ${output}_shiftmap.nii
         echo "${bblid}, ${scanid}, ${indScan}, Submitted @ `date +%y_%m_%d_%H_%M_%S`, ${qSubCall}" >> ${finishedFile}; 
       fi
     fi

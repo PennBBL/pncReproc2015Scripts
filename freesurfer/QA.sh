@@ -30,7 +30,8 @@
 ########################################
 
 #Set variables
-slist=/data/joy/BBL/studies/pnc/subjectData/freesurfer/go1_go2_freesurfer53_qa_run_list.txt
+#slist=/data/joy/BBL/studies/pnc/subjectData/freesurfer/go1_go2_freesurfer53_qa_run_list.txt
+slist=/data/joy/BBL/studies/pnc/subjectData/freesurfer/go1_go2_go3_freesurfer53_qa_run_list.txt
 export output_dir=/data/joy/BBL/projects/pncReproc2015/freesurfer/stats5_3
 export SUBJECTS_DIR=/data/joy/BBL/studies/pnc/processedData/structural/freesurfer53
 export QA_TOOLS=/data/joy/BBL/applications/QAtools_v1.1/
@@ -58,7 +59,7 @@ aparcstats2table --hemi rh --subjectsfile=$slist -t $output_dir/aparc.stats/rh.a
 /data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts/freesurfer/cnr_euler_number_calculation.sh $slist $SUBJECTS_DIR $output_dir
 
 ##### 5) Flag subjects based on whether they are an outlier (>2 SD) on several measures##### 
-/share/apps/R/R-3.1.1/bin/R --slave --file=/data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts/freesurfer/flag_outliers.R --args $SUBJECTS_DIR 
+/share/apps/R/R-3.1.1/bin/R --slave --file=/data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts/freesurfer/flag_outliers.R --args $output_dir
 
 ##### 6) Flag  (gray/csf flag, gray/white flag, euler number flag, number outliers rois thickness flag, total outliers)##### 
 /share/apps/R/R-3.1.1/bin/R --slave --file=/data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts/freesurfer/cnr_euler_qa.R --args $output_dir
