@@ -221,7 +221,7 @@ write.csv(output, '/data/joy/BBL/projects/pncReproc2015/pcasl/QA/n1630-IncludedS
 system("/bin/bash /data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts/pcasl/qa/combineImages.sh /data/joy/BBL/projects/pncReproc2015/pcasl/QA/n1639-IncludedSubjects.csv /data/joy/BBL/projects/pncReproc2015/pcasl/QA/flaggedMasks/n1639_IncludedImages.nii.gz")
 
 # Now create the combined mask 
-system("fslmaths /data/joy/BBL/projects/pncReproc2015/pcasl/QA/flaggedMasks/n1639_IncludedImages.nii.gz -Tmean -mul 1639 /data/joy/BBL/projects/pncReproc2015/pcasl/QA/flaggedMasks/n1639_IncludedImages_TmeanMul.nii.gz")
+system("fslmaths /data/joy/BBL/projects/pncReproc2015/pcasl/QA/flaggedMasks/n1639_IncludedImages.nii.gz -Tmean -mul 1630 /data/joy/BBL/projects/pncReproc2015/pcasl/QA/flaggedMasks/n1639_IncludedImages_TmeanMul.nii.gz")
 
 
 # Now create a manual coverage binary inclusion variable and attach it to the flag scores 
