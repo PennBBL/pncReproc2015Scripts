@@ -12,14 +12,15 @@
 # ---------------------------------------------------------------
 
 # Now grab all of the subjects and scan dates that we are going to be cycling through for the various modalities 
-
+myName=`whoami`
+timeOfExecution=`date +%y_%m_%d_%H_%M_%S`
 allRawSubjList=`find /data/joy/BBL/studies/pnc/rawData/ -maxdepth 2 -mindepth 2 -type d`
 allBblid=`echo ${allRawSubjList} | cut -f 8 -d '/'`
 allScanandDate=`echo ${allRawSubjList} | cut -f 9 -d '/'`
 allScanid=`echo ${allScanandDate} | cut -f 1 -d 'x'`
 allDateid=`echo ${allScanandDate} | cut -f 2 -d 'x'`
 allSubjLength=`echo ${allRawSubjList} | wc -l`
-outputCSV="/home/arosen/dicoFunctionTesting/reports/auditOutput.csv"
+outputCSV="/home/${myName}/auditOutput_${timeOfExecution}.csv"
 
 
 # Prime a output audit csv

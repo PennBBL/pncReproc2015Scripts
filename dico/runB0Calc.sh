@@ -11,7 +11,7 @@
 # Run through each subject and calcualte a b0 rps map for them
 subjFile="/home/arosen/tempCohortListSplit/x${1}"
 subjLength=`cat ${subjFile} | wc -l`
-baseOutputPath="/data/joy/BBL/studies/pnc/processedData/b0map/"
+baseOutputPath="/data/joy/BBL/studies/pnc/processedData/b0mapwT2star/"
 baseRawDataPath="/data/joy/BBL/studies/pnc/rawData/"
 baseExtractedPath="/data/joy/BBL/studies/pnc/processedData/structural/antsCorticalThickness/"
 scriptToCall="/data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts/dico/dico_b0calc_v4_afgr.sh"
@@ -43,6 +43,9 @@ for subj in `seq 1 ${subjLength}` ; do
     for i in `ls ${subjOutputDir}` ; do
       mv ${subjOutputDir}${i} ${subjOutputDir}${bblid}_${scandate}x${scanid}${i} 
     done ;
+    for i in `ls ${subjOutputDir}*nii` ; do 
+      /share/apps/fsl/5.0.8/bin/fslchfiletype NIFTI_GZ ${i} ; 
+    done   
   fi  
   rm ${rawT1} ;  
 done

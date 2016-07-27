@@ -1,17 +1,17 @@
 #!/bin/bash
 
 export SUBJECTS_DIR="/data/joy/BBL/studies/pnc/processedData/structural/freesurfer53"
-slist=$(ls -d /data/joy/BBL/studies/pnc/rawData/*/*x*) 
+slist=$(cat /data/joy/BBL/studies/pnc/subjectData/go3_subjectlist_20160331_for_FS_process_mq.csv)
 logs="/data/joy/BBL/projects/pncReproc2015/freesurfer/logs"
 
 #for every subject in the subjects folder
 for i in $slist; do
 	#echo $i
 	#get bblid, datexscanid, and MPRAGE nifti 
-	bblid=`echo $i | cut -d "/" -f 8`
-	subjid=`echo $i | cut -d "/" -f 9`
+	bblid=`echo $i | cut -d "/" -f 1`
+	subjid=`echo $i | cut -d "/" -f 2`
 	echo $subjid
-	infile=`ls -d $i/mprage*/*_t1.nii.gz`
+	infile=`ls -d /data/joy/BBL/studies/pnc/rawData/$bblid/$subjid/mprage*/*_t1.nii.gz`
 	#get the working subjects folder for that subject
 	surfpath=`ls -d /data/joy/BBL/studies/pnc/processedData/structural/freesurfer53/$bblid/$subjid`
 	SUBJECTS_DIR="/data/joy/BBL/studies/pnc/processedData/structural/freesurfer53/$bblid"

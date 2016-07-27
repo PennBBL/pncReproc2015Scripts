@@ -1,0 +1,6 @@
+SPACE::NETWORK
+:#NAME#MAP#SPACE
+#264PowerPNC#/data/joy/BBL/applications/xcpEngine/networks/264PowerPNC.nii.gz#std
+#MUSE#/data/joy/BBL/studies/pnc/processedData/structural/muse/labeledImages/${subject[0]}_${subject[1]}.nii.gz#str
+#MARS#/data/joy/BBL/studies/pnc/processedData/structural/mars/labeledImages/${subject[0]}_${subject[1]}*.nii.gz#str
+#GordonPNC#/data/joy/BBL/applications/xcpEngine/networks/gordonPNC.nii.gz#std

@@ -11,7 +11,8 @@ sdthresh<-2
 
 ### DIRS ###
 ############
-stats.dir<-file.path(subjects.dir, 'stats')
+#stats.dir<-file.path(subjects.dir, 'stats')
+stats.dir<-file.path(subjects.dir)
 aparc.dir<-file.path(stats.dir, 'aparc.stats')
 aseg.dir<-file.path(stats.dir, 'aseg.stats')
 area.dir<-file.path(stats.dir, 'aparc.stats/area')
@@ -35,6 +36,7 @@ mean.data<-mean.data[,!(grepl('lh', names(mean.data)) | grepl('rh', names(mean.d
 cnr.data<-read.csv(cnr.file, strip.white=TRUE, header=FALSE)
 full<-mean.data
 full$cnr<- cnr.data$V3[match(full$scanid,cnr.data$V2)]
+full$cnr<- as.numeric(as.character(full$cnr))
 
 # the snr evaluation is not robust
 # if it seems to have something wrong with it
