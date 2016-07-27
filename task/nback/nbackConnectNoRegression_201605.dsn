@@ -1,0 +1,223 @@
+#!/usr/bin/env bash
+
+###################################################################
+#  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  #
+###################################################################
+
+
+###################################################################
+# This design file stores the values of all variables required to
+# execute a complete task-free functional connectivity pipeline.
+# You may execute the analysis specified in this design file by
+# calling (in any bash terminal):
+#
+# xcpEngine -d /data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts/task/nback/nbackConnect_201605.dsn
+#
+# Variables fall into five general categories:
+# * ANALYSIS VARIABLES are used at all stages of this analysis.
+# * PIPELINE specifies the modules that comprise the analysis.
+# * GLOBAL VARIABLES are used at all stages of all analyses.
+# * MODULE VARIABLES are used during one stage of the analysis.
+#                  These are typically array variables with array
+#                  indices equal to the index of the analysis
+#                  stage during which they are used.
+# * OUTPUT VARIABLES may be used at all stages of the analysis.
+#                  These are sometimes array variables with array
+#                  indices equal to the value of the primary
+#                  subject identifier. They will appear only in
+#                  localised design files.
+###################################################################
+
+
+###################################################################
+# ANALYSIS VARIABLES
+###################################################################
+
+analysis=nbackConnectNoRegression_201605
+design=/data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts/task/nback/nbackConnectNoRegression_201605.dsn
+path_cohort=/data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts/task/nback/cohort_nback.csv
+subjects_ct=1
+xsubj=100031,20100918x3818,/data/joy/BBL/studies/pnc/rawData/100031/20100918x3818/bbl1_frac2back1_231/nifti/003818_bbl1_frac2back1_231_SEQ010.nii.gz,/data/joy/BBL/studies/pnc/processedData/structural/antsCorticalThickness/100031/20100918x3818,/data/joy/BBL/studies/pnc/processedData/b0map/100031/20100918x3818//100031_20100918x3818_mag1_brain.nii.gz,/data/joy/BBL/studies/pnc/processedData/b0map/100031/20100918x3818//100031_20100918x3818_rpsmap.nii.gz
+xsubj_idx=1
+xboldrun=/data/joy/BBL/studies/pnc/rawData/100031/20100918x3818/bbl1_frac2back1_231/nifti/003818_bbl1_frac2back1_231_SEQ010.nii.gz
+boldrun=${subject[2]}
+xants=/data/joy/BBL/studies/pnc/processedData/structural/antsCorticalThickness/100031/20100918x3818
+mprage=${subject[3]}/ExtractedBrain0N4.nii.gz
+prefix=${subject[0]}_${subject[1]}
+xfm_warp=${subject[3]}/SubjectToTemplate1Warp.nii.gz
+ixfm_warp=${subject[3]}/TemplateToSubject0Warp.nii.gz
+xfm_affine=${subject[3]}/SubjectToTemplate0GenericAffine.mat
+ixfm_affine=${subject[3]}/TemplateToSubject1GenericAffine.mat
+out_super=/data/joy/BBL/studies/pnc/processedData/nback/nbackConnectNoRegression_201605/
+out=/data/joy/BBL/studies/pnc/processedData/nback/nbackConnectNoRegression_201605/${subject[0]}/${subject[1]}
+space=native
+template=/data/joy/BBL/studies/pnc/template/pnc_template_brain_2mm.nii.gz
+
+###################################################################
+# PIPELINE
+###################################################################
+
+pipeline=dico,prestats,coreg,confound,regress,net,seed,reho,alff,norm
+
+###################################################################
+# GLOBAL VARIABLES
+###################################################################
+
+XCPEDIR=/data/joy/BBL/applications/xcpEngine
+RPATH=/share/apps/R/R-3.1.1/bin/R
+FSLDIR=/share/apps/fsl/5.0.8
+ANTSPATH=/data/joy/BBL/applications/ants_20151007/bin/
+KEEPNUM=1
+NUMOUT=0
+TIMESTAMP=1
+
+###################################################################
+# 1 DICO
+###################################################################
+
+dico_exampleDicom[1]=/data/joy/BBL/projects/pncReproc2015/exampleDicoms/bbl1_frac2back1_231_S008_I000000.dcm
+dico_magImage[1]=${subject[4]}
+dico_rpsImage[1]=${subject[5]}
+dico_script[1]=/data/joy/BBL/applications/scripts/bin/dico_correct_v2.sh
+dico_clip[1]=NA
+dico_rerun[1]=N
+dico_cleanup[1]=Y
+
+###################################################################
+# 2 PRESTATS
+###################################################################
+
+prestats_dvols[2]=6
+prestats_stime[2]=none
+prestats_sdir[2]=Z
+prestats_sptf[2]=none
+prestats_smo[2]=0
+prestats_tmpf[2]=none
+prestats_hipass[2]=0
+prestats_lopass[2]=nyquist
+prestats_fit[2]=0.3
+prestats_bbgthr[2]=0.1
+prestats_dmdt[2]=2
+prestats_censor[2]=none,0.25
+prestats_censor_cr[2]=rms
+prestats_rerun[2]=N
+prestats_cleanup[2]=Y
+prestats_process[2]=DVOMPRMCOBXTDMTDSP
+
+###################################################################
+# 3 COREG
+###################################################################
+
+coreg_cfunc[3]=bbr
+coreg_seg[3]=${subject[3]}/BrainSegmentation.nii.gz
+coreg_wm[3]=3
+coreg_refwt[3]=NULL
+coreg_inwt[3]=NULL
+coreg_qacut[3]=0.6,0.7
+coreg_rerun[3]=N
+coreg_cleanup[3]=Y
+
+###################################################################
+# 4 CONFOUND
+###################################################################
+
+confound_rp[4]=Y
+confound_rms[4]=N
+confound_gm[4]=N
+confound_gm_path[4]=${subject[3]}/BrainSegmentation.nii.gz
+confound_gm_val[4]=2,4
+confound_gm_ero[4]=0
+confound_wm[4]=Y
+confound_wm_path[4]=${subject[3]}/BrainSegmentation.nii.gz
+confound_wm_val[4]=3
+confound_wm_ero[4]=1
+confound_csf[4]=Y
+confound_csf_path[4]=${subject[3]}/BrainSegmentation.nii.gz
+confound_csf_val[4]=1
+confound_csf_ero[4]=0
+confound_gsr[4]=Y
+confound_cc[4]=0
+confound_past[4]=0
+confound_dx[4]=1
+confound_sq[4]=2
+confound_rerun[4]=N
+confound_cleanup[4]=Y
+
+###################################################################
+# 5 REGRESS
+###################################################################
+
+regress_tmpf[5]=butterworth
+regress_tmpf_order[5]=1
+regress_tmpf_pass[5]=2
+regress_tmpf_dvols[5]=0
+regress_hipass[5]=0.01
+regress_lopass[5]=0.08
+regress_despike[5]=N
+regress_rerun[5]=N
+regress_cleanup[5]=Y
+regress_sptf[5]=susan
+regress_smo[5]=6
+#regress_usan[5]=${subject[3]}/BrainSegmentation.nii.gz
+#regress_usan_space[5]=str
+
+###################################################################
+# 6 NET
+###################################################################
+
+net_lib[6]=/data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts/restbold/rsfunc.parc
+net_name[6]=NULL
+net_metric[6]=corrcoef
+net_thr[6]=N
+net_com[6]=genlouvain
+net_gamma[6]=1,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,2,2.1,2.2,2.3,2.4,2.5,2.6,2.7,2.8,2.9,3
+net_consensus[6]=100
+net_rerun[6]=N
+net_cleanup[6]=Y
+
+###################################################################
+# 7 SEED
+###################################################################
+
+sca_sclib[7]=/data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts/restbold/rsfunc.sclib
+sca_metric[7]=corrcoef
+sca_sptf[7]=susan
+sca_smo[7]=6
+sca_rerun[7]=N
+sca_cleanup[7]=Y
+
+###################################################################
+# 8 REHO
+###################################################################
+
+reho_roi[8]=/data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts/restbold/rsfunc.parc
+reho_nhood[8]=vertices
+reho_roimean[8]=Y
+reho_roikw[8]=N
+reho_sptf[8]=susan
+reho_smo[8]=6
+reho_rerun[8]=N
+reho_cleanup[8]=Y
+
+###################################################################
+# 9 ALFF
+###################################################################
+
+alff_roi[9]=/data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts/restbold/rsfunc.parc
+alff_hipass[9]=0.06
+alff_lopass[9]=0.12
+alff_sptf[9]=susan
+alff_smo[9]=6
+alff_rerun[9]=N
+alff_cleanup[9]=Y
+
+###################################################################
+# 10 NORM
+###################################################################
+
+norm_prog[10]=ants
+norm_warp[10]=${subject[3]}/SubjectToTemplate1Warp.nii.gz
+norm_affine[10]=${subject[3]}/SubjectToTemplate0GenericAffine.mat
+norm_template[10]=/data/joy/BBL/studies/pnc/template/pnc_template_brain_2mm.nii.gz
+norm_rerun[10]=N
+norm_cleanup[10]=Y

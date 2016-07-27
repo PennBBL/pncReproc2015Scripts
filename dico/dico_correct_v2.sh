@@ -227,7 +227,7 @@ echo NP = $NP, GRAPPA = $GRAPPA, PEDIR = $PEDIR, PEREVERSED = $PEREVERSED, ESP =
 echo "FSL FUGUE direction = $UNWARP_DIR"
 
 # --- Get shim current values used for this acq ---
-${EXECDIR}dicom_get_shim.sh $example_dicom > ${outfroot}_shims.txt
+/data/joy/BBL/applications/scripts/bin/dicom_get_shim.sh $example_dicom > ${outfroot}_shims.txt
 
 # --- coregister B0map to EPI ---
 if [ X$magfile != "X" ]; then

@@ -94,7 +94,7 @@ t1whole=""          # whole brain T1 structural
 t1brain=""          # brain extracted T1 structural
 brainmask=""        # mask for brain in fmap space
 do_filesort=1       # sort the dicoms according to series and slice number
-do_t2star=0         # compute t2star map
+do_t2star=1         # compute t2star map
 comment=""          # pass comment string to dicom2nifti.sh for putting into NIFTI header
 opterr=0
 
@@ -256,10 +256,10 @@ options="${options} -r N"    # need to ignore any Dicom scaling settings
 ${EXECDIR}dicom2nifti.sh $options ${outfroot}_mag1.nii $maglist1;         if [ $? -eq 1 ]; then exit 1; fi 
 ${EXECDIR}dicom2nifti.sh $options ${outfroot}_pha1.nii $phalist1 ;        if [ $? -eq 1 ]; then exit 1; fi
 if [ $is_siemens_fieldmap -ne 2 ]; then
-    ${EXECDIR}dicom2nifti.sh $options ${outfroot}_mag2.nii $maglist2 ;    if [ $? -eq 1 ]; then exit 1; fi
+    /data/joy/BBL/applications/scripts/bin/dicom2nifti.sh $options ${outfroot}_mag2.nii $maglist2 ;    if [ $? -eq 1 ]; then exit 1; fi
 fi
 if [ $is_siemens_fieldmap -eq 0 ]; then
-    ${EXECDIR}dicom2nifti.sh $options ${outfroot}_pha2.nii $phalist2 ;    if [ $? -eq 1 ]; then exit 1; fi
+    /data/joy/BBL/applications/scripts/bin/dicom2nifti.sh $options ${outfroot}_pha2.nii $phalist2 ;    if [ $? -eq 1 ]; then exit 1; fi
 fi
 
 # --- get TEs of each image ---
@@ -450,7 +450,7 @@ if [ $do_t2star = "1" ]; then
 #        fslmaths ${outfroot}_mag2 -s 3 -mas ${outfroot}_mask_prefill -log  ${outfroot}_mag2_log -odt float
 #        fslmaths ${outfroot}_mag1_log -sub ${outfroot}_mag2_log -div $dTE -recip ${outfroot}_t2star -odt float
 
-        ${EXECDIR}t2map.sh ${outfroot}_mag1 ${outfroot}_mag2 $dTE ${outfroot}_mask_prefill 3 ${outfroot}_t2star
+        ${EXECDIR}t2map_afgr.sh ${outfroot}_mag1 ${outfroot}_mag2 $dTE ${outfroot}_mask_prefill 3 ${outfroot}_t2star
 
 #        fslmaths ${outfroot}_mag1 -s 3 ${outfroot}_mag1_sm # another way to do the same math
 #        fslmaths ${outfroot}_mag2 -s 3 ${outfroot}_mag2_sm

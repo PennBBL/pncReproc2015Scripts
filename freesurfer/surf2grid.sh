@@ -1,7 +1,7 @@
 #!/bin/bash
 
 export SUBJECTS_DIR="/data/joy/BBL/studies/pnc/processedData/structural/freesurfer53"
-slist=$(ls -d /data/joy/BBL/studies/pnc/rawData/*/*x????) 
+slist=$(ls -d /data/joy/BBL/studies/pnc/rawData/*/*x*) 
 logs="/data/joy/BBL/projects/pncReproc2015/freesurfer/logs"
 
 #for every subject in the subjects folder
