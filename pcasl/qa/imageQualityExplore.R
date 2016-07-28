@@ -191,7 +191,7 @@ coverage.mask.to.use <- as.array(antsImageRead('/data/joy/BBL/projects/pncReproc
 
 # Now I need to loop through each subject in the four d mask of all subjects
 # and check to see that their mask covers the entierty of the coverage.mask.to.use
-# I am going to loop through each mask and check to see if 988% of the voxels of the 
+# I am going to loop through each mask and check to see if 98.8% of the voxels of the 
 # coverage mask to use are included within the mask I am testing
 seqLength <- dim(four.d.time)[4]
 outputFlagged <- NULL
@@ -255,7 +255,31 @@ tsnrAndCoverage <- length(which(flag.scores.output$temporalSignalNoiseRatioFlag=
 
 motionAndCoverage <- length(which(flag.scores.output$temporalSignalNoiseRatioFlag==0 & flag.scores.output$relMeanRMSmotionFlag==1 & flag.scores.output$manualCoverageFlag==1))
 
-nTable <- cbind(onlyTSNR,onlyRELRMS, onlyCOVERAGE, tsnrAndMotion, tsnrAndCoverage,motionAndCoverage)
+nTable <- rbind(onlyTSNR,onlyRELRMS, onlyCOVERAGE, tsnrAndMotion, tsnrAndCoverage,motionAndCoverage)
 
 write.csv(nTable,'/data/joy/BBL/projects/pncReproc2015/pcasl/QA/n1639_FlagBreakDown.csv', 
-          quote=F, row.names=F) 
+          quote=F, row.names=T) 
+
+# Now find flags just for the 1601
+go1.bblid <- read.csv('/data/joy/BBL/projects/pncReproc2015/antsCT/n1601_bblid_scanid_dateid.csv')
+go1.bblid$datexscanid <- paste(go1.bblid$dateid, 'x', go1.bblid$scanid, sep='')
+go1.flag.scores.output <- merge(go1.bblid, flag.scores.output, by.x='datexscanid', by.y='subject.1.')
+
+# Now find the N's
+# Now lets find where the flags occur
+onlyTSNR <- length(which(go1.flag.scores.output$temporalSignalNoiseRatioFlag==1 & go1.flag.scores.output$relMeanRMSmotionFlag==0 & go1.flag.scores.output$manualCoverageFlag==0))
+
+onlyRELRMS <- length(which(go1.flag.scores.output$temporalSignalNoiseRatioFlag==0 & go1.flag.scores.output$relMeanRMSmotionFlag==1 & go1.flag.scores.output$manualCoverageFlag==0))
+
+onlyCOVERAGE <- length(which(go1.flag.scores.output$temporalSignalNoiseRatioFlag==0 & go1.flag.scores.output$relMeanRMSmotionFlag==0 & go1.flag.scores.output$manualCoverageFlag==1))
+
+tsnrAndMotion <- length(which(go1.flag.scores.output$temporalSignalNoiseRatioFlag==1 & go1.flag.scores.output$relMeanRMSmotionFlag==1 & go1.flag.scores.output$manualCoverageFlag==0))
+
+tsnrAndCoverage <- length(which(go1.flag.scores.output$temporalSignalNoiseRatioFlag==1 & go1.flag.scores.output$relMeanRMSmotionFlag==0 & go1.flag.scores.output$manualCoverageFlag==1))
+
+motionAndCoverage <- length(which(go1.flag.scores.output$temporalSignalNoiseRatioFlag==0 & go1.flag.scores.output$relMeanRMSmotionFlag==1 & go1.flag.scores.output$manualCoverageFlag==1))
+
+nTable <- rbind(onlyTSNR,onlyRELRMS, onlyCOVERAGE, tsnrAndMotion, tsnrAndCoverage,motionAndCoverage)
+
+write.csv(nTable,'/data/joy/BBL/projects/pncReproc2015/pcasl/QA/n1601_FlagBreakDown.csv', 
+          quote=F, row.names=T) 
