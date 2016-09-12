@@ -7,26 +7,8 @@
 #	3.) Manual QA Values
 
 # Load library(s)
-source("/home/arosen/R/x86_64-unknown-linux-gnu-library/helperFunctions/afgrHelpFunc.R")
+source('/home/arosen/adroseHelperScripts/R/afgrHelpFunc.R')
 install_load('tools')
-
-# Declare any functions
-strSplitMatrixReturn <- function(charactersToSplit, splitCharacter){
-  # Make sure we are dealing with characters
-  classCheck <- class(charactersToSplit)
-  if(identical(classCheck, "character")=="FALSE"){
-    charactersToSplit <- as.character(charactersToSplit)
-  }
-
-  # Now we need to find how many columns our output will have 
-  colVal <- length(strsplit(charactersToSplit[1], split=splitCharacter)[[1]])
-  
-  # Now return the matrix of characters!
-  output <- matrix(unlist(strsplit(charactersToSplit, split=splitCharacter)), ncol=colVal, byrow=T)
-
-  # Now return the output
-  return(output) 
-}
 
 # Load data
 jlfVals <- commandArgs()[5]
@@ -37,13 +19,15 @@ manQA1 <- commandArgs()[7]
 manQA1 <- read.csv(manQA1)
 manQA2 <- commandArgs()[8]
 manQA2 <- read.csv(manQA2)
+voxelDim <- commandArgs()[9]
+voxelDim <- read.csv(voxelDim)
 
 # Now make sure everyone has a scanid column
 jlfVals$scanid <- strSplitMatrixReturn(jlfVals$subject.1., 'x')[,2]
 ctVals$scanid <- strSplitMatrixReturn(ctVals$subject.1., 'x')[,2]
 
 # Now combine the qa data
-manQA1 <- manQA1[,-3]
+manQA1 <- manQA1[,-c(3,4)]
 qaData <- rbind(manQA1, manQA2)
 
 output <- merge(jlfVals, ctVals, by='scanid')
@@ -59,4 +43,21 @@ output <- output[,-rowsToRM]
 colnames(output)[2] <- 'bblid'
 colnames(output)[3] <- 'datexscanid'
 
-write.csv(output, '/data/joy/BBL/projects/pncReproc2015/jlf/volumeValues/jlfVolumeValues.csv', quote=F, row.names=F)
+# Now reorder the columns
+attach(output)
+outputNew <- cbind(bblid, scanid, as.character(datexscanid), ratingJB, ratingKS, ratingLV, averageRating)
+output <- output[,-c(seq(1,3), seq(ncol(output), (ncol(output)-3)))]
+output <- as.data.frame(cbind(outputNew, output))
+colnames(output)[3] <- 'datexscanid'
+
+write.csv(output, '/data/joy/BBL/projects/pncReproc2015/jlf/volumeValues/jlfVolumeValuesVoxelCount.csv', quote=F, row.names=F)
+detach(output)
+
+# Now multiply the voxel volume by the voxel count to get mm3
+voxelDim$scanid <- strSplitMatrixReturn(voxelDim$subject.1., 'x')[,2]
+tmp <- merge(output, voxelDim, by='scanid')
+ccOutput <- apply(tmp[,8:150], 2, function(x) (x * tmp$output))
+attach(tmp)
+ccOutput <- as.data.frame(cbind(as.character(bblid), as.character(scanid), as.character(datexscanid), as.character(ratingJB), as.character(ratingKS), as.character(ratingLV), as.character(averageRating), ccOutput))
+colnames(ccOutput)[1:7] <- c('bblid', 'scanid', 'datexscanid', 'ratingJB', 'ratingKS', 'ratingLV', 'averageRating')
+write.csv(ccOutput, '/data/joy/BBL/projects/pncReproc2015/jlf/volumeValues/jlfVolumeValuesmm3Vals.csv', quote=F, row.names=F)

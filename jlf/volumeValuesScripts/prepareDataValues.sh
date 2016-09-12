@@ -25,8 +25,19 @@ R --slave -f ${scriptsDir}/prepSubjFields.R ${jlfVolDir}ctVolValues_20160805.txt
 R --slave -f ${scriptsDir}/prepVolHeader.R ${jlfVolDir}jlfVolValues_20160805properSubjFields.csv
 R --slave -f ${scriptsDir}/prepCtHeader.R ${jlfVolDir}ctVolValues_20160805properSubjFields.csv
 
-# Now I need to combine the manual ratings, jlf and ct values
-R --slave -f ${scriptsDir}/combineAllVolVals.R ${jlfVolDir}jlfVolValues_20160805properSubjFieldsProperColNames.csv  ${jlfVolDir}ctVolValues_20160805properSubjFieldsProperColNames.csv ${subjInfoDir}n1601_t1RawManualQA.csv ${subjInfoDir}n368_t1RawManualQA_GO2.csv 
+# Now find voxel dimensions for each scan
+for i in `find ${jlfDirectory} -name "*jlfLabels.nii.gz"` ; do 
+  xDim=`fslinfo ${i} | grep pixdim1 | cut -f 9 -d ' '`
+  yDim=`fslinfo ${i} | grep pixdim2 | cut -f 9 -d ' '`
+  zDim=`fslinfo ${i} | grep pixdim3 | cut -f 9 -d ' '`
+  voxDem=`echo "${xDim}*${yDim}*${zDim}" | bc`
+  echo ${i} ${voxDem} >> ${jlfVolDir}voxelVolume_20160805.txt ; 
+done
 
-# Now clean up interim files
-rm -f ${jlfVolDir}jlfVolValues_20160805.txt ${jlfVolDir}ctVolValues_20160805.txt ${jlfVolDir}jlfVolValues_20160805properSubjFields.csv ${jlfVolDir}ctVolValues_20160805properSubjFields.csv
+# Now I need to combine the manual ratings, jlf and ct values
+R --slave -f ${scriptsDir}/prepSubjFields.R ${jlfVolDir}voxelVolume_20160805.txt
+R --slave -f ${scriptsDir}/combineAllVolVals.R ${jlfVolDir}jlfVolValues_20160805properSubjFieldsProperColNames.csv  ${jlfVolDir}ctVolValues_20160805properSubjFieldsProperColNames.csv ${subjInfoDir}n1601_t1RawManualQA.csv ${subjInfoDir}n368_t1RawManualQA_GO2.csv ${jlfVolDir}voxelVolume_20160805properSubjFields.csv
+
+# Now clean up 
+rm -f *prperSubjField.csv *ProperColNames.csv ${jlfVolDir}voxelVolume_20160805.txt ${jlfVolDir}ctVolValues_20160805.txt ${jlfVolDir}jlfVolValues_20160805.txt
+
