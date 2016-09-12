@@ -18,6 +18,9 @@ valuesToFix <- valuesToFix[,-3]
 # Now change the names
 colnames(valuesToFix)[3:length(valuesToFix)] <- as.character(columnNames$X)
 
+# Now compute TBV
+valuesToFix$mprage_antsCT_vol_TBV <- apply(valuesToFix[,3:8], 1, sum)
+
 # Now write the output csv
 outputFileName <- paste(file_path_sans_ext(inputDataValues), "ProperColNames.csv", sep='')
 write.csv(valuesToFix, outputFileName, quote=F, row.names=F)
