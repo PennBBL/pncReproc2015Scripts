@@ -1,0 +1,7 @@
+modulename	/data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts/pcasl/scripts/pcasl_quant_v7_afgr.sh
+version	7
+inputfile	/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/asl/example_File~TEMP~.nii.gz
+Labeltime	1508.8
+Delaytime	1200.000
+Slicetime	43.3175
+BloodT1	1664

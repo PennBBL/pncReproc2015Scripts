@@ -1,0 +1,8 @@
+#meanIntensity#/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/prestats/example_File_meanIntensity
+#referenceVolume#/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/prestats/example_File_referenceVolume
+#referenceVolumeBrain#/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/prestats/example_File_referenceVolumeBrain
+#meanIntensityBrain#/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/prestats/example_File_meanIntensityBrain
+#mask#/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/prestats/example_File_mask
+#referenceVolume#/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/coreg/example_File_referenceVolume
+#asl_quant_ssT1#/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/asl/example_File_aslQuantSST1#asl,4
+#asl_quant_stdT1#/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/asl/example_File_aslQuantStdT1#asl,4

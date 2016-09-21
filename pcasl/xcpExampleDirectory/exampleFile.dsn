@@ -1,0 +1,225 @@
+#!/usr/bin/env bash
+
+###################################################################
+#  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  #
+###################################################################
+
+
+###################################################################
+# This design file stores the values of all variables required to
+# execute a complete task-free functional connectivity pipeline.
+# You may execute the analysis specified in this design file by
+# calling (in any bash terminal):
+#
+# xcpEngine /data/joy/BBL/applications/xcpEngine/designs/pcasl_201606231423.dsn
+#
+# Variables fall into five general categories:
+# * ANALYSIS VARIABLES are used at all stages of this analysis.
+# * PIPELINE specifies the modules that comprise the analysis.
+# * GLOBAL VARIABLES are used at all stages of all analyses.
+# * MODULE VARIABLES are used during one stage of the analysis.
+#                  These are typically array variables with array
+#                  indices equal to the index of the analysis
+#                  stage during which they are used.
+# * OUTPUT VARIABLES may be used at all stages of the analysis.
+#                  These are sometimes array variables with array
+#                  indices equal to the value of the primary
+#                  subject identifier. They will appear only in
+#                  localised design files.
+###################################################################
+
+
+###################################################################
+# ANALYSIS VARIABLES
+###################################################################
+
+analysis=pcasl_201606231423
+design=/data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts/pcasl/xcpFiles/pcasl_20160729/pcasl_201606231423.dsn
+path_cohort=/data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts/pcasl/xcpFiles/pcasl_20160729/aslAllCohortNoB0.csv
+subjects_ct=1657
+xsubj=100031,20100918x3818,/data/joy/BBL/studies/pnc/processedData/structural/antsCorticalThickness/100031/20100918x3818,/data/joy/BBL/studies/pnc/rawData/100031/20100918x3818/ep2d_se_pcasl_PHC_1200ms/nifti/003818_ep2d_se_pcasl_PHC_1200ms_SEQ03.nii.gz,/data/joy/BBL/studies/pnc/rawData/100031/20100918x3818/ep2d_se_pcasl_PHC_1200ms/xml/100031_20100918x3818_se_pcasl_info.xml,/data/joy/BBL/studies/pnc/processedData/structural/muse/labeledImages/100031_003818_mprage_N4_str_cbq_editcbq_mars.nii.gz,/data/joy/BBL/studies/pnc/processedData/structural/mars/labeledImages/100031_20100918x3818_brain_bc_labeled_SimRank+IC+FS_c0p6.nii.gz,/data/joy/BBL/studies/pnc/processedData/b0mapwT2star/100031/20100918x3818/100031_20100918x3818_rpsmap.nii.gz,/data/joy/BBL/studies/pnc/processedData/b0mapwT2star/100031/20100918x3818/100031_20100918x3818_mag1_brain.nii.gz,/data/joy/BBL/studies/pnc/processedData/structural/jlf/100031/20100918x3818/100031_20100918x3818_jlfLabels.nii.gz
+xsubj_idx=1
+ximg[9050]=/data/joy/BBL/studies/pnc/rawData/100031/20100918x3818/ep2d_se_pcasl_PHC_1200ms/nifti/003818_ep2d_se_pcasl_PHC_1200ms_SEQ03.nii.gz
+img[9050]=/data/joy/BBL/studies/pnc/rawData/example/File/ep2d_se_pcasl_PHC_1200ms/nifti/004072_ep2d_se_pcasl_PHC_1200ms_SEQ03.nii.gz
+xants=/data/joy/BBL/studies/pnc/processedData/structural/antsCorticalThickness/100031/20100918x3818
+xstruct[9050]=/data/joy/BBL/studies/pnc/processedData/structural/antsCorticalThickness/100031/20100918x3818/ExtractedBrain0N4.nii.gz
+struct[9050]=/data/joy/BBL/studies/pnc/processedData/structural/antsCorticalThickness/example/File/ExtractedBrain0N4.nii.gz
+prefix=example_File
+xfm_warp=/data/joy/BBL/studies/pnc/processedData/structural/antsCorticalThickness/example/File/SubjectToTemplate1Warp.nii.gz
+ixfm_warp=/data/joy/BBL/studies/pnc/processedData/structural/antsCorticalThickness/example/File/TemplateToSubject0Warp.nii.gz
+xfm_affine=/data/joy/BBL/studies/pnc/processedData/structural/antsCorticalThickness/example/File/SubjectToTemplate0GenericAffine.mat
+ixfm_affine=/data/joy/BBL/studies/pnc/processedData/structural/antsCorticalThickness/example/File/TemplateToSubject1GenericAffine.mat
+out_super=/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423
+out=/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File
+space=native
+template=/data/joy/BBL/studies/pnc/template/pnc_template_brain_2mm.nii.gz
+
+###################################################################
+# PIPELINE
+###################################################################
+
+pipeline=dico,prestats,coreg,asl,roiquant,norm
+
+###################################################################
+# GLOBAL VARIABLES
+###################################################################
+
+XCPEDIR=/data/joy/BBL/applications/xcpEngine
+RPATH=/share/apps/R/R-3.1.1/bin/R
+FSLDIR=/share/apps/fsl/5.0.8
+ANTSPATH=/data/joy/BBL/applications/ants_20151007/bin/
+KEEPNUM=1
+NUMOUT=0
+TIMESTAMP=1
+
+###################################################################
+# 1 DICO
+###################################################################
+
+dico_exampleDicom[1]=/data/joy/BBL/projects/pncReproc2015/exampleDicoms/ep2d_se_pcasl_PHC_1200ms_S003_I000000.dcm
+dico_magImage[1]=
+dico_rpsImage[1]=
+dico_script[1]=/home/melliott/scripts/dico_correct_v2.sh
+dico_clip[1]=4095
+dico_rerun[1]=N
+dico_cleanup[1]=Y
+
+###################################################################
+# 2 PRESTATS
+###################################################################
+
+prestats_dvols[2]=-8
+prestats_stime[2]=none
+prestats_sdir[2]=Z
+prestats_sptf[2]=susan
+prestats_smo[2]=6
+prestats_tmpf[2]=none
+prestats_hipass[2]=0.01
+prestats_lopass[2]=0.08
+prestats_fit[2]=0.3
+prestats_bbgthr[2]=0.1
+prestats_dmdt[2]=2
+prestats_censor[2]=none,0.25
+prestats_censor_cr[2]=rms
+prestats_rerun[2]=N
+prestats_cleanup[2]=Y
+prestats_process[2]=DVOMPRMCOBXTSPT
+
+###################################################################
+# 3 COREG
+###################################################################
+
+coreg_cfunc[3]=bbr
+coreg_seg[3]=/data/joy/BBL/studies/pnc/processedData/structural/antsCorticalThickness/example/File/BrainSegmentation.nii.gz
+coreg_wm[3]=3
+coreg_refwt[3]=NULL
+coreg_inwt[3]=NULL
+coreg_qacut[3]=0.7,0.8
+coreg_rerun[3]=N
+coreg_cleanup[3]=Y
+
+###################################################################
+# 4 ASL
+###################################################################
+
+asl_roi[4]=/data/joy/BBL/projects/pncReproc2015/pcasl/xcpFiles/pcasl.parc
+asl_xml[4]=/data/joy/BBL/studies/pnc/rawData/example/File/ep2d_se_pcasl_PHC_1200ms/xml/example_File_se_pcasl_info.xml
+asl_xmlPrepScript[4]=/data/joy/BBL/applications/xcpEngine/thirdparty/
+asl_QuantScript[4]=/data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts/pcasl/scripts/pcasl_quant_v7_afgr.sh
+asl_gm_path[4]=/data/joy/BBL/studies/pnc/processedData/structural/antsCorticalThickness/example/File/BrainSegmentation.nii.gz
+asl_gm_val[4]=2,4
+asl_rerun[4]=N
+asl_cleanup[4]=Y
+
+###################################################################
+# 5 ROIQUANT
+###################################################################
+
+roiquant_roi[5]=/data/joy/BBL/projects/pncReproc2015/pcasl/xcpFiles/pcasl.parc
+roiquant_rerun[5]=Y
+roiquant_cleanup[5]=Y
+
+###################################################################
+# 6 NORM
+###################################################################
+
+norm_prog[6]=ants
+norm_warp[6]=/data/joy/BBL/studies/pnc/processedData/structural/antsCorticalThickness/example/File/SubjectToTemplate1Warp.nii.gz
+norm_affine[6]=/data/joy/BBL/studies/pnc/processedData/structural/antsCorticalThickness/example/File/SubjectToTemplate0GenericAffine.mat
+norm_template[6]=/data/joy/BBL/studies/pnc/template/pnc_template_brain_2mm.nii.gz
+norm_rerun[6]=N
+norm_cleanup[6]=Y
+
+###################################################################
+# OUTPUT VARIABLES
+###################################################################
+
+# *** outputs from localiser[0] *** #
+
+subjidx=9050
+subject[0]=example
+subject[1]=File
+subject[2]=/data/joy/BBL/studies/pnc/processedData/structural/antsCorticalThickness/example/File
+subject[3]=/data/joy/BBL/studies/pnc/rawData/example/File/ep2d_se_pcasl_PHC_1200ms/nifti/004072_ep2d_se_pcasl_PHC_1200ms_SEQ03.nii.gz
+subject[4]=/data/joy/BBL/studies/pnc/rawData/example/File/ep2d_se_pcasl_PHC_1200ms/xml/example_File_se_pcasl_info.xml
+subject[5]=/data/joy/BBL/studies/pnc/processedData/structural/muse/labeledImages/0example_004072_mprage_N4_str_cbq_editcbq_mars.nii.gz
+subject[6]=/data/joy/BBL/studies/pnc/processedData/structural/mars/labeledImages/example_File_brain_bc_labeled_SimRank+IC+FS_c0p6.nii.gz
+subject[7]=
+subject[8]=
+subject[9]=/data/joy/BBL/studies/pnc/processedData/structural/jlf/example/File/example_File_jlfLabels.nii.gz
+design_local=/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/example_File.dsn
+auxImgs[9050]=/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/example_File_derivsNative
+audit=/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/example_File_logs/201609121040_example_File_audit
+quality=/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/example_File_quality.csv
+
+# *** outputs from dico[1] *** #
+
+
+# *** outputs from prestats[2] *** #
+
+meanIntensity[9050]=/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/prestats/example_File_meanIntensity
+referenceVolume[9050]=/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/prestats/example_File_referenceVolume
+referenceVolumeBrain[9050]=/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/prestats/example_File_referenceVolumeBrain
+meanIntensityBrain[9050]=/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/prestats/example_File_meanIntensityBrain
+mask[9050]=/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/prestats/example_File_mask
+mcdir[9050]=/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/prestats/mc
+rps[9050]=/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/prestats/mc/example_File_realignment.1D
+relrms[9050]=/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/prestats/mc/example_File_relRMS.1D
+fd[9050]=/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/prestats/mc/example_File_fd.1D
+motionvols[9050]=/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/prestats/mc/example_File_rms_nvolFailQA.txt
+tmask[9050]=/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/prestats/mc/example_File_tmask.1D
+censor[9050]=none
+
+# *** outputs from coreg[3] *** #
+
+seq2struct[9050]=/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/coreg/example_File_seq2struct.txt
+struct2seq[9050]=/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/coreg/example_File_struct2seq.txt
+coreg_quality[9050]=/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/coreg/example_File_coregQuality.csv
+s2eimg[9050]=/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/coreg/example_File_struct2seq
+e2simg[9050]=/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/coreg/example_File_seq2struct
+s2emask[9050]=/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/coreg/example_File_struct2seqMask
+e2smask[9050]=/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/coreg/example_File_seq2structMask
+referenceVolume[9050]=/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/coreg/example_File_referenceVolume
+
+# *** outputs from asl[4] *** #
+
+asl_xml[9050]=/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/asl/example_File_aslQuantSST1
+asl_quant_ssT1[9050]=/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/asl/example_File_aslQuantSST1
+asl_quant_stdT1[9050]=/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/asl/example_File_aslQuantStdT1
+
+# *** outputs from roiquant[5] *** #
+
+
+# *** outputs from norm[6] *** #
+
+meanIntensity[9050]=/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/norm/example_File_meanIntensityStd
+referenceVolume[9050]=/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/norm/example_File_referenceVolumeStd
+referenceVolumeBrain[9050]=/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/norm/example_File_referenceVolumeBrainStd
+meanIntensityBrain[9050]=/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/norm/example_File_meanIntensityBrainStd
+mask[9050]=/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/norm/example_File_maskStd
+referenceVolume[9050]=/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/norm/example_File_referenceVolumeStd
+asl_quant_ssT1[9050]=/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/norm/example_File_asl_quant_ssT1Std
+asl_quant_stdT1[9050]=/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/norm/example_File_asl_quant_stdT1Std
+space=standard
+auxImgs[9050]=/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/example_File_derivsNorm
+norm_quality[9050]=/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/norm/example_File_normQuality.csv
