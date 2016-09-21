@@ -1,0 +1,2 @@
+subject[0],subject[1],nvoxel_clipped,temporalSignalNoiseRatio,relMeanRMSmotion,nframesHighMotionrms0.25,coregCrossCorr,coregCoverage,negativeVoxelsSST1, negativeVoxelsStdT1,normCrossCorr,normCoverage
+example,File,252,27.489329,0.350705,19,0.81972465,.9421688899,499,499,0.85648809,.9590210133
