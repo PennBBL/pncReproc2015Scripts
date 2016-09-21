@@ -1,0 +1,142 @@
+
+
+###################################################################
+#  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  #
+#                                                                 #
+#  ☭                         PIPELINE                          ☭  #
+#                                                                 #
+#  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  #
+###################################################################
+
+
+ * Executing in cluster mode.
+Found perfect (with the wget fix)  ~/.Rprofile
+
+
+
+################################################################### 
+#  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  #
+#                                                                 #
+#  ☭               EXECUTING XCP ENGINE LOCALISER              ☭  #
+#                                                                 #
+#  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  #
+###################################################################
+
+
+Localising design file...
+ * Parsing subject identifiers
+/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File
+ * Evaluating subject variables
+ * Writing design for current subject
+ * Writing path to derivative map index
+
+Localising image...
+
+
+Localiser complete
+Found perfect (with the wget fix)  ~/.Rprofile
+
+
+
+###################################################################
+#  ✡✡ ✡✡✡✡ ✡✡✡✡✡✡✡✡✡ ✡✡✡✡✡✡✡✡✡✡✡✡✡ ✡✡✡✡✡✡✡✡✡✡✡✡✡ ✡✡✡✡✡✡✡✡ ✡✡✡✡ ✡✡ #
+#                                                                 #
+#  ☭                  EXECUTING DICO MODULE                    ☭  #
+#                                                                 #
+#  ✡✡ ✡✡✡✡ ✡✡✡✡✡✡✡✡✡ ✡✡✡✡✡✡✡✡✡✡✡✡✡ ✡✡✡✡✡✡✡✡✡✡✡✡✡ ✡✡✡✡✡✡✡✡ ✡✡✡✡ ✡✡ #
+###################################################################
+
+Output directory is /data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/dico
+Processing image: /data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/dico/example_File~TEMP~
+
+
+
+Current processing step:
+Computing temporal signal-to-noise ratio
+Processing step complete:
+Temporal SNR
+
+
+
+Current processing step:
+Applying RPS map to time series
+XCP-WARNING: [ABORT] B0 magnitude map missing.
+Found perfect (with the wget fix)  ~/.Rprofile
+
+
+
+###################################################################
+#  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  #
+#                                                                 #
+#  ☭                 EXECUTING PRESTATS MODULE                 ☭  #
+#                                                                 #
+#  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  #
+###################################################################
+
+Output directory is /data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/prestats
+Processing image: /data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/example/File/prestats/example_File~TEMP~
+
+
+
+Current processing step:
+Discarding -8 volumes
+Total original volumes = 80
+Last -8 volumes discarded
+New total volumes = 72
+Processing step complete:
+Discarding initial volumes
+
+
+
+Current processing step:
+Computing realignment parameters
+Extracting reference volume
+Computing realignment parameters...
+Preparing summary plots...
+1/3
+2/3
+3/3
+Realignment parameter plots prepared.
+Computing framewise displacement...
+Determining volumes to be censored...
+Evaluating data quality...
+Processing step complete:
+computing realignment parameters
+
+
+
+Current processing step:
+Correcting for subject motion
+Executing motion correction...
+Processing step complete: motion correction
+
+
+
+Current processing step:
+Brain extraction
+Fractional intensity threshold 0.3
+Mean functional image generated
+Initialising brain extraction...
+Binary brain mask generated
+Brain extraction first pass complete
+Thresholding and dilating image
+Brain-background threshold:
+0.1
+Processing step complete: brain extraction
+
+
+
+Current processing step:
+Spatially filtering image
+Filter: susan
+Smoothing kernel: 6 mm
+Processing step complete: spatial filtering
+
+
+
+Writing outputs...
+
+
+
+Cleaning up...
+Module complete
