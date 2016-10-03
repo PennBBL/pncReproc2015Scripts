@@ -168,7 +168,7 @@ output.df <- as.data.frame(qualityMetrics)
 colnames(output.df) <- gsub(pattern='.x', replacement = '', x = colnames(output.df), fixed = TRUE)          
 colnames(output.df) <- gsub(pattern='.y', replacement = 'Exclude', x = colnames(output.df), fixed = TRUE)  
 names(output.df)[6:14] <- c('pcaslRelMeanRMSMotion', 'pcaslRelMeanRMSMotionExclude','pcaslTSNR', 'pcaslTSNRExclude',
-                           'pcaslNormCrossCorr', 'pcaslNormCoverage', 'pcaslCoregCrossCorr', 'pcaslCoverage', 'pcaslNVolumesAcquired')
+                           'pcaslNormCrossCorr', 'pcaslNormCoverage', 'pcaslCoregCrossCorr', 'pcaslCoregCoverage', 'pcaslNVolumesAcquired')
 output.df <- merge(output.df, file.paths, by=c('bblid', 'scanid'))
 ## Now I need to create rows for the subjects I do not have data for 
 bblidToAdd <- n1601.subjs$bblid[which(n1601.subjs$bblid %in% output.df$bblid == 'FALSE')]
