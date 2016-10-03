@@ -7,7 +7,7 @@
 
 ## Declare libraries
 source("/home/arosen/adroseHelperScripts/R/afgrHelpFunc.R")
-install_load('ANTsR')
+install_load('ANTsR', 'eVenn')
 
 ## Declare any functions to use here
 # Declare a function which will tell us if binary matrix A is entierly 
@@ -36,7 +36,7 @@ checkIntersect <- function(binaryMatrixToInclude, binaryMatrixToTest, coverageTh
 
 
 # Now create and load the data
-system('${XCPEDIR}/utils//qualityWrapper -d /data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts/pcasl/xcpFiles/pcasl_20160729/pcasl_201606231423.dsn -S 3 -m "temporalSignalNoiseRatio relMeanRMSmotion" -M "30 0.5" -E "0 1"')
+system('${XCPEDIR}/utils//qualityWrapper -d /data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts/pcasl/xcpFiles/pcasl_201607291423.dsn -S 3 -m "temporalSignalNoiseRatio relMeanRMSmotion" -M "30 0.5" -E "0 1"')
 system("mv /data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/*csv /data/joy/BBL/projects/pncReproc2015/pcasl/QA/")
 qa.scores <- read.csv('/data/joy/BBL/projects/pncReproc2015/pcasl/QA/pcasl_201606231423_groupLevelQuality.csv')
 flag.scores <- read.csv('/data/joy/BBL/projects/pncReproc2015/pcasl/QA/pcasl_201606231423_groupLevelFlagStatus.csv')
@@ -152,34 +152,45 @@ attach(n1601.ss.vals)
 #          temporalSignalNoiseRatio.x, temporalSignalNoiseRatio.y,
 #          normCrossCorr.x,nTR, pcaslNVolumesAcquiredExclude, pcaslNoDataExclude,
 #          pcaslMeanGMValue, pcaslRpsMapCorrectionNotApplied, pcaslMeanValueExclude ,n1601.ss.vals[,pcaslValCols])
-output <- cbind(bblid, scanid, pcaslExclude, pcaslVoxelwiseExclude, pcaslNoDataExclude, t1Exclude, 
+#output <- cbind(bblid, scanid, pcaslExclude, pcaslVoxelwiseExclude, pcaslNoDataExclude, t1Exclude, 
+#                relMeanRMSmotion.x, relMeanRMSmotion.y, temporalSignalNoiseRatio.x, temporalSignalNoiseRatio.y,
+#                normCrossCorr.x, nTR, pcaslNVolumesAcquiredExclude, pcaslCoverageExclude, pcaslRpsMapCorrectionNotApplied, 
+#                pcaslMeanGMValue, pcaslMeanGMValueExclude, n1601.ss.vals[,pcaslValCols])
+imageingData <- cbind(bblid, scanid, n1601.ss.vals[,pcaslValCols]) 
+qualityMetrics <- cbind(bblid, scanid, pcaslExclude, pcaslVoxelwiseExclude, pcaslNoDataExclude, 
                 relMeanRMSmotion.x, relMeanRMSmotion.y, temporalSignalNoiseRatio.x, temporalSignalNoiseRatio.y,
-                normCrossCorr.x, nTR, pcaslNVolumesAcquiredExclude, pcaslCoverageExclude, pcaslRpsMapCorrectionNotApplied, 
-                pcaslMeanGMValue, pcaslMeanGMValueExclude, n1601.ss.vals[,pcaslValCols])
+                normCrossCorr.x, normCoverage.x, coregCrossCorr.x, coregCoverage.x, nTR, pcaslNVolumesAcquiredExclude, pcaslCoverageExclude, pcaslRpsMapCorrectionNotApplied, 
+                pcaslMeanGMValue, pcaslMeanGMValueExclude)
 detach(n1601.ss.vals)
 
-# Now change all of the column names ending in .x to blank
-output.df <- as.data.frame(output)
+## Now work with the quality data to prep the final output csv
+output.df <- as.data.frame(qualityMetrics)
 colnames(output.df) <- gsub(pattern='.x', replacement = '', x = colnames(output.df), fixed = TRUE)          
-
-# Now change anything with a .y to a Flag
 colnames(output.df) <- gsub(pattern='.y', replacement = 'Exclude', x = colnames(output.df), fixed = TRUE)  
-
-# Now prepend pcasl to the QA values that do not contain it
-colnames(output.df)[7:12] <- c('pcaslRelMeanRMSMotion', 'pcaslRelMeanRMSMotionExclude', 'pcaslTSNR', 'pcaslTSNRExclude',
-                              'pcaslNormCrossCorr', 'pcaslNVolumesAcquired')
-# Now attach our image paths
+names(output.df)[6:14] <- c('pcaslRelMeanRMSMotion', 'pcaslRelMeanRMSMotionExclude','pcaslTSNR', 'pcaslTSNRExclude',
+                           'pcaslNormCrossCorr', 'pcaslNormCoverage', 'pcaslCoregCrossCorr', 'pcaslCoverage', 'pcaslNVolumesAcquired')
 output.df <- merge(output.df, file.paths, by=c('bblid', 'scanid'))
-
-# Now I need to create rows for the subjects I do not have data for 
+## Now I need to create rows for the subjects I do not have data for 
 bblidToAdd <- n1601.subjs$bblid[which(n1601.subjs$bblid %in% output.df$bblid == 'FALSE')]
 scanidToAdd <- n1601.subjs$scanid[which(n1601.subjs$scanid %in% output.df$scanid == 'FALSE')]
-tmpToAdd <- as.data.frame(matrix(rep(NA, 23 * 151), nrow=23, ncol=151))
+tmpToAdd <- as.data.frame(matrix(rep(NA, length(bblidToAdd) * (ncol(output.df)-2)), nrow=length(bblidToAdd), ncol=(ncol(output.df)-2)))
 tmpToAdd <- cbind(bblidToAdd, scanidToAdd, tmpToAdd)
 colnames(tmpToAdd) <- colnames(output.df)
-
 output.df <- rbind(output.df, tmpToAdd)
+# Now apply the mean GM value exclusion
+output.df$pcaslExclude[which(output.df$pcaslMeanGMValue<15 & output.df$pcaslExclude==0)] <- 1
+n1601.ss.vals$pcaslVoxelwiseExclude[which(output.df$pcaslMeanGMValue<15)] <- 1
+output.df$pcaslMeanGMValueExclude[which(output.df$pcaslMeanGMValue<15)] <- 1
+# Now I need to change all of the NA's to either 0's or 1's in the QA files
+output.df$pcaslExclude[which(is.na(output.df$pcaslExclude)=='TRUE')] <- 1
+output.df$pcaslVoxelwiseExclude[which(is.na(output.df$pcaslVoxelwiseExclude)=='TRUE')] <- 1
+output.df$pcaslNoDataExclude[which(is.na(output.df$pcaslNoDataExclude)=='TRUE')] <- 1
 
+write.csv(output.df, '/data/joy/BBL/studies/pnc/summaryData_n1601_20160823/n1601_jlfPcaslQaData.csv', quote=F, row.names=F)
+qaData <- output.df
+
+## Now work with the imaging data here
+output.df <- imageingData
 # Now I need to rm the cerebellum, whitematter, the optic chiasm, and the 
 # ventral DC areas from the cbf values
 namesToRm <- c('Ventricle', 'Cerebellum', 'White', 'CSF', 'Vent', 'Vessel', 
@@ -194,18 +205,19 @@ for(value in namesToRm){
 
 output.df <- output.df[,-colsToRm]
 
-# Now we need to identify subjects with abnormal average pcasl values (i.e. negative)
-# First start by turning everyone's pcaslExclude value with a mean value below
-# 15 to a 1
-output.df$pcaslExclude[which(output.df$pcaslMeanGMValue<15 & output.df$pcaslExclude==0)] <- 1
-n1601.ss.vals$pcaslVoxelwiseExclude[which(output.df$pcaslMeanGMValue<15)] <- 1
-output.df$pcaslMeanGMValueExclude[which(output.df$pcaslMeanGMValue<15)] <- 1
+# and now append the extra subjects 
+bblidToAdd <- n1601.subjs$bblid[which(n1601.subjs$bblid %in% output.df$bblid == 'FALSE')]
+scanidToAdd <- n1601.subjs$scanid[which(n1601.subjs$scanid %in% output.df$scanid == 'FALSE')]
+tmpToAdd <- as.data.frame(matrix(rep(NA, length(bblidToAdd) * (ncol(output.df)-2)), nrow=length(bblidToAdd), ncol=(ncol(output.df)-2)))
+tmpToAdd <- cbind(bblidToAdd, scanidToAdd, tmpToAdd)
+colnames(tmpToAdd) <- colnames(output.df)
+output.df <- rbind(output.df, tmpToAdd)
 
+write.csv(output.df, '/data/joy/BBL/studies/pnc/summaryData_n1601_20160823/n1601_jlfPcaslValues.csv', quote=F, row.names=F)
 
-# Now I need to change all of the NA's to either 0's or 1's in the QA files
-output.df$pcaslExclude[which(is.na(output.df$pcaslExclude)=='TRUE')] <- 1
-output.df$pcaslVoxelwiseExclude[which(is.na(output.df$pcaslVoxelwiseExclude)=='TRUE')] <- 1
-output.df$pcaslNoDataExclude[which(is.na(output.df$pcaslNoDataExclude)=='TRUE')] <- 1
-
-
-write.csv(output.df, '/data/joy/BBL/projects/pncReproc2015/pcasl/cbfValues/pcasl_201607291423/n1601_jlfPcasl.csv', quote=F, row.names=F)
+# Now lets produce our venn diagram for those subjects that were flagged for removal
+excludeCols <- grep('Exclude', names(qaData))
+excludeCols <- excludeCols[-c(1,2,3)]
+matrixValues <- qaData[which(output.df$pcaslVoxelwiseExclude==1),excludeCols]
+matrixValues <- as.matrix(matrixValues)
+evenn(matLists=matrixValues, pathRes='/data/joy/BBL/projects/pncReproc2015/pcasl/QA/n1601-QA/')
