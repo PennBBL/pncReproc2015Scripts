@@ -1,0 +1,41 @@
+# AFGR August 10 2016
+
+# This script is going to be used to prepare the header info for the GMD values
+# produced by the antsCTPostProcAndGMD.sh script
+# Its going to follow the logic of prepAntsCTJLFOutput.R very closley 
+
+# Load library(s)
+source("/home/arosen/adroseHelperScripts/R/afgrHelpFunc.R")
+
+# Load data
+# First we need to prep the GMD values
+system("/data/joy/BBL/applications/xcpEngine/utils/combineOutput -p /data/joy/BBL/studies/pnc/processedData/structural/antsCorticalThickness/ -f VolMod_val.1D -o antsGMDVolMod_JLF_vals.1D")
+system("mv /data/joy/BBL/studies/pnc/processedData/structural/antsCorticalThickness/antsGMDVolMod_JLF_vals.1D /data/joy/BBL/projects/pncReproc2015/antsCT/")
+columnNames <- read.csv("/data/joy/BBL/projects/pncReproc2015/antsCT/gmdVolModJlfNames.csv")
+columnNumbers <- read.csv("/data/joy/BBL/projects/pncReproc2015/antsCT/justJLFColNamesafgrEdits.csv")
+gmdValues <- read.table("/data/joy/BBL/projects/pncReproc2015/antsCT/antsGMDVolMod_JLF_vals.1D", header=T)
+
+
+# Now prepare the column names
+colsOfInterest <- columnNumbers$ROI_INDEX[115:length(columnNumbers$ROI_INDEX)] + 2
+colsOfInterest <- append(c(1,2), colsOfInterest)
+
+# Now limit the PCASL values to just the columns of interest
+gmdValues <- gmdValues[,colsOfInterest] 
+
+# and now change the name of the gmd columns
+colnames(gmdValues)[3:length(gmdValues)] <- as.character(columnNames$X)
+
+# And now do the WM fix
+gmdValues <- gmdValues[,-seq(41,55)]
+
+# Now prepare the subject fields with bblid, scanid, and datexscanid
+gmdValues$scanid <- strSplitMatrixReturn(gmdValues$subject.1., 'x')[,2]
+colnames(gmdValues)[1:2] <- c('bblid', 'datexscanid')
+attach(gmdValues)
+output <- as.data.frame(cbind(bblid, scanid, datexscanid, gmdValues[,3:138]))
+detach(gmdValues)
+gmdValues <- output
+
+# Now write the csv
+write.csv(gmdValues, '/data/joy/BBL/projects/pncReproc2015/antsCT/jlfAntsValuesGMDVolMod.csv', quote=F, row.names=F)
