@@ -39,5 +39,4 @@ R --slave -f ${scriptsDir}/prepSubjFields.R ${jlfVolDir}voxelVolume_20160805.txt
 R --slave -f ${scriptsDir}/combineAllVolVals.R ${jlfVolDir}jlfVolValues_20160805properSubjFieldsProperColNames.csv  ${jlfVolDir}ctVolValues_20160805properSubjFieldsProperColNames.csv ${subjInfoDir}n1601_t1RawManualQA.csv ${subjInfoDir}n368_t1RawManualQA_GO2.csv ${jlfVolDir}voxelVolume_20160805properSubjFields.csv
 
 # Now clean up 
-rm -f *prperSubjField.csv *ProperColNames.csv ${jlfVolDir}voxelVolume_20160805.txt ${jlfVolDir}ctVolValues_20160805.txt ${jlfVolDir}jlfVolValues_20160805.txt
-
+#rm -f *pr0perSubjField.csv *ProperColNames.csv ${jlfVolDir}voxelVolume_20160805.txt ${jlfVolDir}ctVolValues_20160805.txt ${jlfVolDir}jlfVolValues_20160805.txt
