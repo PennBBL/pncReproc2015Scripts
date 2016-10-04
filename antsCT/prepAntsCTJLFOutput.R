@@ -21,6 +21,8 @@ manQAVal2 <- read.csv("/data/joy/BBL/studies/pnc/subjectData/n368_t1RawManualQA_
 ctImagePaths <- read.table("/data/joy/BBL/projects/pncReproc2015/antsCT/antsCTImages.txt", header=F)
 #tbvData <- read.csv('/data/joy/BBL/studies/pnc//data/joy/BBL/studies/pnc/summaryData_n1601_20160823/n1601_antsCtVol_jlfVol.csv')
 #tbvData <- tbvData[,c(1,2,5)]
+n1601.subjs <- read.csv('/data/joy/BBL/projects/pncReproc2015/antsCT/n1601_bblid_scanid_dateid.csv')
+n1601.subjs <- n1601.subjs[,c(2,1)]
 
 # Now modify our image paths so it is easier to work with
 names(ctImagePaths) <- 'ctImagePath'
@@ -49,10 +51,15 @@ detach(ctValues)
 ctValues <- output
 
 # Now attach our file paths to our output csv
-ctValues <- merge(ctValues, ctImagePaths, by=c('bblid', 'scanid'))
+#ctValues <- merge(ctValues, ctImagePaths, by=c('bblid', 'scanid'))
 
 # Now rm areas that should not have CT values
 ctValues <- ctValues[,-seq(4,41)]
 
 # Now write the csv
 write.csv(ctValues, '/data/joy/BBL/projects/pncReproc2015/antsCT/jlfAntsValuesCT.csv', quote=F, row.names=F)
+
+# Now do the n1601 specific csv
+n1601.ct.vals <- merge(n1601.subjs, ctValues, by=c('bblid', 'scanid'))
+n1601.ct.vals <- n1601.ct.vals[,-c(3)]
+write.csv(n1601.ct.vals, '/data/joy/BBL/studies/pnc/summaryData_n1601_20160823/t1/n1601_jlfCt.csv', quote=F, row.names=F)
