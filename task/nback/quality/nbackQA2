@@ -1,0 +1,169 @@
+#!/usr/bin/env bash
+
+###################################################################
+#  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  #
+###################################################################
+NBACK=/data/joy/BBL/studies/pnc/processedData/nback/nback_201607/nback_201607_201607050934/
+
+###################################################################
+# 1. Assemble QA outputs from the XCP Engine.
+###################################################################
+/data/joy/BBL/applications/xcpEngine/utils/combineOutput \
+   -p ${NBACK} \
+   -f "*quality.csv" \
+   -o XCP_QAVARS.csv
+mv -f ${NBACK}/XCP_QAVARS.csv .
+xcpVars=$(cat XCP_QAVARS.csv|sed s@'subject\[0\]'@'bblid'@g|sed s@'subject\[1\]'@'datexscanid'@g)
+for s in $xcpVars
+   do
+   s=$(echo $s|cut -d',' -f1),$(echo $s|cut -d'x' -f2-)
+   echo $s >> NBACK_XCP.csv
+done
+
+###################################################################
+# Add maximum relative displacement.
+# (Not computed by XCP as of 28 September 2016.)
+###################################################################
+n1601=$(tail -n+2 n1601_glasserNbackSigChange.csv|cut -d',' -f1-2)
+rm -f RELRMS.csv
+echo "bblid,scanid,rmsPath" >>  RELRMS.csv
+for s in $n1601
+   do
+   su=$(echo ${s}|sed s@','@'/*'@g)
+   [[ -z $(ls $NBACK/${su}/task/mc/*rel_rms.1D 2>/dev/null) ]] && continue
+   echo ${s},$(ls $NBACK/${su}/task/mc/*rel_rms.1D) >> RELRMS.csv
+done
+./maxRelDisp.R
+rm -f RELRMS.csv
+cat MAXRELRMS.csv|cut -d',' -f2-3,5 >> RELRMS.csv
+
+###################################################################
+# And manually flagged activation outliers.
+###################################################################
+activ=$(tail -n+2 NBACK_XCP.csv|cut -d',' -f1-2)
+rm -f ACTIVATION.csv
+echo "bblid,scanid,nbackMeanActivationExclude," >> ACTIVATION.csv
+for s in $activ
+   do
+   test=$(grep -i $(echo ${s}|cut -d',' -f1|sed s@'$'@'/20'@g) activationOutliersHigh.csv)
+   [[ -z ${test} ]] && test=$(grep -i $(echo ${s}|sed s@'$'@'_20'@g) activationOutliersLow.csv)
+   s=$(echo ${s}|sed s@'/'@','@g)
+   if [[ -z ${test} ]]
+      then
+      s=${s},0
+   else
+      s=${s},$(echo ${test}|cut -d',' -f2)
+   fi
+   echo ${s} >> ACTIVATION.csv
+done
+
+###################################################################
+# 2. R script assimilates the above with variables from previous
+#    QA efforts.
+#    First, preprocess the coverage data by stripping out the date.
+###################################################################
+rm -f NBACK_COVERAGE_PROCESSED.csv
+echo "bblid,scanid,nbackVoxelwiseCoverageInclude" >> NBACK_COVERAGE_PROCESSED.csv
+covVars=$(cat NBACK_COVERAGE.csv)
+for s in $covVars
+   do
+   s=$(echo $s|cut -d',' -f1),$(echo $s|cut -d'x' -f2-|cut -d',' -f1,4)
+   echo $s >> NBACK_COVERAGE_PROCESSED.csv
+done
+###################################################################
+#    Then, merge them all.
+###################################################################
+./nbackQA_assembleVars.R
+
+###################################################################
+# 4. Assemble ROIwise outputs from the XCP Engine.
+#    Each block below performs the assembly for one contrast for
+#    one parcellation.
+#
+#    First, single-CoPE outputs for JLF.
+###################################################################
+rm -f NBACK_ROI_JLF*
+/data/joy/BBL/applications/xcpEngine/utils/combineOutput \
+   -p ${NBACK} \
+   -f "*JLF_val_sigchange_cope1*" \
+   -o NBACK_ROI1.txt
+mv -f ${NBACK}/NBACK_ROI1.txt NBACK_ROI_JLF1.txt
+/data/joy/BBL/applications/xcpEngine/utils/combineOutput \
+   -p ${NBACK} \
+   -f "*JLF_val_sigchange_cope2*" \
+   -o NBACK_ROI2.txt
+mv -f ${NBACK}/NBACK_ROI2.txt NBACK_ROI_JLF2.txt
+/data/joy/BBL/applications/xcpEngine/utils/combineOutput \
+   -p ${NBACK} \
+   -f "*JLF_val_sigchange_cope3*" \
+   -o NBACK_ROI3.txt
+mv -f ${NBACK}/NBACK_ROI3.txt NBACK_ROI_JLF3.txt
+/data/joy/BBL/applications/xcpEngine/utils/combineOutput \
+   -p ${NBACK} \
+   -f "*JLF_val_sigchange_cope4*" \
+   -o NBACK_ROI4.txt
+mv -f ${NBACK}/NBACK_ROI4.txt NBACK_ROI_JLF4.txt
+/data/joy/BBL/applications/xcpEngine/utils/combineOutput \
+   -p ${NBACK} \
+   -f "*JLF_val_sigchange_cope5*" \
+   -o NBACK_ROI5.txt
+mv -f ${NBACK}/NBACK_ROI5.txt NBACK_ROI_JLF5.txt
+/data/joy/BBL/applications/xcpEngine/utils/combineOutput \
+   -p ${NBACK} \
+   -f "*JLF_val_sigchange_cope6*" \
+   -o NBACK_ROI6.txt
+mv -f ${NBACK}/NBACK_ROI6.txt NBACK_ROI_JLF6.txt
+/data/joy/BBL/applications/xcpEngine/utils/combineOutput \
+   -p ${NBACK} \
+   -f "*JLF_val_sigchange_cope7*" \
+   -o NBACK_ROI7.txt
+mv -f ${NBACK}/NBACK_ROI7.txt NBACK_ROI_JLF7.txt
+###################################################################
+# And now, repeat the above for the Glasser parcellation.
+###################################################################
+rm -f NBACK_ROI_GlasserPNC*
+/data/joy/BBL/applications/xcpEngine/utils/combineOutput \
+   -p ${NBACK} \
+   -f "*GlasserPNC_val_sigchange_cope1*" \
+   -o NBACK_ROI1.txt
+mv -f ${NBACK}/NBACK_ROI1.csv NBACK_ROI_GlasserPNC1.txt
+/data/joy/BBL/applications/xcpEngine/utils/combineOutput \
+   -p ${NBACK} \
+   -f "*GlasserPNC_val_sigchange_cope2*" \
+   -o NBACK_ROI2.txt
+mv -f ${NBACK}/NBACK_ROI2.csv NBACK_ROI_GlasserPNC2.txt
+/data/joy/BBL/applications/xcpEngine/utils/combineOutput \
+   -p ${NBACK} \
+   -f "*GlasserPNC_val_sigchange_cope3*" \
+   -o NBACK_ROI3.txt
+mv -f ${NBACK}/NBACK_ROI3.csv NBACK_ROI_GlasserPNC3.txt
+/data/joy/BBL/applications/xcpEngine/utils/combineOutput \
+   -p ${NBACK} \
+   -f "*GlasserPNC_val_sigchange_cope4*" \
+   -o NBACK_ROI4.txt
+mv -f ${NBACK}/NBACK_ROI4.csv NBACK_ROI_GlasserPNC4.txt
+/data/joy/BBL/applications/xcpEngine/utils/combineOutput \
+   -p ${NBACK} \
+   -f "*GlasserPNC_val_sigchange_cope5*" \
+   -o NBACK_ROI5.txt
+mv -f ${NBACK}/NBACK_ROI5.csv NBACK_ROI_GlasserPNC5.txt
+/data/joy/BBL/applications/xcpEngine/utils/combineOutput \
+   -p ${NBACK} \
+   -f "*GlasserPNC_val_sigchange_cope6*" \
+   -o NBACK_ROI1.txt
+mv -f ${NBACK}/NBACK_ROI6.csv NBACK_ROI_GlasserPNC6.txt
+/data/joy/BBL/applications/xcpEngine/utils/combineOutput \
+   -p ${NBACK} \
+   -f "*GlasserPNC_val_sigchange_cope7*" \
+   -o NBACK_ROI7.txt
+mv -f ${NBACK}/NBACK_ROI7.csv NBACK_ROI_GlasserPNC7.txt
+###################################################################
+# Merge across the CoPEs for JLF and for Glasser, and excise
+# unneeded columns. This is handled within R.
+###################################################################
+mergeROIvals.R \
+   -r JLF \
+   -o n1601_jlfNbackSigChange.csv
+mergeROIvals.R \
+   -r GlasserPNC \
+   -o n1601_glasserNbackSigChange.csv
