@@ -65,8 +65,12 @@ colnames(ccOutput)[1:7] <- c('bblid', 'scanid', 'datexscanid', 'ratingJB', 'rati
 write.csv(ccOutput, '/data/joy/BBL/projects/pncReproc2015/jlf/volumeValues/jlfVolumeValuesmm3Vals.csv', quote=F, row.names=F)
 detach(tmp)
 
-# Now write the n1601 file
+## Now write the n1601 file
+# Start with JLF volumes
 n1601.vol.vals <- merge(n1601.subjs, ccOutput, by=c('bblid', 'scanid'))
 attach(n1601.vol.vals)
-n1601.output <- cbind(bblid, scanid, n1601.vol.vals[,c(c(150, 145, 146, 144, 147, 148, 149), seq(8, 143))])
-write.csv(n1601.output, '/data/joy/BBL/studies/pnc/summaryData_n1601_20160823/t1/n1601_antsCtVol_jlfVol.csv', quote=F, row.names=F)
+n1601.output <- cbind(bblid, scanid, n1601.vol.vals[,seq(8, 143)])
+write.csv(n1601.output, '/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/n1601_summaryData/t1/n1601_jlfVol.csv', quote=F, row.names=F)
+# Now do the antsCT volumes
+n1601.output <- cbind(bblid, scanid, n1601.vol.vals[,c(150, 145, 146, 144, 147, 148, 149)] )
+write.csv(n1601.output, '/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/n1601_summaryData/t1/n1601_antsCtVol.csv', quote=F, row.names=F)
