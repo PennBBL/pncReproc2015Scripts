@@ -17,9 +17,14 @@ for i in `find ${jlfDirectory} -name "*jlfLabels.nii.gz"` ; do vals=`fslstats ${
 rm -f ${jlfVolDir}ctVolValues_20160805.txt
 for i in `find ${ctDirectory} -maxdepth 12 -name "BrainSegmentation.nii.gz"` ; do vals=`fslstats ${i} -H 7 0 6` ; echo ${i} ${vals} ; done >> ${jlfVolDir}ctVolValues_20160805.txt
 
+# Now do the JLF Wm seg
+rm -f ${jlfVolDir}jlfWmVolValues_20160805.txt
+for i in `find ${jlfDirectory} -name "*jlfWmSeg.nii.gz"` ; do vals=`fslstats ${i} -H 13 0 12` ; echo ${i} ${vals} ; done >> ${jlfVolDir}jlfWmVolValues_20160805.txt
+
 # Now fix the subject fields using an *NON FLEXIBLE R SCRIPT*
 R --slave -f ${scriptsDir}/prepSubjFields.R ${jlfVolDir}jlfVolValues_20160805.txt
 R --slave -f ${scriptsDir}/prepSubjFields.R ${jlfVolDir}ctVolValues_20160805.txt
+R --slave -f ${scriptsDir}/prepSubjFields.R ${jlfVolDir}jlfWmVolValues_20160805.txt
 
 # Now I need to adjust the headers of the proper Subject field files 
 R --slave -f ${scriptsDir}/prepVolHeader.R ${jlfVolDir}jlfVolValues_20160805properSubjFields.csv
