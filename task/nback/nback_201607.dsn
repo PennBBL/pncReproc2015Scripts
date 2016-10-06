@@ -36,13 +36,7 @@
 analysis=nback_201605
 design=/data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts/task/nback/nback_201607.dsn
 path_cohort=/data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts/task/nback/cohort_nback.csv
-subjects_ct=1
-xsubj=100031,20100918x3818,/data/joy/BBL/studies/pnc/rawData/100031/20100918x3818/bbl1_frac2back1_231/nifti/003818_bbl1_frac2back1_231_SEQ010.nii.gz,/data/joy/BBL/studies/pnc/processedData/structural/antsCorticalThickness/100031/20100918x3818,/data/joy/BBL/studies/pnc/processedData/b0map/100031/20100918x3818//100031_20100918x3818_mag1_brain.nii.gz,/data/joy/BBL/studies/pnc/processedData/b0map/100031/20100918x3818//100031_20100918x3818_rpsmap.nii.gz
-xsubj_idx=1
-ximg=/data/joy/BBL/studies/pnc/rawData/100031/20100918x3818/bbl1_frac2back1_231/nifti/003818_bbl1_frac2back1_231_SEQ010.nii.gz
 img=${subject[2]}
-xants=/data/joy/BBL/studies/pnc/processedData/structural/antsCorticalThickness/100031/20100918x3818
-xstruct=/data/joy/BBL/studies/pnc/processedData/structural/antsCorticalThickness/100031/20100918x3818/ExtractedBrain0N4.nii.gz
 struct=${subject[3]}/ExtractedBrain0N4.nii.gz
 prefix=${subject[0]}_${subject[1]}
 xfm_warp=${subject[3]}/SubjectToTemplate1Warp.nii.gz
