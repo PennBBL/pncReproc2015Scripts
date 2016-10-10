@@ -13,6 +13,8 @@ install_load('tools')
 # Load data
 jlfVals <- commandArgs()[5]
 jlfVals <- read.csv(jlfVals)
+jlfWmVals <- commandArgs()[10]
+jlfWmVals <- read.csv(jlfWmVals)
 ctVals <- commandArgs()[6]
 ctVals <- read.csv(ctVals)
 manQA1 <- commandArgs()[7]
@@ -27,12 +29,14 @@ n1601.subjs <- n1601.subjs[,c(2,1)]
 # Now make sure everyone has a scanid column
 jlfVals$scanid <- strSplitMatrixReturn(jlfVals$subject.1., 'x')[,2]
 ctVals$scanid <- strSplitMatrixReturn(ctVals$subject.1., 'x')[,2]
+jlfWmVals$scanid <- strSplitMatrixReturn(jlfWmVals$subject.1., 'x')[,2]
 
 # Now combine the qa data
 manQA1 <- manQA1[,-c(3,4)]
 qaData <- rbind(manQA1, manQA2)
 
 output <- merge(jlfVals, ctVals, by='scanid')
+output <- merge(output, jlfWmVals, by=c('scanid'))
 output <- merge(output, qaData, by='scanid')
 
 # Just going to do this manually although I know there is a more dynamic fix...
@@ -51,14 +55,13 @@ outputNew <- cbind(bblid, scanid, as.character(datexscanid), ratingJB, ratingKS,
 output <- output[,-c(seq(1,3), seq(ncol(output), (ncol(output)-3)))]
 output <- as.data.frame(cbind(outputNew, output))
 colnames(output)[3] <- 'datexscanid'
-
 write.csv(output, '/data/joy/BBL/projects/pncReproc2015/jlf/volumeValues/jlfVolumeValuesVoxelCount.csv', quote=F, row.names=F)
 detach(output)
 
 # Now multiply the voxel volume by the voxel count to get mm3
 voxelDim$scanid <- strSplitMatrixReturn(voxelDim$subject.1., 'x')[,2]
 tmp <- merge(output, voxelDim, by='scanid')
-ccOutput <- apply(tmp[,8:150], 2, function(x) (x * tmp$output))
+ccOutput <- apply(tmp[,c(seq(8,150), seq(153, 164))], 2, function(x) (x * tmp$output))
 attach(tmp)
 ccOutput <- as.data.frame(cbind(as.character(bblid), as.character(scanid), as.character(datexscanid), as.character(ratingJB), as.character(ratingKS), as.character(ratingLV), as.character(averageRating), ccOutput))
 colnames(ccOutput)[1:7] <- c('bblid', 'scanid', 'datexscanid', 'ratingJB', 'ratingKS', 'ratingLV', 'averageRating')
@@ -74,3 +77,6 @@ write.csv(n1601.output, '/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/n1601_su
 # Now do the antsCT volumes
 n1601.output <- cbind(bblid, scanid, n1601.vol.vals[,c(150, 145, 146, 144, 147, 148, 149)] )
 write.csv(n1601.output, '/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/n1601_summaryData/t1/n1601_antsCtVol.csv', quote=F, row.names=F)
+# Now do the jlf WM segmentation
+n1601.output <- cbind(bblid, scanid, n1601.vol.vals[, seq(151, 162)])
+write.csv(n1601.output, '/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/n1601_summaryData/t1/n1601_jlfWmVol.csv', quote=F, row.names=F)
