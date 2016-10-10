@@ -29,6 +29,7 @@ R --slave -f ${scriptsDir}/prepSubjFields.R ${jlfVolDir}jlfWmVolValues_20160805.
 # Now I need to adjust the headers of the proper Subject field files 
 R --slave -f ${scriptsDir}/prepVolHeader.R ${jlfVolDir}jlfVolValues_20160805properSubjFields.csv
 R --slave -f ${scriptsDir}/prepCtHeader.R ${jlfVolDir}ctVolValues_20160805properSubjFields.csv
+R --slave -f ${scriptsDir}/prepJlfWmHeader.R ${jlfVolDir}jlfWmVolValues_20160805properSubjFields.csv
 
 # Now find voxel dimensions for each scan
 for i in `find ${jlfDirectory} -name "*jlfLabels.nii.gz"` ; do 
@@ -41,7 +42,7 @@ done
 
 # Now I need to combine the manual ratings, jlf and ct values
 R --slave -f ${scriptsDir}/prepSubjFields.R ${jlfVolDir}voxelVolume_20160805.txt
-R --slave -f ${scriptsDir}/combineAllVolVals.R ${jlfVolDir}jlfVolValues_20160805properSubjFieldsProperColNames.csv  ${jlfVolDir}ctVolValues_20160805properSubjFieldsProperColNames.csv ${subjInfoDir}n1601_t1RawManualQA.csv ${subjInfoDir}n368_t1RawManualQA_GO2.csv ${jlfVolDir}voxelVolume_20160805properSubjFields.csv
+R --slave -f ${scriptsDir}/combineAllVolVals.R ${jlfVolDir}jlfVolValues_20160805properSubjFieldsProperColNames.csv  ${jlfVolDir}ctVolValues_20160805properSubjFieldsProperColNames.csv ${subjInfoDir}n1601_t1RawManualQA.csv ${subjInfoDir}n368_t1RawManualQA_GO2.csv ${jlfVolDir}voxelVolume_20160805properSubjFields.csv ${jlfVolDir}jlfWmVolValues_20160805properSubjFieldsProperColNames.csv
 
 # Now clean up 
 #rm -f *pr0perSubjField.csv *ProperColNames.csv ${jlfVolDir}voxelVolume_20160805.txt ${jlfVolDir}ctVolValues_20160805.txt ${jlfVolDir}jlfVolValues_20160805.txt
