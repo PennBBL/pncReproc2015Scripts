@@ -33,13 +33,11 @@
 # ANALYSIS VARIABLES
 ###################################################################
 
-analysis=pcasl_201606231423
-design=/data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts/pcasl/xcpFiles/pcasl_201606231423.dsn
+analysis=pcasl_201607291423
+design=/data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts/pcasl/xcpFiles/pcasl_201607291423.dsn
 path_cohort=/data/joy/BBL/projects/pncReproc2015/pcasl/xcpFiles/aslAllCohort.csv
 subjects_ct=1657
-xsubj=100031,20100918x3818,/data/joy/BBL/studies/pnc/processedData/structural/antsCorticalThickness/100031/20100918x3818,/data/joy/BBL/studies/pnc/rawData/100031/20100918x3818/ep2d_se_pcasl_PHC_1200ms/nifti/003818_ep2d_se_pcasl_PHC_1200ms_SEQ03.nii.gz,/data/joy/BBL/studies/pnc/rawData/100031/20100918x3818/ep2d_se_pcasl_PHC_1200ms/xml/100031_20100918x3818_se_pcasl_info.xml,/data/joy/BBL/studies/pnc/processedData/structural/muse/labeledImages/100031_003818_mprage_N4_str_cbq_editcbq_mars.nii.gz,/data/joy/BBL/studies/pnc/processedData/structural/mars/labeledImages/100031_20100918x3818_brain_bc_labeled_SimRank+IC+FS_c0p6.nii.gz,/data/joy/BBL/studies/pnc/processedData/b0map/100031/20100918x3818/100031_20100918x3818_rpsmap.nii.gz,/data/joy/BBL/studies/pnc/processedData/b0map/100031/20100918x3818/100031_20100918x3818_mag1_brain.nii.gz
 xsubj_idx=1
-ximg=/data/joy/BBL/studies/pnc/rawData/100031/20100918x3818/ep2d_se_pcasl_PHC_1200ms/nifti/003818_ep2d_se_pcasl_PHC_1200ms_SEQ03.nii.gz
 img=${subject[3]}
 xants=/data/joy/BBL/studies/pnc/processedData/structural/antsCorticalThickness/100031/20100918x3818
 xstruct=/data/joy/BBL/studies/pnc/processedData/structural/antsCorticalThickness/100031/20100918x3818/ExtractedBrain0N4.nii.gz
@@ -49,8 +47,8 @@ xfm_warp=${subject[2]}/SubjectToTemplate1Warp.nii.gz
 ixfm_warp=${subject[2]}/TemplateToSubject0Warp.nii.gz
 xfm_affine=${subject[2]}/SubjectToTemplate0GenericAffine.mat
 ixfm_affine=${subject[2]}/TemplateToSubject1GenericAffine.mat
-out_super=/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201606231423
-out=/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201606231423/${subject[0]}/${subject[1]}
+out_super=/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423
+out=/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/${subject[0]}/${subject[1]}
 space=native
 template=/data/joy/BBL/studies/pnc/template/pnc_template_brain_2mm.nii.gz
 
@@ -122,7 +120,7 @@ coreg_cleanup[3]=Y
 # 4 ASL
 ###################################################################
 
-asl_roi[4]=/data/joy/BBL/projects/pncReproc2015/pcasl/xcpFiles/pcasl.parc
+asl_roi[4]=/data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts/pcasl/xcpFiles/pcasl.parc
 asl_xml[4]=${subject[4]}
 asl_xmlPrepScript[4]=/data/joy/BBL/applications/xcpEngine/thirdparty/
 asl_QuantScript[4]=/data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts/pcasl/scripts/pcasl_quant_v7_afgr.sh
@@ -135,8 +133,8 @@ asl_cleanup[4]=Y
 # 5 ROIQUANT
 ###################################################################
 
-roiquant_roi[5]=/data/joy/BBL/projects/pncReproc2015/pcasl/xcpFiles/pcasl.parc
-roiquant_rerun[5]=N
+roiquant_roi[5]=/data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts/pcasl/xcpFiles/pcasl.parc
+roiquant_rerun[5]=Y
 roiquant_cleanup[5]=Y
 
 ###################################################################
