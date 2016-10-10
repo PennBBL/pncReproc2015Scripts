@@ -1,6 +1,7 @@
 SPACE::NETWORK
 :#NAME#MAP#SPACE
 #MARS#${subject[6]}#str
-SPACE::NETWORK
-:#NAME#MAP#SPACE
 #MUSE#${subject[5]}#str
+#JLF#/data/joy/BBL/studies/pnc/processedData/structural/jlf/${subject[0]}/${subject[1]}/${subject[0]}_${subject[1]}_jlfLabels.nii.gz#str
+#GlasserPNC#/data/joy/BBL/applications/xcpEngine/networks/180GlasserPNCWithHemispheres.nii.gz#std
+#JLFWM#/data/joy/BBL/studies/pnc/processedData/structural/jlf/${subject[0]}/${subject[1]}/${subject[0]}_${subject[1]}_jlfWmSeg.nii.gz#str
