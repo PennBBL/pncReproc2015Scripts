@@ -16,13 +16,13 @@ echo "	Usage:"
 echo "  This script will perform variaous file manipulation and calculation"
 echo "  of GMD on images that have been run through ANTsCT"
 echo "	Required input is the path to the ANTsCT directory"
-echo "	antsCTPostProcAndGMD.sh -d </Path/To/ANTsCT/Directory/> -o <outputImageName.nii.gz> -p <pathToParcellationMask.nii.gz> -P <parcOutputDir> -t <templateToQAWith.nii.gz>"
+echo "	antsCTPostProcAndGMD.sh -d </Path/To/ANTsCT/Directory/> -o <outputImageName.nii.gz> -p <pathToParcellationMask.nii.gz> -P <parcOutputDir> -t <templateToQAWith.nii.gz> -s <applyInverseTransformToParcel>"
 echo
 exit 2
 }
 
 # Read in the input arguments
-while getopts "d:o:p:P:t:h" OPTION ; do
+while getopts "d:o:p:P:t:s:h" OPTION ; do
   case ${OPTION} in
     d)
       antsDirectory=${OPTARG}
@@ -38,6 +38,9 @@ while getopts "d:o:p:P:t:h" OPTION ; do
       ;;
     t)
       templateImg=${OPTARG}
+      ;;
+    s)
+      applyInverse=${OPTARG}
       ;;
     h)
       usage
@@ -168,8 +171,14 @@ ${FSP}fslmaths ${outputImg}_prob02.nii.gz -mul ${outputImg}_seg_GmMask.nii.gz ${
 
 ## Now compute the GMD using the provided parcellation
 if [ ${parcCheck} -eq 1 ] ; then
+  if [ ${applyInverse} -eq 1 ] ; then
+    echo "Now moving Parcellation mask into Subject Space"
+    ${AP}antsApplyTransforms -d 3 -e 3 -i ${parcMask} -o ${antsDirectory}${parcDir}ToSubject.nii.gz -r ${antsDirectory}ExtractedBrain0N4.nii.gz -t ${antsDirectory}TemplateToSubject1GenericAffine.mat -t ${antsDirectory}TemplateToSubject0Warp.nii.gz -n NearestNeighbor 
+    parcMask=${antsDirectory}${parcDir}ToSubject.nii.gz ; 
+  fi
+  
   # Make the output parcellation directory
-  mkdir -p ${antsDirectory}${parcDir}/
+  mkdir -p ${antsDirectory}${parcDir}
   
   # Now declare some outputs and subject variables
   pfxtab=`echo ${antsDirectory} | rev | cut -f 2-3 -d / | rev | sed s@'/'@'\t'@`
@@ -264,7 +273,8 @@ qa_coverage=$(echo "scale=10; ${qa_cov_obs} / ${qa_cov_max}" | bc)
 ### This should be rm'ed afgr is including this just so I can get work done quicker
 
 ## Now resample so we have a regressor for our CBF data
-${FSP}flirt -in ${outputImg}_prob02SubjToTemp.nii.gz -ref /data/joy/BBL/studies/pnc/template/priors/prior_grey_thr01_2mm.nii.gz -out ${outputImg}_prob02SubjToTemp2mm.nii.gz
+${AP}antsApplyTransforms -d 3 -i ${outputImg}_prob02SubjToTemp.nii.gz -r /data/joy/BBL/studies/pnc/template/priors/prior_grey_thr01_2mm.nii.gz -o ${outputImg}_prob02SubjToTemp2mm.nii.gz
+${AP}antsApplyTransforms -d 3 -i ${antsDirectory}CorticalThicknessNormalizedToTemplate.nii.gz -r /data/joy/BBL/studies/pnc/template/priors/prior_grey_thr01_2mm.nii.gz -o ${antsDirectory}CorticalThicknessNormalizedToTemplate2mm.nii.gz
 # Now compute average GMD over GM compartment
 gmValue=`${AFP}3dROIstats -mask /data/joy/BBL/studies/pnc/template/priors/prior_grey_thr01_2mm.nii.gz ${outputImg}_prob02SubjToTemp2mm.nii.gz | cut -f 3 | tail -n 1`
 
