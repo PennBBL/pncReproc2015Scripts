@@ -8,17 +8,17 @@
 # Merge the extant data frames
 ###################################################################
 
-data <- read.csv('/data/joy/BBL/studies/pnc/subjectData/n1601_go1_datarel_020716.csv')
-xcp <- read.csv('/data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts/task/nback/quality/NBACK_XCP.csv')
+data1 <- read.csv('/data/joy/BBL/studies/pnc/subjectData/n1601_go1_datarel_020716.csv')
+xcp <- read.csv('/data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts_mv_20161007/task/nback/quality/NBACK_XCP.csv')
 b0 <- read.csv('/data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts/dico/n1601_b0map_nos.csv')
-maxRelRMS <- read.csv('RELRMS.csv')
-activation <- read.csv('ACTIVATION.csv')
-coverage <- read.csv('NBACK_COVERAGE_PROCESSED.csv')
-data8 <- merge(data,coverage,by='scanid')
-data9 <- merge(data8,b0,by='scanid')
-data0 <- merge(data9,xcp,by='scanid')
-data1 <- merge(data0,maxRelRMS,by='scanid')
-data2 <- merge(data1,activation,by='scanid')
+maxRelRMS <- read.csv('/data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts_mv_20161007/task/nback/quality/RELRMS.csv')
+activation <- read.csv('/data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts_mv_20161007/task/nback/quality/ACTIVATION.csv')
+coverage <- read.csv('/data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts_mv_20161007/task/nback/quality/NBACK_COVERAGE_PROCESSED.csv')
+data2 <- merge(data1,coverage,by='scanid')
+data2 <- merge(data2,b0,by='scanid')
+data2 <- merge(data2,xcp,by='scanid')
+data2 <- merge(data2,maxRelRMS,by='scanid')
+data2 <- merge(data2,activation,by='scanid')
 
 ###################################################################
 # Determine exclusion criteria
