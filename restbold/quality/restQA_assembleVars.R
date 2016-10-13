@@ -12,9 +12,9 @@ data <- read.csv('/data/joy/BBL/studies/pnc/subjectData/n1601_go1_datarel_020716
 xcp <- read.csv('/data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts/restbold/quality/REST_XCP.csv')
 b0 <- read.csv('/data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts/dico/n1601_b0map_nos.csv')
 coverage <- read.csv('REST_COVERAGE_PROCESSED.csv')
-data0 <- merge(data,coverage,by='scanid',all.x=T)
-data1 <- merge(data0,b0,by='scanid')
-data2 <- merge(data1,xcp,by='scanid')
+data2 <- merge(data,coverage,by='scanid',all.x=T)
+data2 <- merge(data2,b0,by='scanid')
+data2 <- merge(data2,xcp,by='scanid')
 
 ###################################################################
 # Determine exclusion criteria
