@@ -4,3 +4,6 @@ SPACE::NETWORK
 #MUSE#/data/joy/BBL/studies/pnc/processedData/structural/muse/labeledImages/${subject[0]}_${subject[1]}.nii.gz#str
 #MARS#/data/joy/BBL/studies/pnc/processedData/structural/mars/labeledImages/${subject[0]}_${subject[1]}*.nii.gz#str
 #GordonPNC#/data/joy/BBL/applications/xcpEngine/networks/gordonPNC.nii.gz#std
+#GlasserPNC#/data/joy/BBL/applications/xcpEngine/networks/180GlasserPNCWithHemispheres.nii.gz#std
+#JLF#/data/joy/BBL/studies/pnc/processedData/structural/jlf/${subject[0]}/${subject[1]}/${subject[0]}_${subject[1]}_jlfLabels.nii.gz#str
+#JLFWM#/data/joy/BBL/studies/pnc/processedData/structural/jlf/${subject[0]}/${subject[1]}/${subject[0]}_${subject[1]}_jlfWmSeg.nii.gz#str
