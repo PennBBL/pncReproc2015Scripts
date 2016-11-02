@@ -19,4 +19,4 @@ data$flagQA_meanCT[which(data$meanGM > (mean.MeanCT + 2.5*sd.MeanCT) | data$mean
 
 data$finalQA_ravens <- data$flagQA_meanCT + data$missingRavens
 
-write.csv(data, "/data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts_mv_20161007/ravens/N1601_Ravens_QA.cs")
+write.csv(data, "/data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts_mv_20161007/ravens/N1601_Ravens_QA.csv", row.names=F)
