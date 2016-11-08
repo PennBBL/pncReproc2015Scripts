@@ -1,4 +1,3 @@
-
 #Read Data
 data <- read.csv("/data/joy/BBL/projects/pncReproc2015/ravens/N1601_Ravens_MeanCT.csv")
 names(data) <- c("bblid","scanid","meanGM","spaCorr")
@@ -29,3 +28,16 @@ data$finalQA_ravens <- data$flagQA_meanCT + data$missingRavens + data$flagQA_Cor
 data$finalQA_ravens[which(data$finalQA_ravens == 2)] <- 1
 
 write.csv(data, "/data/joy/BBL/projects/pncReproc2015/ravens/N1601_Ravens_QA.csv", row.names=F)
+
+##Post Processing Steps 
+data2 <- read.csv("/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/neuroimaging/t1struct/n1601_t1QaData.csv")
+
+data <- merge(data, data2, by="bblid")
+
+table(data$finalQA_ravens, data$t1Exclude)
+
+bblid <- data$bblid[which(data$flagQA_meanCT == 1)]
+data[which(data$bblid %in% bblid), ]
+bblid <- data$bblid[order(data$spaCorr)[1:3]]
+data[which(data$bblid %in% bblid), ]
+
