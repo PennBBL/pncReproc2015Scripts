@@ -28,6 +28,7 @@ exit 1
 ## First declare all static variables
 createBinMask="/data/joy/BBL/applications/xcpEngine/utils/val2mask.R"
 valsToBin="2:6"
+csfValsToBin="4,11,46,51,52"
 tmpDir="/tmp/jlfIsol${RANDOM}"
 workingDir=`pwd`
 regionsToAdd=/home/arosen/valsToAdd.csv
@@ -71,12 +72,15 @@ cd ${tmpDir}
 
 
 # Now create the mask image
-${createBinMask} -i ${antsCTSeg} -v ${valsToBin} -o ${tmpDir}/binMask.nii.gz
+${createBinMask} -i ${antsCTSeg} -v ${valsToBin} -o ${tmpDir}/thresholdedImage.nii.gz 
+${createBinMask} -i ${antsCTSeg} -v ${valsToBin} -o ${tmpDir}/binMaskCSF.nii.gz
+
 
 # Now remove all small neighboorhoods
-matlab -nodisplay -nojvm -r "rmSmallNehighboorhoods('${tmpDir}/binMask.nii.gz', 1000); exit;"
+#matlab -nodisplay -nojvm -r "rmSmallNehighboorhoods('${tmpDir}/binMask.nii.gz', 1000); exit;"
 
 # Now multiply our values together 
+fslmaths ${tmpDir}/thresholdedImage.nii.gz -add ${tmpDir}/binMaskCSF.nii.gz -bin ${tmpDir}/thresholdedImage.nii.gz
 fslmaths ${tmpDir}/thresholdedImage.nii.gz -mul ${jlfParcel} ${tmpDir}/maskedJLFParcel
 
 # Now we need to check to see if we have the optional input
