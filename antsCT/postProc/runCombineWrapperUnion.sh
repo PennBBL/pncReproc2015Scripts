@@ -6,5 +6,5 @@ scanid=`echo ${subj} | cut -f 2 -d ,`
 dateid=`echo ${subj} | cut -f 3 -d ,`
 antsPath="/data/joy/BBL/studies/pnc/processedData/structural/antsCorticalThickness/${bblid}/${dateid}x${scanid}/BrainSegmentation.nii.gz"
 parcImg=`ls /data/joy/BBL/studies/pnc/processedData/structural/jlf/${bblid}/${dateid}x${scanid}/${bblid}_${dateid}x${scanid}_jlfLabels.nii.gz`
-outputImage="/data/joy/BBL/studies/pnc/processedData/structural/jlf/${bblid}/${dateid}x${scanid}/${bblid}_${dateid}x${scanid}_jlfLabelsANTsCTUnion.nii.gz"
-/home/arosen/pncReproc2015Scripts/antsCT/createUnionJLFAndCTGMMask.sh ${parcImg} ${antsPath} ${outputImage} /home/arosen/volDiff.csv   
+outputImage="/data/joy/BBL/studies/pnc/processedData/structural/jlf/${bblid}/${dateid}x${scanid}/${bblid}_${dateid}x${scanid}_jlfLabelsANTsCTIntersection.nii.gz"
+/home/arosen/pncReproc2015Scripts/antsCT/postProc/createUnionJLFAndCTGMMask.sh ${parcImg} ${antsPath} ${outputImage} /home/arosen/volDiff.csv   
