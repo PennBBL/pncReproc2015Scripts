@@ -13,6 +13,6 @@ templateImg="/data/joy/BBL/studies/pnc/template/pnc_template_brain.nii.gz"
 if [ -z ${parcImg} ] ; then 
   echo "${bblid},${scanid},${dateid}" >> ${noParcText}  
 else
-  /home/arosen/pncReproc2015Scripts/antsCT/postProc/antsCTPostProcAndGMD.sh -d ${antsPath} -o ${outImg} -p ${parcImg} -P ${parcDir} -t ${templateImg} -s 1; 
+  /home/arosen/pncReproc2015Scripts/antsCT/postProc/antsCTPostProcAndGMD.sh -d ${antsPath} -o ${outImg} -p ${parcImg} -P ${parcDir} -t ${templateImg} -s 0; 
 fi
   
