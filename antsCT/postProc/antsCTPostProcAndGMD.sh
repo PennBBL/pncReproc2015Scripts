@@ -70,6 +70,7 @@ if [ "X${AFP}" == "X" ] ; then
   depcheck=1 ; 
 fi
 AFP=${AFP}/
+createBinMask="/data/joy/BBL/applications/xcpEngine/utils/val2mask.R"
 
 # Now exit with the usage statement if we are missing a dependency
 if [ ${depCheck} -eq 1 ] ; then
@@ -166,7 +167,7 @@ ${FSP}fslmaths ${antsDirectory}${parcDir}_subjectToTemplate.nii.gz -mul 1 ${ants
 
 # Now create our final gmd Image by multiplyting the GMD parcellation by
 # the Atropos GM segmented mask
-${FSP}fslmaths ${outputImg}_seg.nii.gz -thr 2 -uthr 2 -bin ${outputImg}_seg_GmMask.nii.gz
+${createBinMask} -i ${outputImg}_seg.nii.gz -v 2,4 -o ${outputImg}_seg_GmMask.nii.gz
 ${FSP}fslmaths ${outputImg}_prob02.nii.gz -mul ${outputImg}_seg_GmMask.nii.gz ${outputImg}_prob02_IsolatedGM.nii.gz
 
 ## Now compute the GMD using the provided parcellation
