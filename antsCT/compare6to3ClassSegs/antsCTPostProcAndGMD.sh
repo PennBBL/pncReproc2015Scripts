@@ -70,6 +70,7 @@ if [ "X${AFP}" == "X" ] ; then
   depcheck=1 ; 
 fi
 AFP=${AFP}/
+createBinMask="/data/joy/BBL/applications/xcpEngine/utils/val2mask.R"
 
 # Now exit with the usage statement if we are missing a dependency
 if [ ${depCheck} -eq 1 ] ; then
@@ -166,7 +167,7 @@ ${FSP}fslmaths ${antsDirectory}${parcDir}_subjectToTemplate.nii.gz -mul 1 ${ants
 
 # Now create our final gmd Image by multiplyting the GMD parcellation by
 # the Atropos GM segmented mask
-${FSP}fslmaths ${outputImg}_seg.nii.gz -thr 2 -uthr 2 -bin ${outputImg}_seg_GmMask.nii.gz
+${createBinMask} -i ${outputImg}_seg.nii.gz -v 2,4 -o ${outputImg}_seg_GmMask.nii.gz
 ${FSP}fslmaths ${outputImg}_prob02.nii.gz -mul ${outputImg}_seg_GmMask.nii.gz ${outputImg}_prob02_IsolatedGM.nii.gz
 
 ## Now compute the GMD using the provided parcellation
@@ -192,9 +193,9 @@ if [ ${parcCheck} -eq 1 ] ; then
   ctParcOutput="${antsDirectory}${parcDir}/${pfxSubjFileName}_${parcDir}_antsCT_val.1D"
   gmdParcOutput="${antsDirectory}${parcDir}/${pfxSubjFileName}_${parcDir}_antsGMD_val.1D"
   gmdIsolParcOutput="${antsDirectory}${parcDir}/${pfxSubjFileName}_${parcDir}_antsGMDIsol_val.1D"
-  parcCommandCT="${AFP}/3dROIstats -1DRformat ${roiValOutput} -zerofill NA -mask ${parcMask} ${antsDirectory}CorticalThickness.nii.gz"
-  parcCommandGMD="${AFP}/3dROIstats -1DRformat ${roiValOutput} -zerofill NA -mask ${parcMask} ${outputImg}_prob02.nii.gz"
-  parcCommandGMDIsol="${AFP}/3dROIstats -1DRformat ${roiValOutput} -zerofill NA -mask ${parcMask} ${outputImg}_prob02_IsolatedGM.nii.gz"
+  parcCommandCT="${AFP}/3dROIstats -1DRformat ${roiValOutput} -nzmean -zerofill NA -mask ${parcMask} ${antsDirectory}CorticalThickness.nii.gz"
+  parcCommandGMD="${AFP}/3dROIstats -1DRformat ${roiValOutput} -nzmean -zerofill NA -mask ${parcMask} ${outputImg}_prob02.nii.gz"
+  parcCommandGMDIsol="${AFP}/3dROIstats -1DRformat ${roiValOutput} -nzmean -zerofill NA -mask ${parcMask} ${outputImg}_prob02_IsolatedGM.nii.gz"
 
   # Now run and log the commands
   ${parcCommandCT} > ${ctParcOutput}
@@ -228,7 +229,7 @@ if [ ${parcCheck} -eq 1 ] ; then
 
   # Now repeat these steps for the volume modulated GMD output
   gmdParcOutputVolMod="${antsDirectory}${parcDir}/${pfxSubjFileName}_${parcDir}_antsGMD_VolMod_val.1D"
-  parcCommandGMDVolMod="${AFP}/3dROIstats -1DRformat ${roiValOutput} -zerofill NA -mask ${antsDirectory}${parcDir}_subjectToTemplate.nii.gz ${outputImg}_prob02SubjToTempVolumeModulated.nii.gz"
+  parcCommandGMDVolMod="${AFP}/3dROIstats -1DRformat ${roiValOutput} -nzmean -zerofill NA -mask ${antsDirectory}${parcDir}_subjectToTemplate.nii.gz ${outputImg}_prob02SubjToTempVolumeModulated.nii.gz"
 
   # Now run and log the commands
   ${parcCommandGMDVolMod} > ${gmdParcOutputVolMod}
