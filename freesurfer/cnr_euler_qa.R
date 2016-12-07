@@ -30,7 +30,7 @@ data$right_euler<- euler_data$right_euler[match(data$scanid,euler_data$scanid)]
 
 #exclude the subjects that failed freesurfer processing (in this sample 4 subjects failed due to very poor scan
 #quality and high motion)
-exclude_list<- c("20100910x3805","20101030x4047","20110716x5387","20110506x4981")
+exclude_list<- c("*x3805","*x4047","*x5387","*x4981")
 data<- data[which(! data$scanid %in% exclude_list),]
 
 ############################################
