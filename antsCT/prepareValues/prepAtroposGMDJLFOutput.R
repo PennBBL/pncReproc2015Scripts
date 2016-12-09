@@ -4,12 +4,9 @@
 # produced by the antsCTPostProcAndGMD.sh script
 # Its going to follow the logic of prepAntsCTJLFOutput.R very closley 
 
-# Load library(s)
-source("/home/arosen/adroseHelperScripts/R/afgrHelpFunc.R")
-
 # Load data
 # First we need to prep the GMD values
-system("$XCPEDIR/utils/combineOutput -p /data/joy/BBL/studies/pnc/processedData/structural/antsCorticalThickness/ -f JLF_antsGMD_val.1D -o antsGMD_JLF_vals.1D")
+system("$XCPEDIR/utils/combineOutput -p /data/joy/BBL/studies/pnc/processedData/structural/antsCorticalThickness/ -f JLFintersect_antsGMD_val.1D -o antsGMD_JLF_vals.1D")
 system("mv /data/joy/BBL/studies/pnc/processedData/structural/antsCorticalThickness/antsGMD_JLF_vals.1D /data/joy/BBL/projects/pncReproc2015/antsCT/")
 columnNames <- read.csv("/data/joy/BBL/projects/pncReproc2015/antsCT/gmdJlfNames.csv")
 columnNumbers <- read.csv("/data/joy/BBL/projects/pncReproc2015/antsCT/justJLFColNamesafgrEdits.csv")
@@ -17,6 +14,11 @@ gmdValues <- read.table("/data/joy/BBL/projects/pncReproc2015/antsCT/antsGMD_JLF
 n1601.subjs <- read.csv('/data/joy/BBL/projects/pncReproc2015/antsCT/n1601_bblid_scanid_dateid.csv')
 n1601.subjs <- n1601.subjs[,c(2,1)]
 
+# Now I need to limit it to just the NZmeans 
+nzCols <- grep('NZMean', names(gmdValues))
+nzCols <- append(c(1, 2), nzCols)
+
+gmdValues <- gmdValues[,nzCols]
 
 # Now prepare the column names
 colsOfInterest <- columnNumbers$ROI_INDEX[115:length(columnNumbers$ROI_INDEX)] + 2
@@ -43,10 +45,12 @@ gmdValues <- output
 colsToRM <- c(4,5,15,16,17,18,19,22,23,24,25,32,33,34,35,36)
 gmdValues <- gmdValues[,-colsToRM]
  
+# Now rm datexscanid in order to avoid PHI issues
+gmdValues <- gmdValues[,-3]
+
 # Now write the csv
 write.csv(gmdValues, '/data/joy/BBL/projects/pncReproc2015/antsCT/jlfAntsValuesGMD.csv', quote=F, row.names=F)
 
 # Now prepare the n1601 output csv
 n1601.gmd.values <- merge(n1601.subjs, gmdValues, by=c('bblid', 'scanid'))
-n1601.gmd.values <- n1601.gmd.values[,-c(3)]
-write.csv(n1601.gmd.values, '/data/joy/BBL/studies/pnc/summaryData_n1601_20160823/t1/n1601_jlfGMD.csv', quote=F, row.names=F)
+write.csv(n1601.gmd.values, '/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/neuroimaging/t1struct/n1601_jlfAntsCTIntersectionGMD.csv', quote=F, row.names=F)
