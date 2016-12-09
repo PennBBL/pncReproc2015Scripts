@@ -5,29 +5,24 @@
 # Its going to rm extra columns and then prepare the data's header
 # Might make this into one big function but we will see how that goes =/
 
-
-# Load library(s)
-source("/home/arosen/adroseHelperScripts/R/afgrHelpFunc.R")
-
 # Load data
 columnNames <- read.csv("/data/joy/BBL/projects/pncReproc2015/antsCT/ctJlfNames.csv")
 columnNumbers <- read.csv("/data/joy/BBL/projects/pncReproc2015/antsCT/justJLFColNamesafgrEdits.csv")
 # ctValues was created by using the command found below:
-system("$XCPEDIR/utils/combineOutput -p /data/joy/BBL/studies/pnc/processedData/structural/antsCorticalThickness/ -f JLF_antsCT_val.1D -o antsCT_JLF_vals.1D")
+system("$XCPEDIR/utils/combineOutput -p /data/joy/BBL/studies/pnc/processedData/structural/antsCorticalThickness/ -f JLFintersect_antsCT_val.1D -o antsCT_JLF_vals.1D")
 system("mv /data/joy/BBL/studies/pnc/processedData/structural/antsCorticalThickness/antsCT_JLF_vals.1D /data/joy/BBL/projects/pncReproc2015/antsCT/jlfAntsCTVals.1D") 
 ctValues <- read.table("/data/joy/BBL/projects/pncReproc2015/antsCT/jlfAntsCTVals.1D", header=T)
 manQAVal1 <- read.csv("/data/joy/BBL/studies/pnc/subjectData/n1601_t1RawManualQA.csv")
 manQAVal2 <- read.csv("/data/joy/BBL/studies/pnc/subjectData/n368_t1RawManualQA_GO2.csv")
 ctImagePaths <- read.table("/data/joy/BBL/projects/pncReproc2015/antsCT/antsCTImages.txt", header=F)
-#tbvData <- read.csv('/data/joy/BBL/studies/pnc//data/joy/BBL/studies/pnc/summaryData_n1601_20160823/n1601_antsCtVol_jlfVol.csv')
-#tbvData <- tbvData[,c(1,2,5)]
 n1601.subjs <- read.csv('/data/joy/BBL/projects/pncReproc2015/antsCT/n1601_bblid_scanid_dateid.csv')
 n1601.subjs <- n1601.subjs[,c(2,1)]
 
-# Now modify our image paths so it is easier to work with
-names(ctImagePaths) <- 'ctImagePath'
-ctImagePaths$bblid <- strSplitMatrixReturn(ctImagePaths[,1], '/')[,10]
-ctImagePaths$scanid <- strSplitMatrixReturn(strSplitMatrixReturn(ctImagePaths[,1], '/')[,11], 'x')[,2]
+# Now I need to limit it to just the NZmeans 
+nzCols <- grep('NZMean', names(ctValues))
+nzCols <- append(c(1, 2), nzCols)
+
+ctValues <- ctValues[,nzCols]
 
 # Now take only the column of interest
 colsOfInterest <- columnNumbers$ROI_INDEX[115:length(columnNumbers$ROI_INDEX)] + 2
@@ -56,10 +51,12 @@ ctValues <- output
 # Now rm areas that should not have CT values
 ctValues <- ctValues[,-seq(4,41)]
 
+# Now rm datexscanid in order to avoid PHI issues
+ctValues <- ctValues[,-3]
+
 # Now write the csv
 write.csv(ctValues, '/data/joy/BBL/projects/pncReproc2015/antsCT/jlfAntsValuesCT.csv', quote=F, row.names=F)
 
 # Now do the n1601 specific csv
 n1601.ct.vals <- merge(n1601.subjs, ctValues, by=c('bblid', 'scanid'))
-n1601.ct.vals <- n1601.ct.vals[,-c(3)]
-write.csv(n1601.ct.vals, '/data/joy/BBL/studies/pnc/summaryData_n1601_20160823/t1/n1601_jlfCt.csv', quote=F, row.names=F)
+write.csv(n1601.ct.vals, '/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/neuroimaging/t1struct/n1601_jlfAntsCTIntersectionCt.csv', quote=F, row.names=F)
