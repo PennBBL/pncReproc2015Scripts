@@ -1,0 +1,402 @@
+#!/bin/bash
+
+set -e
+
+shopt -s nullglob
+
+usage() {
+  echo "$(basename "$0"): Preprocess and generate tractography"
+  echo " "
+  echo "Usage: $(basename "$0") --in=<input dti image> --subject=<Freesurfer Subject ID/BBLID> --method=<DTI/DSI> (--paramsdir=<parameters directory>)"
+}
+
+get_options() {
+    local scriptName=$(basename "${0}")
+    local arguments=($@)
+
+    # # initialize global output variables
+    unset workingdir
+    unset image
+
+    # parse arguments
+    local index=0
+    local numArgs=${#arguments[@]}
+    local argument
+
+    while [ ${index} -lt ${numArgs} ]; do
+        argument=${arguments[index]}
+
+        case ${argument} in
+            --help)
+                usage
+                exit 1
+                ;;
+            --in=*)
+                filename=${argument/*=/""}
+                index=$(( index + 1 ))
+                ;;
+	    --subject=*)
+                subject=${argument/*=/""}
+                index=$(( index + 1 ))
+                ;;
+# 	    --scanid=*)
+#                scanid=${argument/*=/""}
+#                index=$(( index + 1 ))
+#                ;;
+#            --timepoint=*)
+#                timepoint=${argument/*=/""}
+#                index=$(( index + 1 ))
+#                ;;
+            --method=*)
+                method=${argument/*=/""}
+                index=$(( index + 1 ))
+                ;;
+            --paramsdir=*)
+                paramsdir=${argument/*=/""}
+                index=$(( index + 1 ))
+                ;;
+            *)
+                usage
+                echo "ERROR: Unrecognized Option: ${argument}"
+                exit 1
+                ;;
+        esac
+    done
+
+    #################################
+    ### Check required parameters ###
+    #################################	
+    if [ -z ${filename} ]; then
+        usage
+        echo "ERROR: <input dti image> not specified"
+        exit 1
+    fi
+
+    if [ "${method}" == "DTI" ]; then
+        method_num=1
+    elif [ "${method}" == "DSI" ]; then
+        method_num=0
+    else
+        usage
+        echo "ERROR: <method> not specified or invalid"
+        exit 1
+    fi
+    
+    ######################
+    ### report options ###
+    ######################
+    echo "-- ${scriptName}: Specified Command-Line Options - Start --"
+    echo "   Scan Image: ${filename}"
+    echo "   Params Directory: ${paramsdir}"
+    echo "   Reconstruction Method: ${method}"
+    echo "-- ${scriptName}: Specified Command-Line Options - End --"
+}
+
+get_options "$@"
+
+
+## Setup----------------------
+
+# FSL Executables
+eddyBin="${FSLDIR}/bin/eddy"
+betBin="${FSLDIR}/bin/bet"
+probtrackx2Bin="${FSLDIR}/bin/probtrackx2"
+
+# Old Version: DSI Studio
+# dsiBin="/share/apps/dsistudio/2015-05-07/bin/dsi_studio_app"
+
+# DSI Studio path
+dsiBin="/share/apps/dsistudio/2016-01-25/bin/dsi_studio"
+
+# Freesurfer
+reconBin="${FREESURFER_HOME}/bin/recon-all"
+
+# HCP
+HCPPIPEDIR="$(dirname "$0")/HCPPipeline"
+
+workingdir=$(dirname "${filename}")
+# nifti=$(basename "${filename}")
+# image=$("${FSLDIR}/bin/remove_ext" "${nifti}")
+# basefile="${image}_unwarped"
+
+if [ -z ${paramsdir} ]; then
+    paramsdir=${workingdir}
+fi
+
+##----------------------------
+
+### Make sure 
+
+# emoDico_Dti=${roalfDir}/dico_corrected/"${bblid}"_"${tp}"x"${scanID}"_dico_dico.nii.gz
+echo ""
+echo "DWI input for reconstruction and tractography: ${emoDico_Dti}"
+echo ""
+
+#################################
+### Build directory structure ###
+#################################
+baumDir=/data/joy/BBL/studies/pnc/processedData/diffusion/deterministic_20161201/${bblid}/"${tp}"x"${scanID}"
+mkdir -p "${baumDir}"
+mkdir -p "${baumDir}"/parcellations/T1
+mkdir -p "${baumDir}"/parcellations/diffusion/Regional_volumes
+mkdir -p "${baumDir}"/connectivity/lausanne
+mkdir -p "${baumDir}"/tractography
+
+#################################################
+### Generate parcellations in Diffusion Space ###
+#################################################
+
+## Atlas Path (in T1 space)
+Glasser_fname=/data/joy/BBL/studies/pnc/processedData/structural/antsCorticalThickness/${bblid}/"${tp}"x"${scanID}"/GlasserPNCToSubject.nii
+gunzip ${Glasser_fname}.gz #  ** Atlases need to be unzipped for Atlas Dilation script to work properly  ** #
+
+Lausanne_fname=/data/joy/BBL/studies/pnc/processedData/structural/freesurfer53/${bblid}/"${tp}"x"${scanID}"/label/ROIv_scale125_T1.nii
+gunzip ${Lausanne_fname}.gz		
+
+## Probabilistic WM Map (ANTs)
+wmprob=/data/joy/BBL/studies/pnc/processedData/structural/antsCorticalThickness/${bblid}/"${tp}"x"${scanID}"/BrainSegmentationPosteriors3.nii
+gunzip ${wmprob}.gz
+	
+
+## parcellation Output file Prefix
+Glasser_prefix=${baumDir}/parcellations/T1/${bblid}_"${tp}"x"${scanID}"_T1_Glasser_dil2_
+Lausanne_prefix=${baumDir}/parcellations/T1/${bblid}_"${tp}"x"${scanID}"_T1_Lausanne_scale125_dil2_
+
+
+######################################################
+### Run Axel's function for dilating parcellations ###
+######################################################	
+pushd /data/jag/gbaum/pncReproc2015Scripts/diffusion/deterministic_20161201
+	
+matlab -nosplash -nodesktop -r "GLB_make_WM_dilated_atlas ${Glasser_fname} ${Lausanne_fname} ${wmprob} ${Glasser_prefix} ${Lausanne_prefix}; exit()"
+	
+popd
+
+
+###########################################################################
+### Co-register parcellation to Diffusion Space Using dti2xcp Transform ###
+###########################################################################
+	
+gzip ${Glasser_fname}
+gzip ${Lausanne_fname}
+gzip ${wmprob}
+
+# Dilated GM ROIs
+antsApplyTransforms -d 3 -e 0 -i "${Glasser_prefix}"dilated.nii -r /data/joy/BBL/studies/pnc/processedData/diffusion/dti2xcp_201606230942/${bblid}/"${tp}"x"${scanID}"/dti2xcp/${bblid}_"${tp}"x"${scanID}"_referenceVolume.nii.gz -t /data/joy/BBL/studies/pnc/processedData/diffusion/dti2xcp_201606230942/${bblid}/"${tp}"x"${scanID}"/coreg/${bblid}_"${tp}"x"${scanID}"_struct2seq.txt -o "${baumDir}"/parcellations/diffusion/${bblid}_"${tp}"x"${scanID}"_Glasser_dil2_GM.nii.gz -n MultiLabel
+
+# WM-GM Surface ROIs
+antsApplyTransforms -d 3 -e 0 -i "${Glasser_prefix}"dilated_surface.nii -r /data/joy/BBL/studies/pnc/processedData/diffusion/dti2xcp_201606230942/${bblid}/"${tp}"x"${scanID}"/dti2xcp/${bblid}_"${tp}"x"${scanID}"_referenceVolume.nii.gz -t /data/joy/BBL/studies/pnc/processedData/diffusion/dti2xcp_201606230942/${bblid}/"${tp}"x"${scanID}"/coreg/${bblid}_"${tp}"x"${scanID}"_struct2seq.txt -o "${baumDir}"/parcellations/diffusion/${bblid}_"${tp}"x"${scanID}"_Glasser_dil2_WMsurface.nii.gz -n MultiLabel
+
+# Dilated GM ROIs
+antsApplyTransforms -d 3 -e 0 -i "${Lausanne_prefix}"dilated.nii -r /data/joy/BBL/studies/pnc/processedData/diffusion/dti2xcp_201606230942/${bblid}/"${tp}"x"${scanID}"/dti2xcp/${bblid}_"${tp}"x"${scanID}"_referenceVolume.nii.gz -t /data/joy/BBL/studies/pnc/processedData/diffusion/dti2xcp_201606230942/${bblid}/"${tp}"x"${scanID}"/coreg/${bblid}_"${tp}"x"${scanID}"_struct2seq.txt -o "${baumDir}"/parcellations/diffusion/${bblid}_"${tp}"x"${scanID}"_Lausanne_scale125_dil2_GM.nii.gz -n MultiLabel
+
+# WM-GM Surface ROIs
+antsApplyTransforms -d 3 -e 0 -i "${Lausanne_prefix}"dilated_surface.nii -r /data/joy/BBL/studies/pnc/processedData/diffusion/dti2xcp_201606230942/${bblid}/"${tp}"x"${scanID}"/dti2xcp/${bblid}_"${tp}"x"${scanID}"_referenceVolume.nii.gz -t /data/joy/BBL/studies/pnc/processedData/diffusion/dti2xcp_201606230942/${bblid}/"${tp}"x"${scanID}"/coreg/${bblid}_"${tp}"x"${scanID}"_struct2seq.txt -o "${baumDir}"/parcellations/diffusion/${bblid}_"${tp}"x"${scanID}"_Lausanne_scale125_dil2_WMsurface.nii.gz -n MultiLabel
+
+gzip "${baumDir}"/parcellations/T1/*.nii
+
+####################################################
+### Get volume of each ROI for each parcellation ###
+####################################################
+
+## Lausanne
+for reg in {1..234}; do 
+	echo ${reg}
+	3dBrickStat -non-zero -count "${baumDir}/parcellations/diffusion/${bblid}_"${tp}"x"${scanID}"_Lausanne_scale125_dil2_GM.nii.gz<${reg}>" >> ${baumDir}/parcellations/diffusion/Regional_volumes/Lausanne_scale125_dil2_GM_ROIvol.txt
+done
+
+## Glasser
+	for reg in {1..360}; do 
+	echo ${reg}
+	3dBrickStat -non-zero -count "${baumDir}/parcellations/diffusion/${bblid}_"${tp}"x"${scanID}"_Glasser_dil2_GM.nii.gz<${reg}>" >> ${baumDir}/parcellations/diffusion/Regional_volumes/Glasser_dil2_GM_ROIvol.txt
+done
+
+#########################################################################################################
+
+############################################
+### Define Tractography Output Directory ###
+############################################
+tract_dir=${baumDir}/tractography
+
+echo "Deterministic Tractography Output Directory"
+echo ""
+echo ${tract_dir}
+
+### Define symlink to original DWI used for input to tractography
+ln -s ${roalfDir}/dico_corrected/"${bblid}"_"${tp}"x"${scanID}"_dico_dico.nii.gz ${tract_dir}/"${bblid}"_"${tp}"x"${scanID}"_dico_dico.nii.gz
+
+##################################################
+### Define subject-specific Rotated bvecs file ###
+##################################################
+bvecs=${roalfDir}/raw_merged_dti/"${bblid}"_"${tp}"x"${scanID}"_dti_merged_rotated.bvec
+echo " "
+echo "Subject-specific rotated bvecs file"
+echo " "
+echo ${bvecs}
+
+bvals=$(ls /data/jag/gbaum/PNC/10_subj_test/DTIparameters/bvals.txt) ## Bvals and acqparams are identical for all subjects ##
+echo " "
+echo "bval file"
+echo " "
+echo ${bvals}
+
+indexfile=/data/jag/gbaum/PNC/10_subj_test/DTIparameters/index.txt
+acqparams=/data/jag/gbaum/PNC/10_subj_test/DTIparameters/acqparams.txt 
+
+########################
+### Brain Extraction ###
+########################
+eddy_input_img=/data/joy/BBL/studies/pnc/processedData/diffusion/pncDTI_2016_04/${bblid}/"${tp}"x"${scanID}"/DTI_64/dico_corrected/"${bblid}"_"${tp}"x"${scanID}"_dico_dico.nii.gz
+
+${RUN} ${betBin} "${eddy_input_img}" /data/joy/BBL/studies/pnc/processedData/diffusion/pncDTI_2016_04/${bblid}/"${tp}"x"${scanID}"/DTI_64/dico_corrected/"${bblid}"_"${tp}"x"${scanID}"_dico_dico_mask.nii.gz -F
+
+##################################
+### Eddy and Motion Correction ###
+##################################
+# eddy_command="${eddyBin} --imain=${workingdir}/${image} --mask=${workingdir}/${image}_mask --index=${paramsdir}/index.txt --acqp=${paramsdir}/acqparams.txt --bvecs=${paramsdir}/bvecs.txt --bvals=${paramsdir}/bvals.txt --fwhm=0 --out=${workingdir}/${basefile} --flm=quadratic --very_verbose"
+# ${RUN} ${eddy_command}
+
+##############################################
+### Convert DWI input to DSI Studio format ###
+##############################################
+${RUN} ${dsiBin} --action=src --source=/data/joy/BBL/studies/pnc/processedData/diffusion/pncDTI_2016_04/${bblid}/"${tp}"x"${scanID}"/DTI_64/dico_corrected/"${bblid}"_"${tp}"x"${scanID}"_dico_dico_mask.nii.gz --bval="${bvals}" --bvec="${bvecs}" --output="${tract_dir}/${bblid}_"${tp}"x"${scanID}"_emoDico_Reconstruction.src.gz"
+
+##########################
+### DTI Reconstruction ###
+##########################
+${RUN} ${dsiBin} --action=rec --thread=8 --source="${tract_dir}/${bblid}_"${tp}"x"${scanID}"_emoDico_Reconstruction.src.gz" --method=${method_num} # method is DTI or DSI
+
+
+reconstruction=$(ls "${tract_dir}"/${bblid}_"${tp}"x"${scanID}"_emoDico_Reconstruction*.fib.gz )
+
+### Define Wm-Boundary Seed Volume ###
+# seedVol=$(ls ${lausannedir}/ROIv_scale125_dilated_wmEdge_seedVol.nii.gz)
+
+### Define fibercount variable for PNC_wmEdge_parcellate
+# wmEdge_voxCount=$(cat ${lausannedir}/${bblid}.${tp}.${scanID}.wmEdge_voxCount.txt)
+#subj_FibCount=$((${wmEdge_voxCount} * 20))
+
+# echo ""
+# echo "WM-Boundary Seed Volume: ${seedVol}"
+# echo ""
+# echo "Subject-specific Fiber Count (# Seed voxels in wmEdge template * 20)"
+# echo ${subj_FibCount}
+# Tractography (.trk output + diffusion indices along each streamline)
+
+
+######################################
+### Run Deterministic Tractography ###
+######################################
+${RUN} ${dsiBin} --action=trk --source="${reconstruction}" --method=0 --fiber_count=1000000 --turning_angle=45 --min_length=10 --max_length=400 --export=fa,statistics --output="${tract_dir}/${bblid}_"${tp}"x"${scanID}".wholebrain_1mill_10_400mm_streamlines.trk.gz"
+
+# gunzip ${tract_dir}/${bblid}.${tp}.${scanID}.wmEdge_1mill_0_500mm_streamlines.trk.gz
+
+tractography=${tract_dir}/${bblid}_"${tp}"x"${scanID}".wholebrain_1mill_10_400mm_streamlines.trk.gz
+
+# mv ${tract_dir}/${bblid}_"${tp}"x"${scanID}".wholebrain_1mill_10_400mm_streamlines.trk.stat.txt ${tract_dir}/trackStats/
+
+echo "Tractography file"
+echo ""
+echo ${tractography}
+echo ""
+
+#########################################################
+### Generate Connectivity Matrices using Tractography ###
+#########################################################
+
+# Create Lausanne output directory
+lausanneDir=/data/joy/BBL/studies/pnc/processedData/diffusion/deterministic_20161201/${bblid}/"${tp}"x"${scanID}"/connectivity/lausanne/end2end/scale125
+
+mkdir -p ${lausanneDir}
+
+### LAUSANNE (2 voxel dilation)
+${RUN} "${dsiBin}" --action=ana --source="${reconstruction}" --tract="${tractography}" --connectivity="/data/joy/BBL/studies/pnc/processedData/diffusion/deterministic_20161201/${bblid}/"${tp}"x"${scanID}"/parcellations/diffusion/${bblid}_"${tp}"x"${scanID}"_Lausanne_scale125_dil2_GM.nii.gz" --connectivity_value=count,ncount,fa,adc,mean_length --connectivity_type=end
+
+### Rename connectivity matrices ###
+# ADC (MD)
+adc_mat=$(ls ${tract_dir}/*adc*mat)
+mv ${adc_mat} ${lausanneDir}/${bblid}_"${tp}"x"${scanID}"_Lausanne_scale125_ADC_connectivity.mat
+
+# FA
+fa_mat=$(ls ${tract_dir}/*fa*mat)
+mv ${fa_mat} ${lausanneDir}/${bblid}_"${tp}"x"${scanID}"_Lausanne_scale125_FA_connectivity.mat
+
+# Length-Normalized Streamline count
+ncount_mat=$(ls ${tract_dir}/*ncount*mat)
+mv ${ncount_mat} ${lausanneDir}/${bblid}_"${tp}"x"${scanID}"_Lausanne_scale125_LengthNorm_Streamline_connectivity.mat
+
+# Streamline count
+count_mat=$(ls ${tract_dir}/*count*mat)
+mv ${count_mat} ${lausanneDir}/${bblid}_"${tp}"x"${scanID}"_Lausanne_scale125_Streamline_connectivity.mat
+
+
+# Mean Streamline length
+length_mat=$(ls ${tract_dir}/*mean_length*mat)
+mv ${length_mat} ${lausanneDir}/${bblid}_"${tp}"x"${scanID}"_Lausanne_scale125_mean_Streamline_Length.mat
+
+
+###################################################################
+### Create a regoinal volume-normalized streamline count matrix ###
+###################################################################
+ROIvol_path=${baumDir}/parcellations/diffusion/Regional_volumes/Lausanne_scale125_dil2_GM_ROIvol.txt
+
+adjmatpath=${lausanneDir}/${bblid}_"${tp}"x"${scanID}"_Lausanne_scale125_Streamline_connectivity.mat
+
+outpath=${baumDir}/connectivity/lausanne/end2end/scale125/${bblid}_"${tp}"x"${scanID}"_Lausanne_scale125_volNorm_SC.mat
+
+pushd /data/jag/gbaum/pncReproc2015Scripts/diffusion/deterministic_20161201
+	
+matlab -nosplash -nodesktop -r "ROI_volNorm ${ROIvol_path} ${adjmatpath} ${outpath}; exit()"
+	
+popd
+
+
+##################################
+### GLASSER (2 voxel dilation) ###
+##################################
+
+### Create Glasser output directory
+glasserDir=/data/joy/BBL/studies/pnc/processedData/diffusion/deterministic_20161201/${bblid}/"${tp}"x"${scanID}"/connectivity/glasser/end2end
+
+mkdir -p "${glasserDir}"
+
+### Generate Connectivity Matrices
+${RUN} "${dsiBin}" --action=ana --source="${reconstruction}" --tract="${tractography}" --connectivity="/data/joy/BBL/studies/pnc/processedData/diffusion/deterministic_20161201/${bblid}/"${tp}"x"${scanID}"/parcellations/diffusion/${bblid}_"${tp}"x"${scanID}"_Glasser_dil2_GM.nii.gz" --connectivity_value=count,ncount,fa,adc,mean_length --connectivity_type=end
+
+### Rename connectivity matrices 
+
+# ADC (MD)
+adc_mat=$(ls ${tract_dir}/*adc*mat)
+mv ${adc_mat} ${glasserDir}/${bblid}_"${tp}"x"${scanID}"_Glasser_ADC_connectivity.mat
+
+# FA
+fa_mat=$(ls ${tract_dir}/*fa*mat)
+mv ${fa_mat} ${glasserDir}/${bblid}_"${tp}"x"${scanID}"_Glasser_FA_connectivity.mat
+
+# Length-Normalized Streamline count
+ncount_mat=$(ls ${tract_dir}/*ncount*mat)
+mv ${ncount_mat} ${glasserDir}/${bblid}_"${tp}"x"${scanID}"_Glasser_LengthNorm_Streamline_connectivity.mat
+
+# Streamline count
+count_mat=$(ls ${tract_dir}/*count*mat)
+mv ${count_mat} ${glasserDir}/${bblid}_"${tp}"x"${scanID}"_Glasser_Streamline_connectivity.mat
+
+# Mean Streamline length
+length_mat=$(ls ${tract_dir}/*mean_length*mat)
+mv ${length_mat} ${glasserDir}/${bblid}_"${tp}"x"${scanID}"_Glasser_mean_Streamline_Length.mat
+
+###################################################################
+### Create a regoinal volume-normalized streamline count matrix ###
+###################################################################
+ROIvol_path=${baumDir}/parcellations/diffusion/Regional_volumes/Glasser_dil2_GM_ROIvol.txt
+
+adjmatpath=${glasserDir}/${bblid}_"${tp}"x"${scanID}"_Glasser_Streamline_connectivity.mat
+
+outpath=${glasserDir}/${bblid}_"${tp}"x"${scanID}"_Glasser_volNorm_SC.mat
+
+pushd /data/jag/gbaum/pncReproc2015Scripts/diffusion/deterministic_20161201
+	
+matlab -nosplash -nodesktop -r "ROI_volNorm ${ROIvol_path} ${adjmatpath} ${outpath}; exit()"
+	
+popd
+###################################################################
