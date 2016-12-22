@@ -174,7 +174,7 @@ ${FSP}fslmaths ${outputImg}_prob02.nii.gz -mul ${outputImg}_seg_GmMask.nii.gz ${
 if [ ${parcCheck} -eq 1 ] ; then
   if [ ${applyInverse} -eq 1 ] ; then
     echo "Now moving Parcellation mask into Subject Space"
-    ${AP}antsApplyTransforms -d 3 -e 3 -i ${parcMask} -o ${antsDirectory}${parcDir}ToSubject.nii.gz -r ${antsDirectory}ExtractedBrain0N4.nii.gz -t ${antsDirectory}TemplateToSubject1GenericAffine.mat -t ${antsDirectory}TemplateToSubject0Warp.nii.gz -n NearestNeighbor 
+    ${AP}antsApplyTransforms -d 3 -e 3 -i ${parcMask} -o ${antsDirectory}${parcDir}ToSubject.nii.gz -r ${antsDirectory}ExtractedBrain0N4.nii.gz -t ${antsDirectory}TemplateToSubject1GenericAffine.mat -t ${antsDirectory}TemplateToSubject0Warp.nii.gz -n MultiLabel
     parcMask=${antsDirectory}${parcDir}ToSubject.nii.gz ; 
   fi
   
