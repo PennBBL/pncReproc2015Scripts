@@ -69,12 +69,13 @@ cd ${tmpDir}
 # Now create the mask image
 ${createBinMask} -i ${antsCTSeg} -v ${valsToBin} -o ${tmpDir}/thresholdedImage.nii.gz 
 ${createBinMask} -i ${jlfParcel} -v ${csfValsToBin} -o ${tmpDir}/binMaskCSF.nii.gz
+${createBinMask} -i ${jlfParcel} -v "61,62" -o ${tmpDir}/binMaskVD.nii.gz
 
 # Now fix the csf image
 3dmask_tool -input ${tmpDir}/binMaskCSF.nii.gz -prefix ${tmpDir}/binMaskCSF_dil.nii.gz -dilate_input 2 -quiet
 
 # Now multiply our values together 
-fslmaths ${tmpDir}/thresholdedImage.nii.gz -add ${tmpDir}/binMaskCSF_dil.nii.gz -bin ${tmpDir}/thresholdedImage.nii.gz
+fslmaths ${tmpDir}/thresholdedImage.nii.gz -add ${tmpDir}/binMaskCSF_dil.nii.gz -add ${tmpDir}/binMaskVD.nii.gz -bin ${tmpDir}/thresholdedImage.nii.gz
 fslmaths ${tmpDir}/thresholdedImage.nii.gz -mul ${jlfParcel} ${tmpDir}/maskedJLFParcel
 
 # Now we need to check to see if we have the optional input
