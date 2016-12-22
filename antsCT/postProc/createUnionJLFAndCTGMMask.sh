@@ -31,8 +31,6 @@ valsToBin="2:6"
 csfValsToBin="4,11,46,51,52"
 tmpDir="/tmp/jlfIsol${RANDOM}"
 workingDir=`pwd`
-regionsToAdd=/home/arosen/valsToAdd.csv
-outputimageName="${imageName}_ANTsCTGMDIsolated.nii.gz"
 jlfParcel=${1}
 antsCTSeg=${2}
 outputImage=${3}
@@ -68,19 +66,15 @@ fi
 mkdir ${tmpDir}
 cd ${tmpDir}
 
-# Now find the directory for the jlf image
-
-
 # Now create the mask image
 ${createBinMask} -i ${antsCTSeg} -v ${valsToBin} -o ${tmpDir}/thresholdedImage.nii.gz 
-${createBinMask} -i ${antsCTSeg} -v ${valsToBin} -o ${tmpDir}/binMaskCSF.nii.gz
+${createBinMask} -i ${jlfParcel} -v ${csfValsToBin} -o ${tmpDir}/binMaskCSF.nii.gz
 
-
-# Now remove all small neighboorhoods
-#matlab -nodisplay -nojvm -r "rmSmallNehighboorhoods('${tmpDir}/binMask.nii.gz', 1000); exit;"
+# Now fix the csf image
+3dmask_tool -input ${tmpDir}/binMaskCSF.nii.gz -prefix ${tmpDir}/binMaskCSF_dil.nii.gz -dilate_input 2 -quiet
 
 # Now multiply our values together 
-fslmaths ${tmpDir}/thresholdedImage.nii.gz -add ${tmpDir}/binMaskCSF.nii.gz -bin ${tmpDir}/thresholdedImage.nii.gz
+fslmaths ${tmpDir}/thresholdedImage.nii.gz -add ${tmpDir}/binMaskCSF_dil.nii.gz -bin ${tmpDir}/thresholdedImage.nii.gz
 fslmaths ${tmpDir}/thresholdedImage.nii.gz -mul ${jlfParcel} ${tmpDir}/maskedJLFParcel
 
 # Now we need to check to see if we have the optional input
@@ -95,8 +89,6 @@ if [ ! "X${4}" == "X" ] ; then
   # Now send it to the file
   echo ${outputValues} >> ${4} ; 
 fi
-
-# Now we need to ad the csf regions 
 
 
 # Now move our output to the output name provided
