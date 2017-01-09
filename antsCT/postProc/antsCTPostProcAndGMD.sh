@@ -131,7 +131,7 @@ for i in 1 2 3 ; do
                  -o [ ${outputImg}_seg.nii.gz, ${outputImg}_prob%02d.nii.gz]
   else
     ${AP}Atropos -d 3 -a ${outputImg}_norm.nii.gz \
-                 -i PriorProbabilitImages[ 3,${outputImg}_prob%02d.nii.gz,0.0] \
+                 -i PriorProbabilityImages[ 3,${outputImg}_prob%02d.nii.gz,0.0] \
                  -k Gaussian -p Socrates[1] --use-partial-volume-likelihoods 0 \
                  -c [ 12, 0.00001] \
                  -x ${antsDirectory}BrainExtractionMask.nii.gz \
