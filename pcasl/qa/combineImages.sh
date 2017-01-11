@@ -5,7 +5,7 @@ inputCsv=${1}
 outputImageName=${2}
 
 # Now declare some statics
-pcaslDir="/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201606231423/"
+pcaslDir="/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/"
 outputDir="/data/joy/BBL/projects/pncReproc2015/pcasl/QA/flaggedMasks/"
 loopLength=`more ${inputCsv} | wc -l`
 
