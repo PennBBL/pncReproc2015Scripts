@@ -8,7 +8,7 @@
 source('/home/arosen/adroseHelperScripts/R/afgrHelpFunc.R')
 
 # First we need to prep the GMD values
-system("$XCPEDIR/utils/combineOutput -p /data/joy/BBL/studies/pnc/processedData/structural/antsCorticalThickness/ -f JLFintersect_antsGMD_val.1D -o antsGMD_JLF_vals.1D")
+system("$XCPEDIR/utils/combineOutput -p /data/joy/BBL/studies/pnc/processedData/structural/antsCorticalThickness/ -f JLFintersect_antsGMDIsol_val.1D -o antsGMD_JLF_vals.1D")
 system("mv /data/joy/BBL/studies/pnc/processedData/structural/antsCorticalThickness/antsGMD_JLF_vals.1D /data/joy/BBL/projects/pncReproc2015/antsCT/")
 columnNames <- read.csv("/data/joy/BBL/projects/pncReproc2015/antsCT/gmdJlfNames.csv")
 columnNumbers <- read.csv("/data/joy/BBL/projects/pncReproc2015/antsCT/justJLFColNamesafgrEdits.csv")
@@ -55,4 +55,4 @@ write.csv(gmdValues, '/data/joy/BBL/projects/pncReproc2015/antsCT/jlfAntsValuesG
 
 # Now prepare the n1601 output csv
 n1601.gmd.values <- merge(n1601.subjs, gmdValues, by=c('bblid', 'scanid'))
-write.csv(n1601.gmd.values, '/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/neuroimaging/t1struct/n1601_jlfAntsCTIntersectionGMD.csv', quote=F, row.names=F)
+write.csv(n1601.gmd.values, '/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/neuroimaging/t1struct/n1601_jlfAtroposIntersectionGMD.csv', quote=F, row.names=F)

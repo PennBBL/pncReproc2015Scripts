@@ -6,12 +6,14 @@ scanid=`echo ${subj} | cut -f 2 -d ,`
 dateid=`echo ${subj} | cut -f 3 -d ,`
 antsPath="/data/joy/BBL/studies/pnc/processedData/structural/antsCorticalThickness/${bblid}/${dateid}x${scanid}/"
 outImg="atropos3class.nii.gz"
-parcImg=`ls /data/joy/BBL/studies/pnc/processedData/structural/jlf/${bblid}/${dateid}x${scanid}/${bblid}_${dateid}x${scanid}_jlfLabelsANTsCTIntersection.nii.gz`
-parcDir="JLFintersect"
+#parcImg="/data/joy/BBL/studies/pnc/processedData/structural/jlf/${bblid}/${dateid}x${scanid}/${bblid}_${dateid}x${scanid}_jlfLabels.nii.gz"
+parcImg="/data/joy/BBL/applications/xcpEngine/networks/180GlasserPNCWithHemispheres.nii.gz"
+parcDir="GlasserPNC"
+scriptToCall=""
 templateImg="/data/joy/BBL/studies/pnc/template/pnc_template_brain.nii.gz"
 if [ -z ${parcImg} ] ; then 
   echo "${bblid},${scanid},${dateid}" >> ${noParcText}  
 else
-  /home/arosen/pncReproc2015Scripts/antsCT/postProc/antsCTPostProcAndGMD.sh -d ${antsPath} -o ${outImg} -p ${parcImg} -P ${parcDir} -t ${templateImg} -s 0; 
+  /home/arosen/pncReproc2015Scripts/antsCT/postProc/antsCTPostProcAndGMD.sh -d ${antsPath} -o ${outImg} -p ${parcImg} -P ${parcDir} -t ${templateImg} -s 1; 
 fi
   
