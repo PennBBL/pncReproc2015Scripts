@@ -6,8 +6,8 @@ scanid=`echo ${subj} | cut -f 2 -d ,`
 dateid=`echo ${subj} | cut -f 3 -d ,`
 antsPath="/data/joy/BBL/studies/pnc/processedData/structural/antsCorticalThickness/${bblid}/${dateid}x${scanid}/"
 outImg="atropos3class.nii.gz"
-parcImg=`ls /data/joy/BBL/studies/pnc/processedData/structural/jlf/${bblid}/${dateid}x${scanid}/${bblid}_${dateid}x${scanid}_jlfLabelsANTsCTUnion.nii.gz`
-parcDir="JLF_Union"
+parcImg=`ls /data/joy/BBL/studies/pnc/processedData/structural/jlf/${bblid}/${dateid}x${scanid}/${bblid}_${dateid}x${scanid}_jlfLabelsANTsCTIntersection.nii.gz`
+parcDir="JLFintersect"
 templateImg="/data/joy/BBL/studies/pnc/template/pnc_template_brain.nii.gz"
 if [ -z ${parcImg} ] ; then 
   echo "${bblid},${scanid},${dateid}" >> ${noParcText}  
