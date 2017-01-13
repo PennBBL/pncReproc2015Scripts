@@ -6,7 +6,7 @@ outputImageName=${2}
 
 # Now declare some statics
 pcaslDir="/data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/"
-outputDir="/data/joy/BBL/projects/pncReproc2015/pcasl/QA/flaggedMasks/"
+outputDir="/data/joy/BBL/projects/pncReproc2015/pcasl/QA/n2416/flaggedImages/"
 loopLength=`more ${inputCsv} | wc -l`
 
 # Now run through a loop and binarize each image, store it temporarily in the output dir and then combine them all into one
