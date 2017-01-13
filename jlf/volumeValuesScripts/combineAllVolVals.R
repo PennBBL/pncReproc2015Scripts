@@ -17,66 +17,45 @@ jlfWmVals <- commandArgs()[10]
 jlfWmVals <- read.csv(jlfWmVals)
 ctVals <- commandArgs()[6]
 ctVals <- read.csv(ctVals)
-manQA1 <- commandArgs()[7]
-manQA1 <- read.csv(manQA1)
-manQA2 <- commandArgs()[8]
-manQA2 <- read.csv(manQA2)
+#manQA1 <- commandArgs()[7]
+#manQA1 <- read.csv(manQA1)
+#manQA2 <- commandArgs()[8]
+#manQA2 <- read.csv(manQA2)
 voxelDim <- commandArgs()[9]
 voxelDim <- read.csv(voxelDim)
+voxelDim <- voxelDim[which(duplicated(voxelDim)=='FALSE'),]
 n1601.subjs <- read.csv('/data/joy/BBL/projects/pncReproc2015/antsCT/n1601_bblid_scanid_dateid.csv')
 n1601.subjs <- n1601.subjs[,c(2,1)]
 
-# Now make sure everyone has a scanid column
-jlfVals$scanid <- strSplitMatrixReturn(jlfVals$subject.1., 'x')[,2]
-ctVals$scanid <- strSplitMatrixReturn(ctVals$subject.1., 'x')[,2]
-jlfWmVals$scanid <- strSplitMatrixReturn(jlfWmVals$subject.1., 'x')[,2]
 
-# Now combine the qa data
-manQA1 <- manQA1[,-c(3,4)]
-qaData <- rbind(manQA1, manQA2)
+# Convert all of our voxel counts to mm3
+jlfVals <- merge(jlfVals, voxelDim, by=c('subject.0.', 'subject.1.'))
+jlfVals[,3:138] <- apply(jlfVals[,3:138], 2, function(x) (x * jlfVals$output))
+jlfVals <- jlfVals[,-139]
+jlfWmVals <- merge(jlfWmVals, voxelDim, by=c('subject.0.', 'subject.1.'))
+jlfWmVals[, 3:14] <- apply(jlfWmVals[,3:14], 2, function(x) (x * jlfWmVals$output))
+jlfWmVals <- jlfWmVals[,-15]
+ctVals <- merge(ctVals, voxelDim, by=c('subject.0.', 'subject.1.'))
+ctVals[,3:9] <- apply(ctVals[,3:9], 2, function(x) (x * ctVals$output))
+ctVals <- ctVals[,-10]
 
-output <- merge(jlfVals, ctVals, by='scanid')
-output <- merge(output, jlfWmVals, by=c('scanid'))
-output <- merge(output, qaData, by='scanid')
+# Now fix the column names
+colnames(jlfVals)[1:2] <- c('bblid', 'scanid')
+colnames(jlfWmVals)[1:2] <- c('bblid', 'scanid')
+colnames(ctVals)[1:2] <- c('bblid', 'scanid')
 
-# Just going to do this manually although I know there is a more dynamic fix...
-# Fixing column names...
-rowsToRM <- NULL
-rowsToRM <- grep('bblid', names(output))
-rowsToRM <- append(rowsToRM, grep('subject.1..y', names(output))) 
-rowsToRM <- append(rowsToRM, grep('subject.0..y', names(output))) 
-output <- output[,-rowsToRM]
-colnames(output)[2] <- 'bblid'
-colnames(output)[3] <- 'datexscanid'
-
-# Now reorder the columns
-attach(output)
-outputNew <- cbind(bblid, scanid, as.character(datexscanid), ratingJB, ratingKS, ratingLV, averageRating)
-output <- output[,-c(seq(1,3), seq(ncol(output), (ncol(output)-3)))]
-output <- as.data.frame(cbind(outputNew, output))
-colnames(output)[3] <- 'datexscanid'
-write.csv(output, '/data/joy/BBL/projects/pncReproc2015/jlf/volumeValues/jlfVolumeValuesVoxelCount.csv', quote=F, row.names=F)
-detach(output)
-
-# Now multiply the voxel volume by the voxel count to get mm3
-voxelDim$scanid <- strSplitMatrixReturn(voxelDim$subject.1., 'x')[,2]
-tmp <- merge(output, voxelDim, by='scanid')
-ccOutput <- apply(tmp[,c(seq(8,150), seq(153, 164))], 2, function(x) (x * tmp$output))
-attach(tmp)
-ccOutput <- as.data.frame(cbind(as.character(bblid), as.character(scanid), as.character(datexscanid), as.character(ratingJB), as.character(ratingKS), as.character(ratingLV), as.character(averageRating), ccOutput))
-colnames(ccOutput)[1:7] <- c('bblid', 'scanid', 'datexscanid', 'ratingJB', 'ratingKS', 'ratingLV', 'averageRating')
-write.csv(ccOutput, '/data/joy/BBL/projects/pncReproc2015/jlf/volumeValues/jlfVolumeValuesmm3Vals.csv', quote=F, row.names=F)
-detach(tmp)
+# Now fix scanid
+jlfVals[,2] <- strSplitMatrixReturn(charactersToSplit=jlfVals[,2], splitCharacter='x')[,2]
+jlfWmVals[,2] <- strSplitMatrixReturn(charactersToSplit=jlfWmVals[,2], splitCharacter='x')[,2]
+ctVals[,2] <- strSplitMatrixReturn(charactersToSplit=ctVals[,2], splitCharacter='x')[,2]
 
 ## Now write the n1601 file
 # Start with JLF volumes
-n1601.vol.vals <- merge(n1601.subjs, ccOutput, by=c('bblid', 'scanid'))
-attach(n1601.vol.vals)
-n1601.output <- cbind(bblid, scanid, n1601.vol.vals[,seq(8, 143)])
-write.csv(n1601.output, '/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/n1601_summaryData/t1/n1601_jlfVol.csv', quote=F, row.names=F)
-# Now do the antsCT volumes
-n1601.output <- cbind(bblid, scanid, n1601.vol.vals[,c(150, 145, 146, 144, 147, 148, 149)] )
-write.csv(n1601.output, '/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/n1601_summaryData/t1/n1601_antsCtVol.csv', quote=F, row.names=F)
-# Now do the jlf WM segmentation
-n1601.output <- cbind(bblid, scanid, n1601.vol.vals[, seq(151, 162)])
-write.csv(n1601.output, '/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/n1601_summaryData/t1/n1601_jlfWmVol.csv', quote=F, row.names=F)
+n1601.vol.vals <- merge(n1601.subjs, jlfVals, by=c('bblid', 'scanid'))
+n1601.vol.wm.vals <- merge(n1601.subjs, jlfWmVals, by=c('bblid', 'scanid'))
+n1601.vol.ct.vals <- merge(n1601.subjs, ctVals, by=c('bblid', 'scanid'))
+
+# Now write the output
+write.csv(n1601.vol.vals, '/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/neuroimaging/t1struct/n1601_jlfAntsCTIntersectionVol.csv', quote=F, row.names=F)
+write.csv(n1601.vol.wm.vals, '/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/neuroimaging/t1struct/n1601_jlfWmVol.csv', quote=F, row.names=F)
+write.csv(n1601.vol.ct.vals, '/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/neuroimaging/t1struct/n1601_jlfCt.csv', quote=F, row.names=F)

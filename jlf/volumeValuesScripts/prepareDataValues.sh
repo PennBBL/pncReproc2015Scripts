@@ -4,7 +4,7 @@
 
 # Delcare any statics
 jlfDirectory="/data/joy/BBL/studies/pnc/processedData/structural/jlf/"
-jlfVolDir="/data/joy/BBL/projects/pncReproc2015/jlf/volumeValues/"
+jlfVolDir="/data/joy/BBL/projects/pncReproc2015/jlf/volumeValues/intersection/"
 ctDirectory="/data/joy/BBL/studies/pnc/processedData/structural/antsCorticalThickness/"
 scriptsDir="/home/arosen/pncReproc2015Scripts/jlf/volumeValuesScripts"
 subjInfoDir="/data/joy/BBL/studies/pnc/subjectData/"
