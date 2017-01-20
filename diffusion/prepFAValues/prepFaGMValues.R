@@ -3,25 +3,25 @@
 # This script is going to be used to prepare all of the FA values for the n1601
 # Prior to running this script though two things must be run outside of this in bash
 # They can be found below:
-# for i in `find /data/joy/BBL/projects/pncReproc2015/diffusionResourceFiles/S-lstat_extraction_lists/dtitk_tr_path2_nativespace_pncTemplateJLF_Labels_LPI_2dtitk_go1_n14_template_lstat/subjects/ -name *_mean.csv` ; do vals=`tr -s '\n' ',' < ${i} | tr -d '"'` ; echo "${i},${vals}" ; done >> /data/joy/BBL/projects/pncReproc2015/diffusion/prepMDValues/tmpVals1.csv
-# for i in `find /data/joy/BBL/projects/pncReproc2015/diffusionResourceFiles/S-lstat_extraction_lists/dtitk_tr_path_nativespace_pncTemplateJLF_Labels_LPI_2dtitk_go1_n14_template_lstat/subjects/ -name *_mean.csv` ; do vals=`tr -s '\n' ',' < ${i} | tr -d '"'` ; echo "${i},${vals}" ; done >> /data/joy/BBL/projects/pncReproc2015/diffusion/prepMDValues/tmpVals2.csv
+# for i in `find /data/joy/BBL/projects/pncReproc2015/diffusionResourceFiles/S-lstat_extraction_lists/dtitk_fa_path_nativespace_pncTemplateJLF_Labels_LPI_2dtitk_go1_n14_template_lstat/subjects/ -name *_mean.csv` ; do vals=`tr -s '\n' ',' < ${i} | tr -d '"'` ; echo "${i},${vals}" ; done >> /data/joy/BBL/projects/pncReproc2015/diffusion/prepFAGMValues/tmpVals1.csv
+# for i in `find /data/joy/BBL/projects/pncReproc2015/diffusionResourceFiles/S-lstat_extraction_lists/dtitk_fa_path_nativespace2_pncTemplateJLF_Labels_LPI_2dtitk_go1_n14_template_lstat/subjects/ -name *_mean.csv` ; do vals=`tr -s '\n' ',' < ${i} | tr -d '"'` ; echo "${i},${vals}" ; done >> /data/joy/BBL/projects/pncReproc2015/diffusion/prepFAGMValues/tmpVals2.csv
 # And then run: ~/adroseHelperScripts/bash/mergeCSV.sh in the directory with the MD values
 
 # Source afgr startup script
 source('/home/arosen/adroseHelperScripts/R/afgrHelpFunc.R')
 
 # Load data
-mdVals <- read.csv('/data/joy/BBL/projects/pncReproc2015/diffusion/prepMDValues/merged.csv', header=F)
+mdVals <- read.csv('/data/joy/BBL/projects/pncReproc2015/diffusion/prepFAGMValues/merged.csv', header=F)
 mdVals <- mdVals[,-c(136)]
 n1601.subjs <- read.csv('/data/joy/BBL/projects/pncReproc2015/antsCT/n1601_bblid_scanid_dateid.csv')
 n1601.subjs <- n1601.subjs[,c(2,1)]
 original.data <- read.csv('/data/joy/BBL/studies/pnc/subjectData/n1601_go1_datarel_020716.csv')
 namesToAdd <- read.csv('/data/joy/BBL/projects/pncReproc2015/diffusion/prepMDValues/mdJlfNames.csv')
 
+namesToAdd <- gsub(x=namesToAdd$X, pattern='_md_', replacement='_fa_')
+
 # Now fix the subject identifier column
 mdVals[,1] <- strSplitMatrixReturn(strSplitMatrixReturn(mdVals[,1], '_')[,15], 'x')[,2]
-
-namesToAdd <- gsub(x=namesToAdd$X, pattern='_md_', replacement='_tr_')
 
 # Now fix the column names
 colnames(mdVals) <- c('scanid', 'bblid', as.character(namesToAdd))
@@ -36,4 +36,4 @@ colnames(tmpToAdd) <- colnames(output.df)
 output.df <- rbind(output.df, tmpToAdd)
 
 # Now write the csv
-write.csv(output.df, '/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/neuroimaging/dti/n1601_jlfTRValues.csv', quote=F, row.names=F)
+write.csv(output.df, '/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/neuroimaging/dti/n1601_jlfFAValues.csv', quote=F, row.names=F)
