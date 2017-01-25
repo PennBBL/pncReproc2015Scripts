@@ -45,7 +45,7 @@ write.csv(output.df, '/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/neuroimagin
 # for i in `find /data/joy/BBL/projects/pncReproc2015/diffusionResourceFiles/S-lstat_extraction_lists/dtitk_tr_path2_nativespace_JHU-ICBM-Labels-1mm_LPI_2dtitk_lstat/subjects/ -name *_mean.csv` ; do vals=`tr -s '\n' ',' < ${i} | tr -d '"'` ; echo "${i},${vals}" ; done >> /data/joy/BBL/projects/pncReproc2015/diffusion/prepTRValues/tmp/tmpValsL2.csv
 
 # Load data
-faVals <- read.csv('/data/joy/BBL/projects/pncReproc2015/diffusion/prepADValues/tmp/merged.csv', header=F)
+faVals <- read.csv('/data/joy/BBL/projects/pncReproc2015/diffusion/prepTRValues/tmp/merged.csv', header=F)
 faVals <- faVals[,-c(51)]
 
 # Now fix the subject identifier column
