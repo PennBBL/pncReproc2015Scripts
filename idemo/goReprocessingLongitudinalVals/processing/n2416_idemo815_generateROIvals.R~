@@ -164,36 +164,19 @@ write.csv(jlf, "/data/joy/BBL/studies/pnc/n2416_dataFreezeJan2017/neuroimaging/i
 
 
 
-
-
 #JLF Intersect
-data <- read.csv("/data/joy/BBL/studies/pnc/n2416_dataFreezeJan2017/neuroimaging/idemo/n2416_idemo_FinalQA.csv")
+data <- read.csv("/data/joy/BBL/projects/pncReproc2015/idemo/goReprocessingLongitudinalVals/QA/n815_idemo_FinalQA.csv")
 data <- data[which(data$Exclude.acquired == 0), ]
 
-jlf <- as.data.frame(matrix(NA, ncol = 3500, nrow=2416))
+jlf.intersect <- as.data.frame(matrix(NA, ncol = 3500, nrow=2416))
 namesjlf <- read.csv("/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/neuroimaging/pncTemplate/jlf/jlf_lookup.csv", header = F)
 namesjlf$V1 <- as.character(namesjlf$V1)
 namesjlf$V2 <- as.character(namesjlf$V2)
 
-##SAVE HEADERS FIRST
-i <- 1
-jlf[i, 1:2] <- data[i, 1:2]
-path <- paste0("/data/joy/BBL/studies/pnc/processedData/idemo/idemo_201610/",data[i,1])
-datexscanid <- list.files(path)
-datexscanid <- datexscanid[grep(data[i,2], x = datexscanid)]
-path <- paste0(path,"/",datexscanid,"/roiquant/JLFintersect/" )
-copes <- list.files(path)
-j <- 2
-path.cope <- paste0(path, copes[j])
-temp.data <- read.csv(path.cope, sep = "\t")
-temp.data[1,5:211] <- temp.data[1,3:209]
-            temp.data <- temp.data[,-c(3,4)]
-namestempJLF <- names(temp.data)
-
 
 
 for (i in 1:2416) {
-  jlf[i, 1:2] <- data[i, 1:2]
+  jlf.intersect[i, 1:2] <- data[i, 1:2]
   path <- paste0("/data/joy/BBL/studies/pnc/processedData/idemo/idemo_201610/",data[i,1])
   datexscanid <- list.files(path)
   datexscanid <- datexscanid[grep(data[i,2], x = datexscanid)]
@@ -205,7 +188,6 @@ for (i in 1:2416) {
         
         path.cope <- paste0(path, copes[j])
         temp.data <- read.csv(path.cope, sep = "\t")
-
         if (dim(temp.data)[2] != 211) {
           temp.data2 <- as.data.frame(array(NA, dim=c(1,209)))
           temp.data2[,1:2] <- temp.data[,1:2]
@@ -216,12 +198,9 @@ for (i in 1:2416) {
             temp.data <- temp.data[,-c(3,4)]
             
         }
-
         cope <- copes[j]
-
         if(i == 1) {
           for (k in 3:209) {
-            
             name <- names(temp.data)[k]
             name <- strsplit(x = name, "_")[[1]][2]
             name <- namesjlf[which(namesjlf[,1] == name),2]
@@ -232,10 +211,10 @@ for (i in 1:2416) {
           }
         }
         
-        jlf[i,(3 +(j-1)*207):(2 +(j)*207)] <-  as.numeric(temp.data[1,3:209])
+        jlf.intersect[i,(3 +(j-1)*207):(2 +(j)*207)] <-  as.numeric(temp.data[1,3:209])
         
         if(i == 1) {
-          names(jlf)[(3 +(j-1)*207):(2 +(j)*207)] <- names(temp.data[,3:209])
+          names(jlf.intersect)[(3 +(j-1)*207):(2 +(j)*207)] <- names(temp.data[,3:209])
         }
         
       }   
@@ -244,15 +223,18 @@ for (i in 1:2416) {
   print(i)
 }
 
-names(jlf)[1:2] <- c("bblid","scanid")
-jlfindex <- read.csv("/data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts_mv_20161007/restbold/quality/JLF_index.csv", header=F)
+names(jlf.intersect)[1:2] <- c("bblid","scanid")
 
-index <- c(1,2)
-for (i in 1:15) {
-  temp <- 2 + (207)*(i) +  (as.numeric(jlfindex))
-  index <- c(index, temp)
+index <- 0
+for (i in 1:3500) {
+  if (all(is.na(jlf.intersect[,i]))) {
+    index <- c(index, i)
+  }
 }
 
-jlf2 <- jlf[, index]
+index <- index[-1]
+jlf.intersect <- jlf.intersect[,-index]
 
-write.csv(jlf, "/data/joy/BBL/studies/pnc/n2416_dataFreezeJan2017/neuroimaging/idemo/n2416_idemo_jlf_intersect_roivals.csv", row.names=F)
+write.csv(jlf.intersect, "/home/agarza/pncReproc2015Scripts/idemo/goReprocessingLongitudinalVals/dataRelease/n815_idemo_jlf_intersect_roivals.csv", row.names=F)
+
+
