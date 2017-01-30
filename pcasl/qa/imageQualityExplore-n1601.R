@@ -10,30 +10,6 @@ source("/home/arosen/adroseHelperScripts/R/afgrHelpFunc.R")
 install_load('ANTsR', 'eVenn')
 
 ## Declare any functions to use here
-# Declare a function which will tell us if binary matrix A is entierly 
-# contained within binary matrix B
-checkIntersect <- function(binaryMatrixToInclude, binaryMatrixToTest, coverageThreshold){
-  # First prime the output
-  output <- "TRUE"
-  # First get an index for all of the 1 values for the mask to include
-  includeIndex <- which(binaryMatrixToInclude == 1)
-  # Now do the same for the mask to test 
-  testIndex <- which(binaryMatrixToTest == 1)
-  # Now Subtract test - include and check for negative values 
-  matchingIndex <- (includeIndex %in% testIndex)
-  # Now check for any False values
-  if(identical(names(table(matchingIndex)[1]), "FALSE")){
-    # Now lets check to see if we meet the threshold
-    # First lets find the length that would exceed our threshold
-    excludeLength <- floor(length(includeIndex) * coverageThreshold)
-    # Now test to see if we exceed that
-    if(unname(table(matchingIndex)[1]) > excludeLength){
-      output <- "FALSE"
-    }
-  }
-  return(output)
-}
-
 
 # Now create and load the data
 system('${XCPEDIR}/utils//qualityWrapper -d /data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts/pcasl/xcpFiles/pcasl_201607291423.dsn -S 3 -m "temporalSignalNoiseRatio relMeanRMSmotion" -M "30 0.5" -E "0 1"')
@@ -43,8 +19,20 @@ flag.scores <- read.csv('/data/joy/BBL/projects/pncReproc2015/pcasl/QA/pcasl_201
 flag.scores[,2] <- qa.scores[,2]
 n.tr.data <- read.csv('/data/joy/BBL/projects/pncReproc2015/pcasl/QA/aslAllCohortTRInfo.csv', header=F)
 n1601.subjs <- read.csv('/data/joy/BBL/projects/pncReproc2015/antsCT/n1601_bblid_scanid_dateid.csv')
-pcaslSSVals <- read.csv('/data/joy/BBL/projects/pncReproc2015/pcasl/cbfValues/pcasl_201607291423/pcasl_JLF_ssT1-correctHeaders.csv')
-pcaslSTDVals <- read.csv('/data/joy/BBL/projects/pncReproc2015/pcasl/cbfValues/pcasl_201607291423/pcasl_JLF_stdT1-correctHeaders.csv')
+## Now prepare our SS values 
+system('/data/joy/BBL/applications/xcpEngine/utils/combineOutput -p /data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/ -f "JLFintersect_val_asl_quant_ssT1.1D" -o pcasl_JLFintersect_ssT1.1D')
+system('mv /data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/pcasl_JLFintersect_ssT1.1D /data/joy/BBL/projects/pncReproc2015/pcasl/cbfValues/pcasl_20161202/')
+# Now fix the column headers
+tmp <- read.table('/data/joy/BBL/projects/pncReproc2015/pcasl/cbfValues/pcasl_20161202/pcasl_JLFintersect_ssT1.1D', header=T)
+tmpCols <- read.csv('/data/joy/BBL/projects/pncReproc2015/pcasl/cbfValues/nameAssistFiles/columsOfInterest.csv')
+tmp <- tmp[,tmpCols$x]
+tmpNames <- read.csv('/data/joy/BBL/projects/pncReproc2015/pcasl/cbfValues/nameAssistFiles/pcaslJlfNames.csv')
+tmpNames <- c('bblid', 'scanid', as.character(tmpNames$X))
+colnames(tmp) <- tmpNames
+tmp[,2] <- strSplitMatrixReturn(charactersToSplit=tmp[,2], splitCharacter='x')[,2]
+write.csv(tmp, '/data/joy/BBL/projects/pncReproc2015/pcasl/cbfValues/pcasl_20161202/pcasl_JLF_ssT1-correctHeaders.csv', quote=F, row.names=F)
+rm(tmp, tmpCols, tmpNames)
+pcaslSSVals <- read.csv('/data/joy/BBL/projects/pncReproc2015/pcasl/cbfValues/pcasl_20161202/pcasl_JLF_ssT1-correctHeaders.csv')
 n1601.data <- read.csv('/data/joy/BBL/studies/pnc/subjectData/n1601_go1_datarel_020716.csv')
 n1601.pcasl.include <- read.csv('/data/joy/BBL/projects/pncReproc2015/pcasl/QA/n1601-QA/n1601_asl_acquired_incomplete_usable.csv')
 n1601.t1.qa.data <- read.csv('/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/neuroimaging/t1struct/n1601_t1QaData.csv')
@@ -185,8 +173,9 @@ output.df$pcaslMeanGMValueExclude[which(output.df$pcaslMeanGMValue<15)] <- 1
 output.df$pcaslExclude[which(is.na(output.df$pcaslExclude)=='TRUE')] <- 1
 output.df$pcaslVoxelwiseExclude[which(is.na(output.df$pcaslVoxelwiseExclude)=='TRUE')] <- 1
 output.df$pcaslNoDataExclude[which(is.na(output.df$pcaslNoDataExclude)=='TRUE')] <- 1
+output.df <- output.df[,-20]
 
-write.csv(output.df, '/data/joy/BBL/studies/pnc/summaryData_n1601_20160823/n1601_jlfPcaslQaData.csv', quote=F, row.names=F)
+write.csv(output.df, '/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/neuroimaging/asl/n1601_PcaslQaData.csv', quote=F, row.names=F)
 qaData <- output.df
 
 ## Now work with the imaging data here
@@ -194,7 +183,8 @@ output.df <- imageingData
 # Now I need to rm the cerebellum, whitematter, the optic chiasm, and the 
 # ventral DC areas from the cbf values
 namesToRm <- c('Ventricle', 'Cerebellum', 'White', 'CSF', 'Vent', 'Vessel', 
-               'Ventral_DC', 'OpticChiasm', 'CerVerLob', 'BasForebr', 'Brain_Stem')
+               'Ventral_DC', 'OpticChiasm', 'CerVerLob', 'BasForebr', 'Brain_Stem',
+               'WM', 'fornix', 'antlimb_InC', 'postlimbcerebr', 'corpus_callosum')
 colsToRm <- NULL
 # Now go through a loop and grep the columns that we need to rm
 # and append those values to the colsToRm variable
@@ -204,6 +194,7 @@ for(value in namesToRm){
 }
 
 output.df <- output.df[,-colsToRm]
+output.df[output.df<0] <- 'NA'
 
 # and now append the extra subjects 
 bblidToAdd <- n1601.subjs$bblid[which(n1601.subjs$bblid %in% output.df$bblid == 'FALSE')]
@@ -213,7 +204,8 @@ tmpToAdd <- cbind(bblidToAdd, scanidToAdd, tmpToAdd)
 colnames(tmpToAdd) <- colnames(output.df)
 output.df <- rbind(output.df, tmpToAdd)
 
-write.csv(output.df, '/data/joy/BBL/studies/pnc/summaryData_n1601_20160823/n1601_jlfPcaslValues.csv', quote=F, row.names=F)
+
+write.csv(output.df, '/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/neuroimaging/asl/n1601_jlfAntsCTIntersectionPcaslValues.csv', quote=F, row.names=F)
 
 # Now lets produce our venn diagram for those subjects that were flagged for removal
 excludeCols <- grep('Exclude', names(qaData))
