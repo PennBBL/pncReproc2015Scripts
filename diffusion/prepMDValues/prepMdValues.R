@@ -19,7 +19,7 @@ original.data <- read.csv('/data/joy/BBL/studies/pnc/subjectData/n1601_go1_datar
 namesToAdd <- read.csv('/data/joy/BBL/projects/pncReproc2015/diffusion/prepMDValues/mdJlfNames.csv')
 
 # Now fix the subject identifier column
-mdVals[,1] <- strSplitMatrixReturn(strSplitMatrixReturn(mdVals[,1], '_')[,15], 'x')[,2]
+mdVals[,1] <- strSplitMatrixReturn(strSplitMatrixReturn((strSplitMatrixReturn(strSplitMatrixReturn(mdVals[,1], 'subjects/')[,2], 'dti'))[,1], 'x')[,2], '_')
 
 namesToAdd <- gsub(x=namesToAdd$X, pattern='_md_', replacement='_tr_')
 
