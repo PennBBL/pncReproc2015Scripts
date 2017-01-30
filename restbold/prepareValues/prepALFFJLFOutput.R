@@ -1,18 +1,11 @@
-# AFGR August 10 2016
-
-# This script is going to be used to prepare the header info for the GMD values
-# produced by the antsCTPostProcAndGMD.sh script
-# Its going to follow the logic of prepAntsCTJLFOutput.R very closley 
-
-# Load data
 source('/home/arosen/adroseHelperScripts/R/afgrHelpFunc.R')
-
+# Load data
 # First we need to prep the GMD values
-system("$XCPEDIR/utils/combineOutput -p /data/joy/BBL/studies/pnc/processedData/structural/antsCorticalThickness/ -f JLFintersect_antsGMD_val.1D -o antsGMD_JLF_vals.1D")
-system("mv /data/joy/BBL/studies/pnc/processedData/structural/antsCorticalThickness/antsGMD_JLF_vals.1D /data/joy/BBL/projects/pncReproc2015/antsCT/")
-columnNames <- read.csv("/data/joy/BBL/projects/pncReproc2015/antsCT/gmdJlfNames.csv")
+system("$XCPEDIR/utils/combineOutput -p /data/joy/BBL/studies/pnc/processedData/restbold/restbold_201607151621/ -f JLFintersect_val_alff.1D -o allJlfIntersectAlffVals.1D")
+system("mv /data/joy/BBL/studies/pnc/processedData/restbold/restbold_201607151621/allJlfIntersectAlffVals.1D /data/joy/BBL/projects/pncReproc2015/restbold/prepareValues/")
+columnNames <- read.csv("/data/joy/BBL/projects/pncReproc2015/restbold/prepareValues/alffJlfNames.csv")
 columnNumbers <- read.csv("/data/joy/BBL/projects/pncReproc2015/antsCT/justJLFColNamesafgrEdits.csv")
-gmdValues <- read.table("/data/joy/BBL/projects/pncReproc2015/antsCT/antsGMD_JLF_vals.1D", header=T)
+gmdValues <- read.table("/data/joy/BBL/projects/pncReproc2015/restbold/prepareValues/allJlfIntersectAlffVals.1D", header=T)
 n1601.subjs <- read.csv('/data/joy/BBL/projects/pncReproc2015/antsCT/n1601_bblid_scanid_dateid.csv')
 n1601.subjs <- n1601.subjs[,c(2,1)]
 
@@ -51,8 +44,18 @@ gmdValues <- gmdValues[,-colsToRM]
 gmdValues <- gmdValues[,-3]
 
 # Now write the csv
-write.csv(gmdValues, '/data/joy/BBL/projects/pncReproc2015/antsCT/jlfAntsValuesGMD.csv', quote=F, row.names=F)
+write.csv(gmdValues, '/data/joy/BBL/projects/pncReproc2015/restbold/prepareValues/jlfValuesAlff.csv', quote=F, row.names=F)
 
 # Now prepare the n1601 output csv
 n1601.gmd.values <- merge(n1601.subjs, gmdValues, by=c('bblid', 'scanid'))
-write.csv(n1601.gmd.values, '/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/neuroimaging/t1struct/n1601_jlfAntsCTIntersectionGMD.csv', quote=F, row.names=F)
+output.df <- n1601.gmd.values
+# Now append extra subjects w/o data
+bblidToAdd <- n1601.subjs$bblid[which(n1601.subjs$bblid %in% output.df$bblid == 'FALSE')]
+scanidToAdd <- n1601.subjs$scanid[which(n1601.subjs$scanid %in% output.df$scanid == 'FALSE')]
+tmpToAdd <- as.data.frame(matrix(rep(NA, length(bblidToAdd) * (ncol(output.df)-2)), nrow=length(bblidToAdd), ncol=(ncol(output.df)-2)))
+tmpToAdd <- cbind(bblidToAdd, scanidToAdd, tmpToAdd)
+colnames(tmpToAdd) <- colnames(output.df)
+output.df <- rbind(output.df, tmpToAdd)
+
+
+write.csv(output.df, '/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/neuroimaging/rest/n1601_jlfAntsCTIntersectionAlff.csv', quote=F, row.names=F)

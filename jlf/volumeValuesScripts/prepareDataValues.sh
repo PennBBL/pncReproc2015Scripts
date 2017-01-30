@@ -6,7 +6,7 @@
 jlfDirectory="/data/joy/BBL/studies/pnc/processedData/structural/jlf/"
 jlfVolDir="/data/joy/BBL/projects/pncReproc2015/jlf/volumeValues/intersection/"
 ctDirectory="/data/joy/BBL/studies/pnc/processedData/structural/antsCorticalThickness/"
-scriptsDir="/data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts/jlf/volumeValuesScripts"
+scriptsDir="/home/arosen/pncReproc2015Scripts/jlf/volumeValuesScripts"
 subjInfoDir="/data/joy/BBL/studies/pnc/subjectData/"
 
 # First thing we have to do is create the raw volume output for the jlf labels

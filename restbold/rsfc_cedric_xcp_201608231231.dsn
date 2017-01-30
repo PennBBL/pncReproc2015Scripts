@@ -34,7 +34,7 @@
 ###################################################################
 
 analysis=rsfc_cedric_xcp_20160823
-design=/home/arosen/tmp/pncReproc2015Scripts/restbold/rsfc_cedric_xcp_201608231231.dsn
+design=/home/arosen/pncReproc2015Scripts/restbold/rsfc_cedric_xcp_201608231231.dsn
 path_cohort=/data/joy/BBL/projects/pncReproc2015/restbold/restboldAllCohort.csv
 subjects_ct=1405
 img=${subject[2]}

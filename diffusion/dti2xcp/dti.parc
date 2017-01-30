@@ -1,0 +1,14 @@
+SPACE::NETWORK
+:#NAME#MAP#SPACE
+#264PowerPNC#/data/joy/BBL/applications/xcpEngine/networks/264PowerPNC.nii.gz#std
+#MUSE#/data/joy/BBL/studies/pnc/processedData/structural/muse/labeledImages/${subject[0]}_${subject[1]}.nii.gz#str
+#MARS#/data/joy/BBL/studies/pnc/processedData/structural/mars/labeledImages/${subject[0]}_${subject[1]}*.nii.gz#str
+#GordonPNC#/data/joy/BBL/applications/xcpEngine/networks/gordonPNC.nii.gz#std
+#GlasserPNC#/data/joy/BBL/applications/xcpEngine/networks/180GlasserPNCWithHemispheres.nii.gz#std
+#JLF#/data/joy/BBL/studies/pnc/processedData/structural/jlf/${subject[0]}/${subject[1]}/${subject[0]}_${subject[1]}_jlfLabels.nii.gz#str
+#JLFWM#/data/joy/BBL/studies/pnc/processedData/structural/jlf/${subject[0]}/${subject[1]}/${subject[0]}_${subject[1]}_jlfWmSeg.nii.gz#str
+#JHUTracts#/data/joy/BBL/studies/pnc/template/jhu/JHU-ICBM-tracts-maxprob-thr0-1mm.nii.gz#std
+#JHULabels#/data/joy/BBL/studies/pnc/template/jhu/JHU-ICBM-labels-1mm-PNC.nii.gz#std
+#Lausanne#/data/joy/BBL/studies/pnc/processedData/structural/freesurfer53/${subject[0]}/${subject[1]}/label/ROIv_scale125_T1.nii.gz#str
+#JLFintersect#/data/joy/BBL/studies/pnc/processedData/structural/jlf/${subject[0]}/${subject[1]}/${subject[0]}_${subject[1]}_jlfLabelsANTsCTIntersection.nii.gz#str
+#JHUTracts25#/data/joy/BBL/studies/pnc/template/jhu/JHU-ICBM-tracts-maxprob-thr25-1mm-PNC.nii.gz#std

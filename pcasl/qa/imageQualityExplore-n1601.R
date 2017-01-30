@@ -47,7 +47,7 @@ pcaslSSVals <- read.csv('/data/joy/BBL/projects/pncReproc2015/pcasl/cbfValues/pc
 pcaslSTDVals <- read.csv('/data/joy/BBL/projects/pncReproc2015/pcasl/cbfValues/pcasl_201607291423/pcasl_JLF_stdT1-correctHeaders.csv')
 n1601.data <- read.csv('/data/joy/BBL/studies/pnc/subjectData/n1601_go1_datarel_020716.csv')
 n1601.pcasl.include <- read.csv('/data/joy/BBL/projects/pncReproc2015/pcasl/QA/n1601-QA/n1601_asl_acquired_incomplete_usable.csv')
-n1601.t1.qa.data <- read.csv('/data/joy/BBL/studies/pnc/summaryData_n1601_20160823/n1601_t1QaData.csv')
+n1601.t1.qa.data <- read.csv('/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/neuroimaging/t1struct/n1601_t1QaData.csv')
 no.rps.map.1601 <- read.csv('/data/joy/BBL/projects/pncReproc2015/pcasl/QA/n1601-QA/noRps-n1601.csv', header=F)
 all.mean.pcasl.values <- read.csv('/data/joy/BBL/projects/pncReproc2015/pcasl/cbfValues/pcasl_201607291423/meanCbfValues.csv')
 file.paths <- read.table('/data/joy/BBL/projects/pncReproc2015/pcasl/cbfValues/pcasl_201607291423/jlfPcaslImages.txt', header=F)
@@ -135,13 +135,13 @@ n1601.ss.vals$pcaslRpsMapCorrectionNotApplied[match(no.rps.map.1601$V2, n1601.ss
 n1601.ss.vals$pcaslCoverageExclude <- rep(0, nrow(n1601.ss.vals))
 n1601.ss.vals$pcaslCoverageExclude[match(flagged.dateid, n1601.ss.vals$datexscanid.x)] <- 1
 n1601.ss.vals$pcaslExclude <- rep(0, nrow(n1601.ss.vals))
-n1601.ss.vals$pcaslExclude[which(n1601.ss.vals$relMeanRMSmotion.y==1 |  n1601.ss.vals$temporalSignalNoiseRatio.y == 1 | n1601.ss.vals$nTR != 80 | n1601.ss.vals$t1Exclude==1)] <- 1
+n1601.ss.vals$pcaslExclude[which(n1601.ss.vals$relMeanRMSmotion.y==1 |  n1601.ss.vals$temporalSignalNoiseRatio.y == 1 | n1601.ss.vals$nTR != 80)] <- 1
 n1601.ss.vals$pcaslNVolumesAcquiredExclude <- rep(0, nrow(n1601.ss.vals))
 n1601.ss.vals$pcaslNVolumesAcquiredExclude[which(n1601.ss.vals$nTR != 80)] <- 1
 n1601.ss.vals$pcaslNoDataExclude <- rep(0, nrow(n1601.ss.vals))
 n1601.ss.vals$pcaslMeanGMValueExclude <- rep(0, nrow(n1601.ss.vals))
 n1601.ss.vals$pcaslVoxelwiseExclude <- rep(0, nrow(n1601.ss.vals))
-n1601.ss.vals$pcaslVoxelwiseExclude[which(n1601.ss.vals$relMeanRMSmotion.y==1 |  n1601.ss.vals$temporalSignalNoiseRatio.y == 1 | n1601.ss.vals$nTR != 80 | n1601.ss.vals$t1Exclude==1 | n1601.ss.vals$pcaslCoverageExclude==1)] <- 1
+n1601.ss.vals$pcaslVoxelwiseExclude[which(n1601.ss.vals$relMeanRMSmotion.y==1 |  n1601.ss.vals$temporalSignalNoiseRatio.y == 1 | n1601.ss.vals$nTR != 80 | n1601.ss.vals$pcaslCoverageExclude==1)] <- 1
 
 
 # Now I can prep the output csv
