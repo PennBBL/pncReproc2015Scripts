@@ -19,7 +19,7 @@ n1601.subjs <- n1601.subjs[,c(2,1)]
 original.data <- read.csv('/data/joy/BBL/studies/pnc/subjectData/n1601_go1_datarel_020716.csv')
 
 # Now fix the subject identifier column
-faVals[,1] <- strSplitMatrixReturn(strSplitMatrixReturn(faVals[,1], '_')[,9], 'x')[,2]
+faVals[,1] <- strSplitMatrixReturn(strSplitMatrixReturn((strSplitMatrixReturn(strSplitMatrixReturn(faVals[,1], 'subjects/')[,2], 'dti'))[,1], 'x')[,2], '_')
 
 # Now find the names we want to add to the fa values
 namesToAdd <- names(original.data)[511:528]
@@ -36,6 +36,7 @@ tmpToAdd <- as.data.frame(matrix(rep(NA, length(bblidToAdd) * (ncol(output.df)-2
 tmpToAdd <- cbind(bblidToAdd, scanidToAdd, tmpToAdd)
 colnames(tmpToAdd) <- colnames(output.df)
 output.df <- rbind(output.df, tmpToAdd)
+output.df <- output.df[!duplicated(output.df),]
 
 # Now write the csv
 write.csv(output.df, '/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/neuroimaging/dti/n1601_JHUTractRD.csv', quote=F, row.names=F)
@@ -49,7 +50,7 @@ faVals <- read.csv('/data/joy/BBL/projects/pncReproc2015/diffusion/prepRDValues/
 faVals <- faVals[,-c(51)]
 
 # Now fix the subject identifier column
-faVals[,1] <- strSplitMatrixReturn(strSplitMatrixReturn(faVals[,1], '_')[,11], 'x')[,2]
+faVals[,1] <- strSplitMatrixReturn(strSplitMatrixReturn((strSplitMatrixReturn(strSplitMatrixReturn(faVals[,1], 'subjects/')[,2], 'dti'))[,1], 'x')[,2], '_')
 
 # Now find the names we want to add to the ad values
 namesToAdd <- names(original.data)[529:576]
@@ -66,6 +67,7 @@ tmpToAdd <- as.data.frame(matrix(rep(NA, length(bblidToAdd) * (ncol(output.df)-2
 tmpToAdd <- cbind(bblidToAdd, scanidToAdd, tmpToAdd)
 colnames(tmpToAdd) <- colnames(output.df)
 output.df <- rbind(output.df, tmpToAdd)
+output.df <- output.df[!duplicated(output.df),]
 
 # Now write the output csv
 write.csv(output.df, '/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/neuroimaging/dti/n1601_JHULabelsRD.csv', quote=F, row.names=F)

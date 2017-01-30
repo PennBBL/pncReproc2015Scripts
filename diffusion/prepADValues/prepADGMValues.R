@@ -18,10 +18,10 @@ n1601.subjs <- n1601.subjs[,c(2,1)]
 original.data <- read.csv('/data/joy/BBL/studies/pnc/subjectData/n1601_go1_datarel_020716.csv')
 namesToAdd <- read.csv('/data/joy/BBL/projects/pncReproc2015/diffusion/prepMDValues/mdJlfNames.csv')
 
-namesToAdd <- gsub(x=namesToAdd$X, pattern='_md_', replacement='_rd_')
+namesToAdd <- gsub(x=namesToAdd$X, pattern='_md_', replacement='_ad_')
 
 # Now fix the subject identifier column
-mdVals[,1] <- strSplitMatrixReturn(strSplitMatrixReturn(mdVals[,1], '_')[,15], 'x')[,2]
+mdVals[,1] <- strSplitMatrixReturn(strSplitMatrixReturn((strSplitMatrixReturn(strSplitMatrixReturn(mdVals[,1], 'subjects/')[,2], 'dti'))[,1], 'x')[,2], '_')
 
 # Now fix the column names
 colnames(mdVals) <- c('scanid', 'bblid', as.character(namesToAdd))
@@ -34,6 +34,7 @@ tmpToAdd <- as.data.frame(matrix(rep(NA, length(bblidToAdd) * (ncol(output.df)-2
 tmpToAdd <- cbind(bblidToAdd, scanidToAdd, tmpToAdd)
 colnames(tmpToAdd) <- colnames(output.df)
 output.df <- rbind(output.df, tmpToAdd)
+output.df <- output.df[!duplicated(output.df),]
 
 # Now write the csv
-write.csv(output.df, '/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/neuroimaging/dti/n1601_jlfRDValues.csv', quote=F, row.names=F)
+write.csv(output.df, '/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/neuroimaging/dti/n1601_jlfADValues.csv', quote=F, row.names=F)
