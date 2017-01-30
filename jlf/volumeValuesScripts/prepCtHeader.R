@@ -4,6 +4,7 @@
 # This script is going to be used to prepare the column names from the output of the fslhist command for antsCT
 
 # Load library(s)
+source('/home/arosen/adroseHelperScripts/R/afgrHelpFunc.R')
 install_load('tools')
 
 # Load data

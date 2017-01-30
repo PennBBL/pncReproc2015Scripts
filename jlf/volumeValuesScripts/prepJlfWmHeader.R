@@ -4,7 +4,7 @@
 # This script is going to be used to prepare the column names from the output of the fslhist command for the JLF WM segmentation
 
 # Load library(s)
-source("/home/arosen/R/x86_64-unknown-linux-gnu-library/helperFunctions/afgrHelpFunc.R")
+source('/home/arosen/adroseHelperScripts/R/afgrHelpFunc.R')
 install_load('tools')
 
 # Load data

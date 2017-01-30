@@ -49,6 +49,18 @@ jlfVals[,2] <- strSplitMatrixReturn(charactersToSplit=jlfVals[,2], splitCharacte
 jlfWmVals[,2] <- strSplitMatrixReturn(charactersToSplit=jlfWmVals[,2], splitCharacter='x')[,2]
 ctVals[,2] <- strSplitMatrixReturn(charactersToSplit=ctVals[,2], splitCharacter='x')[,2]
 
+# Now ablate the vessel!!!
+namesToRm <- c('Vessel')
+colsToRm <- NULL
+# Now go through a loop and grep the columns that we need to rm
+# and append those values to the colsToRm variable
+for(value in namesToRm){
+  valuesToRm <- grep(value, names(jlfVals))
+  colsToRm <- append(colsToRm, valuesToRm)
+}
+
+jlfVals <- jlfVals[,-colsToRm]
+
 ## Now write the n1601 file
 # Start with JLF volumes
 n1601.vol.vals <- merge(n1601.subjs, jlfVals, by=c('bblid', 'scanid'))
