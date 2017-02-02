@@ -1,5 +1,5 @@
 #!/bin/bash
-
+#DRR adding comments for Wiki and GitHub
 #######add logs
 logfile=""
 logrun(){
