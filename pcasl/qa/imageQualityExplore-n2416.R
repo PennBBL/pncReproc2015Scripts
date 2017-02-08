@@ -15,7 +15,11 @@ system('${XCPEDIR}/utils//qualityWrapper -d /data/joy/BBL/projects/pncReproc2015
 system("mv /data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/*csv /data/joy/BBL/projects/pncReproc2015/pcasl/QA/n2416/")
 # Now create all of the mean GM pcasl values
 system('for i in `find /data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/ -name "*asl_quant_ssT1Std.nii.gz" -type f` ; do vals=`fslstats ${i} -k /data/joy/BBL/studies/pnc/template/priors/prior_grey_thr20_2mm.nii.gz -M` ; echo "${i},${vals}" >> /home/arosen/meanCBFValues.csv ; done')
-system("mv /home/arosen/meanCBFValues.csv  /data/joy/BBL/projects/pncReproc2015/pcasl/QA/n2416/")
+system("mv /home/arosen/meanCBFValues.csv /data/joy/BBL/projects/pncReproc2015/pcasl/QA/n2416/")
+# Now get all of the pcasl ss values
+system('/data/joy/BBL/applications/xcpEngine/utils/combineOutput -p /data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/ -f JLFintersect_val_asl_quant_ssT1.1D -o pcasl_JLFintersect_ssT1.1D')
+system("mv /data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/pcasl_JLFintersect_ssT1.1D /data/joy/BBL/projects/pncReproc2015/pcasl/cbfValues/pcasl_20161202/")
+# Now load all data
 qa.scores <- read.csv('/data/joy/BBL/projects/pncReproc2015/pcasl/QA/n2416/pcasl_201607291423_groupLevelQuality.csv')
 flag.scores <- read.csv('/data/joy/BBL/projects/pncReproc2015/pcasl/QA/n2416/pcasl_201607291423_groupLevelFlagStatus.csv')
 flag.scores[,2] <- qa.scores[,2]
@@ -26,6 +30,7 @@ subjectScanInfo <- read.csv('/data/joy/BBL/studies/pnc/subjectData/n2416_pnc_pro
 rpsMapInfo <- read.csv('/data/joy/BBL/projects/pncReproc2015/pcasl/QA/n2416/subjsWithRpsMaps.csv')
 n1601.pcasl.quality <- read.csv('/data/joy/BBL/projects/pncReproc2015/pcasl/QA/n2416/n1601PcaslQaData.csv')
 n2416.subj.ids <- read.csv('/data/joy/BBL/projects/pncReproc2015/pcasl/QA/n2416/n2416_bblid_scanid_dateid.csv', header=F)
+pcaslSSVals <- read.table('/data/joy/BBL/projects/pncReproc2015/pcasl/cbfValues/pcasl_20161202/pcasl_JLFintersect_ssT1.1D',header=T)
 # Now fix the meanPcaslVals column names
 meanPcaslVals$bblid <- strSplitMatrixReturn(meanPcaslVals$V1, '/')[,10]
 meanPcaslVals$datexscanid <- strSplitMatrixReturn(meanPcaslVals$V1, '/')[,11]
@@ -151,3 +156,42 @@ excludeCols <- excludeCols[-c(1,2,3)]
 matrixValues <- qaData[which(output.df$pcaslVoxelwiseExclude==1),excludeCols]
 matrixValues <- as.matrix(matrixValues)
 evenn(matLists=matrixValues, pathRes='/data/joy/BBL/projects/pncReproc2015/pcasl/QA/n2416/')
+
+# Now prepare the n2416 pcasl SS values
+pcaslSSVals <- read.table('/data/joy/BBL/projects/pncReproc2015/pcasl/cbfValues/pcasl_20161202/pcasl_JLFintersect_ssT1.1D',header=T)
+pcaslColNames <- read.csv('/data/joy/BBL/projects/pncReproc2015/pcasl/cbfValues/nameAssistFiles/pcaslJlfNames.csv')
+pcaslColVals <- read.csv('/data/joy/BBL/projects/pncReproc2015/pcasl/cbfValues/nameAssistFiles/columsOfInterest.csv')
+pcaslSSVals[,2] <-strSplitMatrixReturn(pcaslSSVals$subject.1.,'x')[,2]
+colnames(pcaslSSVals)[1:2] <- c('bblid', 'scanid')
+
+# Now remove extra columns
+pcaslSSVals <- pcaslSSVals[,pcaslColVals$x]
+colnames(pcaslSSVals)[3:153] <- as.character(pcaslColNames$X)
+
+# Now remove nonsense columns
+namesToRm <- c('Ventricle', 'Cerebellum', 'White', 'CSF', 'Vent', 'Vessel', 
+               'Ventral_DC', 'OpticChiasm', 'CerVerLob', 'BasForebr', 'Brain_Stem',
+               'WM', 'fornix', 'antlimb_InC', 'postlimbcerebr', 'corpus_callosum')
+colsToRm <- NULL
+# Now go through a loop and grep the columns that we need to rm
+# and append those values to the colsToRm variable
+for(value in namesToRm){
+  valuesToRm <- grep(value, names(pcaslSSVals))
+  colsToRm <- append(colsToRm, valuesToRm)
+}
+colsToRm <- unique(colsToRm)
+pcaslSSVals <- pcaslSSVals[,-colsToRm]
+# Now remove all negative values
+pcaslSSVals[pcaslSSVals<0] <- 'NA'
+
+# and now append the extra subjects
+colnames(n2416.subj.ids) <- c('bblid', 'scanid', 'datexscanid') 
+bblidToAdd <- n2416.subj.ids$bblid[which(n2416.subj.ids$scanid %in% pcaslSSVals$scanid == 'FALSE')]
+scanidToAdd <- n2416.subj.ids$scanid[which(n2416.subj.ids$scanid %in% pcaslSSVals$scanid == 'FALSE')]
+tmpToAdd <- as.data.frame(matrix(rep(NA, length(bblidToAdd) * (ncol(pcaslSSVals)-2)), nrow=length(bblidToAdd), ncol=(ncol(pcaslSSVals)-2)))
+tmpToAdd <- cbind(bblidToAdd, scanidToAdd, tmpToAdd)
+colnames(tmpToAdd) <- colnames(pcaslSSVals)
+pcaslSSVals <- rbind(pcaslSSVals, tmpToAdd)
+
+# Now write the csv
+write.csv(pcaslSSVals, '/data/joy/BBL/studies/pnc/n2416_dataFreezeJan2017/neuroimaging/asl/n2416_jlfAntsCTIntersectionPcaslValues.csv', row.names=F, quote=F)
