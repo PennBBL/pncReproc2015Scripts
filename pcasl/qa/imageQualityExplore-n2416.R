@@ -47,6 +47,7 @@ allData <- merge(qa.scores, flag.scores, by=c('bblid', 'scanid', 'datexscanid'))
 
 # Now rm the n1601 from the allData
 rowsToRm <- which(allData$scanid %in% n1601.data$scanid == 'TRUE')
+n1601Data <- allData[rowsToRm,]
 allData <- allData[-rowsToRm,]
 
 # Now attach the scan info to allData
@@ -62,7 +63,7 @@ allData <- merge(allData, meanPcaslVals, by=c('bblid', 'scanid', 'datexscanid'))
 ## of the n1601 subjects w/ pcasl data
 all.subj.id <- cbind(allData$bblid, as.character(allData$datexscanid))
 write.csv(all.subj.id, '/data/joy/BBL/projects/pncReproc2015/pcasl/QA/n2416/allSubjId.csv', quote=F, row.names=F)
-#system("/bin/bash ~/pncReproc2015Scripts/pcasl/qa/combineImages-n2416.sh /data/joy/BBL/projects/pncReproc2015/pcasl/QA/n2416/allSubjId.csv /data/joy/BBL/projects/pncReproc2015/pcasl/QA/n2416/allSubjIdImageOrder")
+system("/bin/bash ~/pncReproc2015Scripts/pcasl/qa/combineImages-n2416.sh /data/joy/BBL/projects/pncReproc2015/pcasl/QA/n2416/allSubjId.csv /data/joy/BBL/projects/pncReproc2015/pcasl/QA/n2416/allSubjIdImageOrder")
 
 ## I now am going to find the optimal coverage to use based on the n1601 data and will 
 ## then check for voxel values for which to flag images that don't contain that value
@@ -89,7 +90,6 @@ for(val in seq(1,length(xCoord.a))){
     }  
   }
 }
-outputFlagged <- unique(outputFlagged)
 
 # Now find which bblid's were flagged
 imageLog <- read.table('/data/joy/BBL/projects/pncReproc2015/pcasl/QA/n2416/flaggedImages/subjectOrder.txt', header=F)
@@ -99,9 +99,56 @@ datexscanid <- strSplitMatrixReturn(strSplitMatrixReturn(imageLog$V1, '_')[,3], 
 flagged.bblids <- bblid.index[outputFlagged]
 flagged.dateid <- datexscanid[outputFlagged]
 
+
+## Now repeat this process for the 1601 so we can have all subjects flagged from both timepoints together
+all.subj.id <- cbind(n1601Data$bblid, as.character(n1601Data$datexscanid))
+write.csv(all.subj.id, '/data/joy/BBL/projects/pncReproc2015/pcasl/QA/n2416/allSubjId.csv', quote=F, row.names=F)
+system("/bin/bash ~/pncReproc2015Scripts/pcasl/qa/combineImages-n2416.sh /data/joy/BBL/projects/pncReproc2015/pcasl/QA/n2416/allSubjId.csv /data/joy/BBL/projects/pncReproc2015/pcasl/QA/n2416/allSubjIdImageOrder")
+
+## I now am going to find the optimal coverage to use based on the n1601 data and will 
+## then check for voxel values for which to flag images that don't contain that value
+# Load the 4-d time series 
+four.d.time <- as.array(antsImageRead('/data/joy/BBL/projects/pncReproc2015/pcasl/QA/n2416/allSubjIdImageOrder.nii.gz', dimension=4))
+
+# Now I need to find for each subject if the voxel coordinate of interest is a 1 or 0
+xCoord.a <- c(48, 57, 40, 48, 45, 30)
+yCoord.a <- c(29, 74, 74, 27, 105, 68) 
+zCoord.a <- c(29, 27, 27, 32, 33, 28)
+
+# Now loop thourgh the 1657 images and find if our voxel of interest is a 1 or 0 
+# Return the time points which have a 0 there
+seqLength <- dim(four.d.time)[4]
+outputFlagged <- NULL
+for(val in seq(1,length(xCoord.a))){
+  xCoord <- xCoord.a[val]
+  yCoord <- yCoord.a[val]
+  zCoord <- zCoord.a[val]
+  for(i in seq(1,seqLength,1)){
+    valueOfInterest <- four.d.time[xCoord, yCoord, zCoord, i]
+    if(valueOfInterest == 0){
+      outputFlagged <- append(outputFlagged, i)
+    }  
+  }
+}
+
+outputFlagged <- unique(outputFlagged)
+
+# Now find which bblid's were flagged
+imageLog <- read.table('/data/joy/BBL/projects/pncReproc2015/pcasl/QA/n2416/flaggedImages/subjectOrder.txt', header=F)
+imageLog$V1 <- as.character(imageLog$V1)
+bblid.index <- strSplitMatrixReturn(imageLog$V1, '_')[,2]
+datexscanid <- strSplitMatrixReturn(strSplitMatrixReturn(imageLog$V1, '_')[,3], '.nii.gz')
+flagged.bblids <- append(flagged.bblids, bblid.index[outputFlagged])
+flagged.dateid <- append(flagged.dateid, datexscanid[outputFlagged])
+
+# Now find all of the flagged images
+all.date.id  <- append(as.character(n1601Data$datexscanid), as.character(allData$datexscanid))
+all.bblid <- append(as.character(n1601Data$bblid), as.character(allData$bblid))
+outputFlagged <- match(flagged.dateid, all.date.id)
+
 # Now combine all of our non flagged images
-non.flagged.bblid <- bblid.index[-outputFlagged]
-non.flagged.dateid <- datexscanid[-outputFlagged]
+non.flagged.bblid <- all.bblid[-outputFlagged]
+non.flagged.dateid <- all.date.id[-outputFlagged]
 non.flagged.subj <- cbind(non.flagged.bblid, as.character(non.flagged.dateid))
 write.csv(non.flagged.subj, '/data/joy/BBL/projects/pncReproc2015/pcasl/QA/n2416/allNonFlagged-it1-SubjId.csv', quote=F, row.names=F)
 #system("/bin/bash ~/pncReproc2015Scripts/pcasl/qa/combineImages-n2416.sh /data/joy/BBL/projects/pncReproc2015/pcasl/QA/n2416/allNonFlagged-it1-SubjId.csv /data/joy/BBL/projects/pncReproc2015/pcasl/QA/n2416/allNonFlaggedImage")
