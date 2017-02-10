@@ -4,7 +4,7 @@
 # This script is going to be used to prepare the subject fields from the output of fslstats hist command
 
 # Load library(s)
-source("/home/arosen/R/x86_64-unknown-linux-gnu-library/helperFunctions/afgrHelpFunc.R")
+source('/home/arosen/adroseHelperScripts/R/afgrHelpFunc.R')
 install_load('tools')
 # Declare any functions
 strSplitMatrixReturn <- function(charactersToSplit, splitCharacter){

@@ -109,7 +109,7 @@ done
 ${fslMergeCommand}
 
 # Now create a left lobe WM inflation mask
-fslmaths ${tmpDirectory}/left/Left_Cerebral_Lobe.nii.gz -add 6 ${tmpDirectory}/left/Left_Cerebral_Lobe_Inflation.nii.gz
+fslmaths ${tmpDirectory}/left/Left_Cerebral_Lobe.nii.gz -mul 6 ${tmpDirectory}/left/Left_Cerebral_Lobe_Inflation.nii.gz
 
 # Now assign a lobe to each of these
 R --slave -f ${findMinimum} ${tmpDirectory}/left/concatDistanceImage.nii.gz ${tmpDirectory}/left/Left_Cerebral_Lobe.nii.gz

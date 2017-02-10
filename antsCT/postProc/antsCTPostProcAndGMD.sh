@@ -131,7 +131,7 @@ for i in 1 2 3 ; do
                  -o [ ${outputImg}_seg.nii.gz, ${outputImg}_prob%02d.nii.gz]
   else
     ${AP}Atropos -d 3 -a ${outputImg}_norm.nii.gz \
-                 -i PriorProbabilitImages[ 3,${outputImg}_prob%02d.nii.gz,0.0] \
+                 -i PriorProbabilityImages[ 3,${outputImg}_prob%02d.nii.gz,0.0] \
                  -k Gaussian -p Socrates[1] --use-partial-volume-likelihoods 0 \
                  -c [ 12, 0.00001] \
                  -x ${antsDirectory}BrainExtractionMask.nii.gz \
@@ -174,7 +174,7 @@ ${FSP}fslmaths ${outputImg}_prob02.nii.gz -mul ${outputImg}_seg_GmMask.nii.gz ${
 if [ ${parcCheck} -eq 1 ] ; then
   if [ ${applyInverse} -eq 1 ] ; then
     echo "Now moving Parcellation mask into Subject Space"
-    ${AP}antsApplyTransforms -d 3 -e 3 -i ${parcMask} -o ${antsDirectory}${parcDir}ToSubject.nii.gz -r ${antsDirectory}ExtractedBrain0N4.nii.gz -t ${antsDirectory}TemplateToSubject1GenericAffine.mat -t ${antsDirectory}TemplateToSubject0Warp.nii.gz -n NearestNeighbor 
+    ${AP}antsApplyTransforms -d 3 -e 3 -i ${parcMask} -o ${antsDirectory}${parcDir}ToSubject.nii.gz -r ${antsDirectory}ExtractedBrain0N4.nii.gz -t ${antsDirectory}TemplateToSubject1GenericAffine.mat -t ${antsDirectory}TemplateToSubject0Warp.nii.gz -n MultiLabel
     parcMask=${antsDirectory}${parcDir}ToSubject.nii.gz ; 
   fi
   

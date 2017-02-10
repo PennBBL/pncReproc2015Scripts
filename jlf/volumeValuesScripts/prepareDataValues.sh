@@ -4,14 +4,14 @@
 
 # Delcare any statics
 jlfDirectory="/data/joy/BBL/studies/pnc/processedData/structural/jlf/"
-jlfVolDir="/data/joy/BBL/projects/pncReproc2015/jlf/volumeValues/"
+jlfVolDir="/data/joy/BBL/projects/pncReproc2015/jlf/volumeValues/intersection/"
 ctDirectory="/data/joy/BBL/studies/pnc/processedData/structural/antsCorticalThickness/"
-scriptsDir="/data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts/jlf/volumeValuesScripts"
+scriptsDir="/home/arosen/pncReproc2015Scripts/jlf/volumeValuesScripts"
 subjInfoDir="/data/joy/BBL/studies/pnc/subjectData/"
 
 # First thing we have to do is create the raw volume output for the jlf labels
 rm -f ${jlfVolDir}jlfVolValues_20160805.txt
-for i in `find ${jlfDirectory} -name "*jlfLabels.nii.gz"` ; do vals=`fslstats ${i} -H 208 0 207` ; echo ${i} ${vals} ; done >> ${jlfVolDir}jlfVolValues_20160805.txt
+for i in `find ${jlfDirectory} -name "*jlfLabelsANTsCTIntersection.nii.gz"` ; do vals=`fslstats ${i} -H 208 0 207` ; echo ${i} ${vals} ; done >> ${jlfVolDir}jlfVolValues_20160805.txt
 
 # Now do the antsCT values
 rm -f ${jlfVolDir}ctVolValues_20160805.txt
