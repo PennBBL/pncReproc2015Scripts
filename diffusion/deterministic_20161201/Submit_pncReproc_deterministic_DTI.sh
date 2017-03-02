@@ -18,7 +18,7 @@ for name in ${subject_list}; do
 
 	bblid=$(basename ${name} | cut -d_ -f1)
 	scanid=$(basename ${name} | cut -d_ -f2)
-	dateidid=$(basename ${name} | cut -d_ -f3)
+	dateid=$(basename ${name} | cut -d_ -f3)
 
 
 	echo $bblid
