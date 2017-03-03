@@ -45,7 +45,7 @@ colIndexPath <- paste(dir,paste(roiName,'_index.csv',sep=''),sep='/')
 roiPaths <- paste(odir,paste('*ROI*',roiName,'*.txt',sep=''),sep='/')
 roiPaths <- system(paste('ls',roiPaths),intern=T)
 
-restVals <- read.csv(paste(dir,'n1601_IDs.csv',sep='/'))
+restVals <- read.csv(paste(dir,'n2416_IDs.csv',sep='/'))
 
 columnNumbers <- as.numeric(read.csv(colIndexPath,header=F))
 columnNames <- unlist(read.csv(colNamesPath,header=F))

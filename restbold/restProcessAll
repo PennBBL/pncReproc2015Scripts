@@ -1,0 +1,110 @@
+#!/usr/bin/env bash
+
+###################################################################
+#  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  #
+###################################################################
+
+
+###################################################################
+# This script performs all processing steps for rest data.
+#
+# 1) Check tracker to determine which subjects should have data
+# 2) Build a cohort file
+# 3) Compare the current cohort file with the most recent version
+# 4) Run new subjects through the XCP Engine
+# 5) Run new subjects through quality control
+###################################################################
+TRACKER=/data/joy/BBL/studies/pnc/subjectData/n2416_pnc_protocol_validation_params_status_20170105.csv
+RAW=/data/joy/BBL/studies/pnc/rawData
+ANTSCT=/data/joy/BBL/studies/pnc/processedData/structural/antsCorticalThickness
+B0=/data/joy/BBL/studies/pnc/processedData/b0mapwT2star
+COHORTREF=/data/joy/BBL/projects/pncReproc2015/restbold/xcp/cohort/cohortRef.csv
+DESIGN=/data/joy/BBL/projects/pncReproc2015/restbold/xcp/design/restbold_TEMPLATE.dsn
+
+VARSTAT=restProtocolValidationStatus
+SEQSTR=restbold
+NVOL=124
+
+NODATA=/data/joy/BBL/projects/pncReproc2015/restbold/xcp/cohort/noDataOnFileSystem.csv
+COHORT=/data/joy/BBL/projects/pncReproc2015/restbold/xcp/cohort/cohort.csv
+COHORTDIF=/data/joy/BBL/projects/pncReproc2015/restbold/xcp/design/cohortDif.csv
+DESIGNDIF=/data/joy/BBL/projects/pncReproc2015/restbold/xcp/design/designDif.dsn
+
+rm $NODATA
+rm $COHORT
+rm $COHORTDIF
+rm $DESIGNDIF
+
+
+###################################################################
+# Determine which subjects should have data using the tracker.
+###################################################################
+val=$(head -n1 $TRACKER\
+   |sed s@,@'\n'@g\
+   |grep -nr $VARSTAT\
+   |cut -d':' -f1)
+ids=$(cat $TRACKER\
+   |cut -d',' -f1,2,${val}\
+   |grep ,1$\
+   |cut -d',' -f1-2)
+###################################################################
+# Determine whether the subjects that should have data do have
+# data. If they do not, log as missing.
+###################################################################
+for i in $ids
+   do
+   unset img
+   unset str
+   unset mag
+   unset rps
+   b=$(echo $i|cut -d',' -f1)
+   s=$(echo $i|cut -d',' -f2)
+   img=$(ls -d1 ${RAW}/${b}/*${s}/*${SEQSTR}*/nifti/*.nii* 2>/dev/null)
+   str=$(ls -d1 ${ANTSCT}/${b}/*${s} 2>/dev/null)
+   mag=$(ls -d1 ${B0}/${b}/*${s}/*_mag1_brain.nii* 2>/dev/null)
+   rps=$(ls -d1 ${B0}/${b}/*${s}/*_rpsmap.nii* 2>/dev/null)
+   ################################################################
+   # Log missing data
+   ################################################################
+   [[ -z ${img} ]] && echo ${b},${s} >> ${NODATA}
+   [[ -z ${img} ]] && continue
+   ################################################################
+   # If there are multiple NIfTIs, then cycle through until one
+   # with the correct number of volumes is identified
+   ################################################################
+   for i in ${img}
+      do
+      vols=$(fslnvols ${i})
+      [[ ${vols} == ${NVOL} ]] && img=$i && break
+   done
+   s=$(echo $img|sed s@${RAW}@@g|cut -d'/' -f3)
+   ################################################################
+   # Write subject information to a cohort file.
+   ################################################################
+   echo ${b},${s},${img},${str},${mag},${rps} >> $COHORT
+done
+
+
+###################################################################
+# Compare the assembled cohort file to a reference to determine
+# what subjects must be added.
+###################################################################
+sub=$(cat $COHORT)
+for s in $sub
+   do
+   dif=$(grep $s $COHORTREF)
+   [[ -z ${dif} ]] && echo ${s} >> $COHORTDIF
+done
+
+
+###################################################################
+# Write a new design file to run the new subjects through the
+# XCP processing system.
+###################################################################
+cat $DESIGN|sed s@'path_cohort=.*$'@'path_cohort='${COHORTDIF}@g >> $DESIGNDIF
+$XCPEDIR/xcpEngine -d $DESIGNDIF -m c
+
+
+###################################################################
+# Obtain quality measures for all new subjects.
+###################################################################

@@ -4,6 +4,9 @@
 #  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  #
 ###################################################################
 REST=/data/joy/BBL/studies/pnc/processedData/restbold/restbold_201607151621/
+QOUT=/data/joy/BBL/projects/pncReproc2015/restbold/quality
+SAMPLE=2416
+# Leave $SAMPLE blank for 1601, or set SAMPLE=2416 for 2416
 
 ###################################################################
 # 1. Assemble QA outputs from the XCP Engine.
@@ -12,12 +15,12 @@ REST=/data/joy/BBL/studies/pnc/processedData/restbold/restbold_201607151621/
    -p ${REST} \
    -f "*quality.csv" \
    -o XCP_QAVARS.csv
-mv -f ${REST}/XCP_QAVARS.csv .
-xcpVars=$(cat XCP_QAVARS.csv|sed s@'subject\[0\]'@'bblid'@g|sed s@'subject\[1\]'@'datexscanid'@g)
+mv -f ${REST}/XCP_QAVARS.csv ${QOUT}/XCP_QAVARS.csv
+xcpVars=$(cat ${QOUT}/XCP_QAVARS.csv|sed s@'subject\[0\]'@'bblid'@g|sed s@'subject\[1\]'@'datexscanid'@g)
 for s in $xcpVars
    do
    s=$(echo $s|cut -d',' -f1),$(echo $s|cut -d'x' -f2-)
-   echo $s >> REST_XCP.csv
+   echo $s >> ${QOUT}/REST_XCP.csv
 done
 
 ###################################################################
@@ -25,18 +28,23 @@ done
 #    QA efforts.
 #    First, preprocess the coverage data by stripping out the date.
 ###################################################################
-rm -f REST_COVERAGE_PROCESSED.csv
-echo "bblid,scanid,restVoxelwiseCoverageInclude" >> REST_COVERAGE_PROCESSED.csv
-covVars=$(cat REST_COVERAGE.csv)
+rm -f ${QOUT}/REST_COVERAGE_PROCESSED${SAMPLE}.csv
+${XCPEDIR}/utils/coverMask.R \
+   -i ${QOUT}/REST_STD_MASKS${SAMPLE}.csv \
+   -m coveragePoints.nii.gz \
+   -o maskRestVoxelwiseCoverage${SAMPLE}.nii.gz \
+   >> ${QOUT}/REST_COVERAGE${SAMPLE}.csv
+echo "bblid,scanid,restVoxelwiseCoverageInclude" >> ${QOUT}/REST_COVERAGE_PROCESSED${SAMPLE}.csv
+covVars=$(cat ${QOUT}/REST_COVERAGE${SAMPLE}.csv)
 for s in $covVars
    do
    s=$(echo $s|cut -d',' -f1),$(echo $s|cut -d'x' -f2-|cut -d',' -f1,4)
-   echo $s >> REST_COVERAGE_PROCESSED.csv
+   echo $s >> ${QOUT}/REST_COVERAGE_PROCESSED.csv
 done
 ###################################################################
 #    Then, merge them all.
 ###################################################################
-./restQA_assembleVars.R
+./restQA${SAMPLE}_assembleVars.R
 
 ###################################################################
 # 3. Assemble ROIwise outputs from the XCP Engine.
@@ -45,43 +53,43 @@ done
 #
 #    First, ReHo outputs for JLF.
 ###################################################################
-rm -f measures.csv
-echo "reho" >> measures.csv
-rm -f REST_ROI_JLF*
+rm -f ${QOUT}/measures.csv
+echo "reho" >> ${QOUT}/measures.csv
+rm -f ${QOUT}/REST_ROI_JLF*
 /data/joy/BBL/applications/xcpEngine/utils/combineOutput \
    -p ${REST} \
    -f "*JLF_val_reho.1D" \
    -o REST_ROI1.txt
-mv -f ${REST}/REST_ROI1.txt REST_ROI_JLF1.txt
-./mergeROIvals.R \
+mv -f ${REST}/REST_ROI1.txt ${QOUT}/REST_ROI_JLF1.txt
+./mergeROIvals${SAMPLE}.R \
    -r JLF \
-   -o n1601_jlfRestReHo.csv
+   -o ${QOUT}/${SAMPLE}jlfRestReHo.csv
 ###################################################################
 #    ReHo outputs for Glasser.
 ###################################################################
-rm -f REST_ROI_GlasserPNC*
+rm -f ${QOUT}/REST_ROI_GlasserPNC*
 /data/joy/BBL/applications/xcpEngine/utils/combineOutput \
    -p ${REST} \
    -f "*GlasserPNC_val_reho.1D" \
    -o REST_ROI1.txt
-mv -f ${REST}/REST_ROI1.txt REST_ROI_GlasserPNC1.txt
-./mergeROIvals.R \
+mv -f ${REST}/REST_ROI1.txt ${QOUT}/REST_ROI_GlasserPNC1.txt
+./mergeROIvals${SAMPLE}.R \
    -r GlasserPNC \
-   -o n1601_glasserRestReHo.csv
+   -o ${QOUT}/${SAMPLE}glasserRestReHo.csv
 ###################################################################
 #   ALFF outputs for JLF.
 ###################################################################
 rm -f measures.csv
 echo "alff" >> measures.csv
-rm -f REST_ROI_JLF*
+rm -f ${QOUT}/REST_ROI_JLF*
 /data/joy/BBL/applications/xcpEngine/utils/combineOutput \
    -p ${REST} \
    -f "*JLF_val_alff.1D" \
    -o REST_ROI1.txt
-mv -f ${REST}/REST_ROI1.txt REST_ROI_JLF1.txt
-./mergeROIvals.R \
+mv -f ${REST}/REST_ROI1.txt ${QOUT}/REST_ROI_JLF1.txt
+./mergeROIvals${SAMPLE}.R \
    -r JLF \
-   -o n1601_jlfRestALFF.csv
+   -o ${QOUT}/${SAMPLE}jlfRestALFF.csv
 ###################################################################
 #   ALFF outputs for Glasser.
 ###################################################################
@@ -90,7 +98,7 @@ rm -f REST_ROI_GlasserPNC*
    -p ${REST} \
    -f "*GlasserPNC_val_alff.1D" \
    -o REST_ROI1.txt
-mv -f ${REST}/REST_ROI1.txt REST_ROI_GlasserPNC1.txt
-./mergeROIvals.R \
+mv -f ${REST}/REST_ROI1.txt ${QOUT}/REST_ROI_GlasserPNC1.txt
+./mergeROIvals${SAMPLE}.R \
    -r GlasserPNC \
-   -o n1601_glasserRestALFF.csv
+   -o ${QOUT}/${SAMPLE}glasserRestALFF.csv
