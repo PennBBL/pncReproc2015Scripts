@@ -6,3 +6,6 @@ SPACE::NETWORK
 #GlasserPNC#/data/joy/BBL/applications/xcpEngine/networks/180GlasserPNCWithHemispheres.nii.gz#std
 #JLFWM#/data/joy/BBL/studies/pnc/processedData/structural/jlf/${subject[0]}/${subject[1]}/${subject[0]}_${subject[1]}_jlfWmSeg.nii.gz#str
 #JLFintersect#/data/joy/BBL/studies/pnc/processedData/structural/jlf/${subject[0]}/${subject[1]}/${subject[0]}_${subject[1]}_jlfLabelsANTsCTIntersection.nii.gz#str
+#GraSP581#/data/joy/BBL/applications/xcpEngine/networks/graspPNCdeepStructures2mm581.nii.gz#std
+#GraSP227#/data/joy/BBL/applications/xcpEngine/networks/graspPNCdeepStructures2mm227.nii.gz#std
+#GraSP170#/data/joy/BBL/applications/xcpEngine/networks/graspPNCdeepStructures2mm170.nii.gz#std
