@@ -19,9 +19,6 @@ library(ggplot2)
 output.dir<-commandArgs(TRUE)[1]
 cnr_data<- read.csv(paste(output.dir,"/cnr/cnr_buckner.csv",sep=""))
 euler_data<- read.csv(paste(output.dir,"/cnr/euler_number.csv",sep=""))
-#cnr_data<- read.csv("/data/joy/BBL/projects/pncReproc2015/freesurfer/stats5_3/cnr/cnr_buckner.csv")
-#euler_data<- read.csv("/data/joy/BBL/projects/pncReproc2015/freesurfer/stats5_3/cnr/euler_number.csv")
-
 
 #merge the files together by datexscanid
 data<- cnr_data

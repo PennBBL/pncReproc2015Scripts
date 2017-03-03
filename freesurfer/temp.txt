@@ -1,0 +1,251 @@
+
+Parsing flags:
+     -s
+     -nocheck-aseg
+     -nocheck-status
+     -nocheck-outputFOF
+     -no-snaps
+Writing QA summary log to:
+/data/joy/BBL/studies/pnc/processedData/structural/freesurfer53/QA/recon_checker.ALL.summary.log
+
+
+SUBJECTS_DIR: /data/joy/BBL/studies/pnc/processedData/structural/freesurfer53 
+
+
+Checking white matter SNR measurements...
+
+
+
+
+Output file is up-to-date for 80010/20100218x2894
+
+wm-anat-snr results (80010/20100218x2894):
+SNR	meanWM	stdWM	voxWM	
+27.24	105.55	3.88	22584
+
+-----
+Summary files for individual subjects:
+/data/joy/BBL/studies/pnc/processedData/structural/freesurfer53/[SUBJECT_ID]/scripts/recon_checker.log
+ 
+Summary file for ALL subjects:
+/data/joy/BBL/studies/pnc/processedData/structural/freesurfer53/QA/recon_checker.ALL.summary.log
+ 
+recon_checker FINISHED
+
+Parsing flags:
+     -s
+     -nocheck-aseg
+     -nocheck-status
+     -nocheck-outputFOF
+     -no-snaps
+Writing QA summary log to:
+/data/joy/BBL/studies/pnc/processedData/structural/freesurfer53/QA/recon_checker.ALL.summary.log
+
+
+SUBJECTS_DIR: /data/joy/BBL/studies/pnc/processedData/structural/freesurfer53 
+
+
+Checking white matter SNR measurements...
+
+
+
+
+Output file is up-to-date for 80179/20091205x2643
+
+wm-anat-snr results (80179/20091205x2643):
+SNR	meanWM	stdWM	voxWM	
+27.07	105.46	3.90	24344
+
+-----
+Summary files for individual subjects:
+/data/joy/BBL/studies/pnc/processedData/structural/freesurfer53/[SUBJECT_ID]/scripts/recon_checker.log
+ 
+Summary file for ALL subjects:
+/data/joy/BBL/studies/pnc/processedData/structural/freesurfer53/QA/recon_checker.ALL.summary.log
+ 
+recon_checker FINISHED
+
+Parsing flags:
+     -s
+     -nocheck-aseg
+     -nocheck-status
+     -nocheck-outputFOF
+     -no-snaps
+Writing QA summary log to:
+/data/joy/BBL/studies/pnc/processedData/structural/freesurfer53/QA/recon_checker.ALL.summary.log
+
+
+SUBJECTS_DIR: /data/joy/BBL/studies/pnc/processedData/structural/freesurfer53 
+
+
+Checking white matter SNR measurements...
+
+
+
+
+Output file is up-to-date for 80199/20091203x2637
+
+wm-anat-snr results (80199/20091203x2637):
+SNR	meanWM	stdWM	voxWM	
+18.43	105.63	5.73	53826
+
+-----
+Summary files for individual subjects:
+/data/joy/BBL/studies/pnc/processedData/structural/freesurfer53/[SUBJECT_ID]/scripts/recon_checker.log
+ 
+Summary file for ALL subjects:
+/data/joy/BBL/studies/pnc/processedData/structural/freesurfer53/QA/recon_checker.ALL.summary.log
+ 
+recon_checker FINISHED
+
+Parsing flags:
+     -s
+     -nocheck-aseg
+     -nocheck-status
+     -nocheck-outputFOF
+     -no-snaps
+Writing QA summary log to:
+/data/joy/BBL/studies/pnc/processedData/structural/freesurfer53/QA/recon_checker.ALL.summary.log
+
+
+SUBJECTS_DIR: /data/joy/BBL/studies/pnc/processedData/structural/freesurfer53 
+
+
+Checking white matter SNR measurements...
+
+
+
+
+Output file is up-to-date for 80208/20100313x3016
+
+wm-anat-snr results (80208/20100313x3016):
+SNR	meanWM	stdWM	voxWM	
+24.32	107.03	4.40	38515
+
+-----
+Summary files for individual subjects:
+/data/joy/BBL/studies/pnc/processedData/structural/freesurfer53/[SUBJECT_ID]/scripts/recon_checker.log
+ 
+Summary file for ALL subjects:
+/data/joy/BBL/studies/pnc/processedData/structural/freesurfer53/QA/recon_checker.ALL.summary.log
+ 
+recon_checker FINISHED
+
+Parsing flags:
+     -s
+     -nocheck-aseg
+     -nocheck-status
+     -nocheck-outputFOF
+     -no-snaps
+Writing QA summary log to:
+/data/joy/BBL/studies/pnc/processedData/structural/freesurfer53/QA/recon_checker.ALL.summary.log
+
+
+SUBJECTS_DIR: /data/joy/BBL/studies/pnc/processedData/structural/freesurfer53 
+
+
+Checking white matter SNR measurements...
+
+
+
+
+Output file is up-to-date for 80249/20091205x2648
+
+wm-anat-snr results (80249/20091205x2648):
+SNR	meanWM	stdWM	voxWM	
+25.82	106.98	4.14	50619
+
+-----
+Summary files for individual subjects:
+/data/joy/BBL/studies/pnc/processedData/structural/freesurfer53/[SUBJECT_ID]/scripts/recon_checker.log
+ 
+Summary file for ALL subjects:
+/data/joy/BBL/studies/pnc/processedData/structural/freesurfer53/QA/recon_checker.ALL.summary.log
+ 
+recon_checker FINISHED
+
+Parsing flags:
+     -s
+     -nocheck-aseg
+     -nocheck-status
+     -nocheck-outputFOF
+     -no-snaps
+Writing QA summary log to:
+/data/joy/BBL/studies/pnc/processedData/structural/freesurfer53/QA/recon_checker.ALL.summary.log
+
+
+SUBJECTS_DIR: /data/joy/BBL/studies/pnc/processedData/structural/freesurfer53 
+
+
+Checking white matter SNR measurements...
+
+
+
+
+Output file is up-to-date for 80263/20120323x6635
+
+wm-anat-snr results (80263/20120323x6635):
+SNR	meanWM	stdWM	voxWM	
+28.79	104.58	3.63	37653
+
+-----
+Summary files for individual subjects:
+/data/joy/BBL/studies/pnc/processedData/structural/freesurfer53/[SUBJECT_ID]/scripts/recon_checker.log
+ 
+Summary file for ALL subjects:
+/data/joy/BBL/studies/pnc/processedData/structural/freesurfer53/QA/recon_checker.ALL.summary.log
+ 
+recon_checker FINISHED
+
+Parsing flags:
+     -s
+     -nocheck-aseg
+     -nocheck-status
+     -nocheck-outputFOF
+     -no-snaps
+Writing QA summary log to:
+/data/joy/BBL/studies/pnc/processedData/structural/freesurfer53/QA/recon_checker.ALL.summary.log
+
+
+SUBJECTS_DIR: /data/joy/BBL/studies/pnc/processedData/structural/freesurfer53 
+
+
+Checking white matter SNR measurements...
+
+
+
+
+Output file is up-to-date for 80265/20100409x3145
+
+wm-anat-snr results (80265/20100409x3145):
+SNR	meanWM	stdWM	voxWM	
+23.73	105.65	4.45	29452
+
+-----
+Summary files for individual subjects:
+/data/joy/BBL/studies/pnc/processedData/structural/freesurfer53/[SUBJECT_ID]/scripts/recon_checker.log
+ 
+Summary file for ALL subjects:
+/data/joy/BBL/studies/pnc/processedData/structural/freesurfer53/QA/recon_checker.ALL.summary.log
+ 
+recon_checker FINISHED
+
+Parsing flags:
+     -s
+     -nocheck-aseg
+     -nocheck-status
+     -nocheck-outputFOF
+     -no-snaps
+Writing QA summary log to:
+/data/joy/BBL/studies/pnc/processedData/structural/freesurfer53/QA/recon_checker.ALL.summary.log
+
+
+SUBJECTS_DIR: /data/joy/BBL/studies/pnc/processedData/structural/freesurfer53 
+
+
+Checking white matter SNR measurements...
+
+
+
+
+

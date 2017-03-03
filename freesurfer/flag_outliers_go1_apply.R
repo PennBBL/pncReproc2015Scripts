@@ -7,13 +7,14 @@
 ### ARGS ###
 ############
 subjects.dir<-commandArgs(TRUE)[1]
-#subjects.dir<-"/data/joy/BBL/projects/pncReproc2015/freesurfer/stats5_3/"
+#subjects.dir<-"/data/joy/BBL/projects/pncReproc2015/freesurfer/stats5_3/n2416"
 calc_subset_list<-read.csv(commandArgs(TRUE)[2])
 #calc_subset_list<-read.csv("/data/joy/BBL/projects/pncReproc2015/antsCT/n1601_bblid_scanid_dateid.csv")
 sdthresh<-commandArgs(TRUE)[3]
 #sdthresh<-2
 manual_t1_qa<-read.csv(commandArgs(TRUE)[4])
-#manual_t1_qa<-read.csv("/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/n1601_summaryData/t1/n1601_t1QaData.csv")
+#manual_t1_qa<-read.csv("/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/neuroimaging/t1struct/n1601_t1QaData.csv")
+subjnum<-read.csv(commandArgs(TRUE)[5])
 
 ### DIRS ###
 ############
@@ -26,12 +27,12 @@ curvature.dir<-file.path(stats.dir, 'aparc.stats/curvature')
 
 ### MEAN FILES ###
 ##################
-mean.file<-file.path(aparc.dir, 'bilateral.meanthickness.totalarea.csv')
-cnr.file<-file.path(stats.dir, 'cnr/cnr_buckner.csv')
-snr.file<-file.path(stats.dir, 'cnr/snr.txt')
-aseg.volume.file<-file.path(aseg.dir, 'aseg.stats.volume.csv')
-lh.thickness.file<-file.path(aparc.dir, 'lh.aparc.stats.thickness.csv')
-rh.thickness.file<-file.path(aparc.dir, 'rh.aparc.stats.thickness.csv')
+mean.file<-file.path(aparc.dir, subjnum, '_bilateral.meanthickness.totalarea.csv')
+cnr.file<-file.path(stats.dir, 'cnr/', subjnum, '_cnr_buckner.csv')
+snr.file<-file.path(stats.dir, 'cnr/', subjnum, '_snr.txt')
+aseg.volume.file<-file.path(aseg.dir, subjnum, '_aseg.stats.volume.csv')
+lh.thickness.file<-file.path(aparc.dir,subjnum, '_lh.aparc.stats.thickness.csv')
+rh.thickness.file<-file.path(aparc.dir,subjnum, '_rh.aparc.stats.thickness.csv')
 
 ### READ MEAN DATA ###
 ######################

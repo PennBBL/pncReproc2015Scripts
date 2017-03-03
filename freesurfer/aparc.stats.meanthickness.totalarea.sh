@@ -4,12 +4,13 @@
 export OUTPUT_DIR=$2
 export SUBJECTS_DIR=$3
 slist=$1
+subjnum=$4
 
 if [ ! -e $OUTPUT_DIR/aparc.stats ]; then
 	mkdir $OUTPUT_DIR/aparc.stats
 fi
 # header
-echo bblid,scanid,rh.meanthickness,rh.totalarea,lh.meanthickness,lh.totalarea > $OUTPUT_DIR/aparc.stats/bilateral.meanthickness.totalarea.csv
+echo bblid,scanid,rh.meanthickness,rh.totalarea,lh.meanthickness,lh.totalarea > $OUTPUT_DIR/aparc.stats/"$subjnum"_bilateral.meanthickness.totalarea.csv
 for i in $(cat $slist); do
 	bblid=$(echo $i | cut -d"/" -f1)
 	scanid=$(echo $i | cut -d"/" -f2)
@@ -42,6 +43,6 @@ for i in $(cat $slist); do
 			string=`grep SurfArea,  $subdir/stats/lh.aparc.stats` 
 			lta=`echo $string | cut -d "," -f 4`
 		fi
-		echo $bblid,$scanid,$rmt,$rta,$lmt,$lta >> $OUTPUT_DIR/aparc.stats/bilateral.meanthickness.totalarea.csv
+		echo $bblid,$scanid,$rmt,$rta,$lmt,$lta >> $OUTPUT_DIR/aparc.stats/"$subjnum"_bilateral.meanthickness.totalarea.csv
 	fi
 done
