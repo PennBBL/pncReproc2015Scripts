@@ -7,10 +7,11 @@ imagesToRM <- read.csv('/data/joy/BBL/projects/pncReproc2015/n1601QAT1/finalRevi
 manQAData <- read.csv('/data/joy/BBL/projects/pncReproc2015/n1601QAT1/flaggingBasedonSD/n1601_t1RawManualQA.csv')
 subjId <- read.csv('/data/joy/BBL/projects/pncReproc2015/jlf/volumeValues/n1601_jlfVol_antsCTVol_T1QA_mm3.csv')
 skullIssues <- read.csv('/data/joy/BBL/projects/pncReproc2015/n1601QAT1/finalReview/manualBEIssues.csv')
+skullFixSubjects <- read.csv('/data/joy/BBL/projects/pncReproc2015/beSave/subjectId/subjectToRun', header=F)
 
 # Now prep the output 
 attach(subjId)
-output <- cbind(bblid, scanid, datexscanid)
+output <- cbind(bblid, scanid)
 detach(subjId)
 
 t1Exclude <- rep(0, 1601)
@@ -21,11 +22,13 @@ t1GMDExclude <- rep(0, 1601)
 t1CTExclude <- rep(0, 1601)
 t1ANTsSegmentationExclude <- rep(0, 1601)
 t1JLFExclude <- rep(0, 1601)
+t1BETBrainExtraction <- rep(0,1601)
 
 output <- cbind(output, t1Exclude)
-output <- cbind(output, t1Reprocess)
+#output <- cbind(output, t1Reprocess)
 output <- cbind(output, t1RawDataExclude)
 output <- cbind(output, t1PostProcessExclude)
+output <- cbind(output, t1BETBrainExtraction)
 #output <- cbind(output, t1GMDExclude)
 #output <- cbind(output, t1CTExclude)
 #output <- cbind(output, t1ANTsSegmentationExclude)
@@ -42,10 +45,11 @@ bblidJLFIndex <- imagesToRM$bblid[which(imagesToRM$JLF==1)]
 
 # Now turn everything not useable to 1's in the output
 output <- as.data.frame(output)
-output$t1PostProcessExclude[output$bblid %in% bblidIndex] <- 1
-output$t1PostProcessExclude[output$bblid %in% bblidRedoIndex] <- 1
+output$t1PostProcessExclude[output$bblid %in% bblidIndex[which(which(output$t1PostProcessExclude==1) %in% which(output$t1BETBrainExtraction==1)=='FALSE')]] <- 1
+#output$t1PostProcessExclude[output$bblid %in% bblidRedoIndex] <- 1
 output$t1RawDataExclude[output$bblid %in% bblid0Index] <- 1
-output$t1Reprocess[output$bblid %in% bblidRedoIndex] <- 1
+#output$t1Reprocess[output$bblid %in% bblidRedoIndex] <- 1
+output$t1BETBrainExtraction[output$scanid %in% skullFixSubjects[,3]] <- 1
 #output$t1GMDExclude[output$bblid %in% bblidGMDIndex] <- 1
 #output$t1CTExclude[output$bblid %in% bblidCTIndex] <- 1
 #output$t1ANTsSegmentationExclude[output$bblid %in% bblidANTSIndex] <- 1
@@ -56,7 +60,7 @@ output$ratingKS <- manQAData$ratingKS[match(output$scanid, manQAData$scanid)]
 output$ratingJB <- manQAData$ratingJB[match(output$scanid, manQAData$scanid)]
 output$ratingLV <- manQAData$ratingLV[match(output$scanid, manQAData$scanid)]
 
-output$t1Exclude[which(output$t1PostProcessExclude==1 | output$t1RawDataExclude==1 | output$t1Reprocess==1)] <- 1
+output$t1Exclude[which(output$t1PostProcessExclude==1 | output$t1RawDataExclude==1)] <- 1
 
 # Now write the output
-write.csv(output, '/data/joy/BBL/projects/pncReproc2015/n1601QAT1/finalIncludeList/n1601_t1_include_list.csv', quote=F, row.names=F)
+write.csv(output, '/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/neuroimaging/t1struct/n1601_t1QaData-tmp.csv', quote=F, row.names=F)
