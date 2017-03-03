@@ -8,7 +8,7 @@
 # Merge the extant data frames
 ###################################################################
 
-data <- read.csv('/data/joy/BBL/studies/pnc/subjectData/n1601_go1_datarel_020716.csv')
+data <- read.csv('/data/joy/BBL/studies/pnc/subjectData/n2416_pnc_protocol_validation_params_status_20170105.csv')
 xcp <- read.csv('/data/joy/BBL/projects/pncReproc2015/restbold/quality/REST_XCP.csv')
 b0 <- read.csv('/data/joy/BBL/projects/pncReproc2015/restbold/quality/B0MAPCORRECTION.csv')
 coverage <- read.csv('/data/joy/BBL/projects/pncReproc2015/restbold/quality/REST_COVERAGE_PROCESSED.csv')
@@ -22,8 +22,8 @@ data2 <- merge(data1,xcp,by='scanid',all.x=T)
 data2$restMeanRelRMSMotionExclude <- as.numeric(data2$relMeanRMSmotion > 0.2)
 data2$restNSpikesMotionExclude <- as.numeric(data2$nframesHighMotionrms0.25 > 20)
 
-data2$restExclude <- as.numeric(!data2$restAcquired | data2$restMeanRelRMSMotionExclude | data2$restNSpikesMotionExclude)
-data2$restExcludeVoxelwise <- as.numeric(!data2$restAcquired | data2$restMeanRelRMSMotionExclude | data2$restNSpikesMotionExclude | !data2$restVoxelwiseCoverageInclude)
+data2$restExclude <- as.numeric(!data2$restProtocolValidationStatus | data2$restMeanRelRMSMotionExclude | data2$restNSpikesMotionExclude)
+data2$restExcludeVoxelwise <- as.numeric(!data2$restProtocolValidationStatus | data2$restMeanRelRMSMotionExclude | data2$restNSpikesMotionExclude | !data2$restVoxelwiseCoverageInclude)
 
 ###################################################################
 # Generate the final quality file.
@@ -34,7 +34,7 @@ restQA <- data.frame(
    scanid=data2$scanid,
    restExclude=data2$restExclude,
    restExcludeVoxelwise=data2$restExcludeVoxelwise,
-   restNoDataExclude=as.numeric(!data2$restAcquired),
+   restNoDataExclude=as.numeric(!data2$restProtocolValidationStatus),
    restRelMeanRMSMotion=data2$relMeanRMSmotion,
    restRelMeanRMSMotionExclude=data2$restMeanRelRMSMotionExclude,
    restNSpikesMotion=data2$nframesHighMotionrms0.25,
@@ -43,7 +43,7 @@ restQA <- data.frame(
    restNormCoverage=data2$normCoverage,
    restCoregCrossCorr=data2$coregCrossCorr,
    restCoregCoverage=data2$coregCoverage,
-   restVoxelwiseCoverageExclude=!data2$restVoxelwiseCoverageInclude,
+   restVoxelwiseCoverageExclude=as.numeric(!data2$restVoxelwiseCoverageInclude),
    restRpsMapCorrectionNotApplied=data2$B0MapUsable
 )
 
