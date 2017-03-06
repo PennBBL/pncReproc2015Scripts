@@ -194,7 +194,12 @@ output.df$pcaslVoxelwiseExclude[which(is.na(output.df$pcaslVoxelwiseExclude)=='T
 output.df$pcaslNoDataExclude[which(is.na(output.df$pcaslNoDataExclude)=='TRUE')] <- 1
 
 # Now write the output
-write.csv(output.df, '/data/joy/BBL/projects/pncReproc2015/pcasl/QA/n2416/n2416_PcaslQaData.csv', quote=F, row.names=F)
+write.csv(output.df, paste('/data/joy/BBL/projects/pncReproc2015/pcasl/QA/n2416/n2416_PcaslQaData_',format(Sys.Date(), format="%Y%m%d"), '.csv', sep=''), quote=F, row.names=F)
+write.csv(output.df, paste('/data/joy/BBL/studies/pnc/n2416_dataFreeze/neuroimaging/asl/n2416_PcaslQaData_',format(Sys.Date(), format="%Y%m%d"), '.csv', sep=''), quote=F, row.names=F)
+# Now create the n1601 qa file
+n1601.output.df.qa <- merge(n1601.data, output.df, by=c('bblid', 'scanid'))
+n1601.output.df.qa <- n1601.output.df.qa[,-c(3,4)]
+write.csv(n1601.output.df.qa, paste('/data/joy/BBL/studies/pnc/n1601_dataFreeze/neuroimaging/asl/n1601_PcaslQaData_',format(Sys.Date(), format="%Y%m%d"), '.csv', sep=''), quote=F, row.names=F)
 
 # Now lets produce our venn diagram for those subjects that were flagged for removal
 qaData <- output.df
@@ -241,4 +246,8 @@ colnames(tmpToAdd) <- colnames(pcaslSSVals)
 pcaslSSVals <- rbind(pcaslSSVals, tmpToAdd)
 
 # Now write the csv
-write.csv(pcaslSSVals, '/data/joy/BBL/studies/pnc/n2416_dataFreezeJan2017/neuroimaging/asl/n2416_jlfAntsCTIntersectionPcaslValues.csv', row.names=F, quote=F)
+write.csv(pcaslSSVals, paste('/data/joy/BBL/studies/pnc/n2416_dataFreeze/neuroimaging/asl/n2416_jlfAntsCTIntersectionPcaslValues_',format(Sys.Date(), format="%Y%m%d"), '.csv', sep=''), row.names=F, quote=F)
+# Now do the n1601 
+n1601.output.df <- merge(n1601.data, pcaslSSVals, by=c('bblid', 'scanid'))
+n1601.output.df <- n1601.output.df.qa[,-c(3,4)]
+write.csv(n1601.output.df, paste('/data/joy/BBL/studies/pnc/n1601_dataFreeze/neuroimaging/asl/n1601_jlfAntsCTIntersectionPcaslValues_',format(Sys.Date(), format="%Y%m%d"), '.csv', sep=''), quote=F, row.names=F)
