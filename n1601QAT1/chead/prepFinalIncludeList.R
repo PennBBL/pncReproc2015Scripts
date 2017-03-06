@@ -63,4 +63,4 @@ output$ratingLV <- manQAData$ratingLV[match(output$scanid, manQAData$scanid)]
 output$t1Exclude[which(output$t1PostProcessExclude==1 | output$t1RawDataExclude==1)] <- 1
 
 # Now write the output
-write.csv(output, '/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/neuroimaging/t1struct/n1601_t1QaData-tmp.csv', quote=F, row.names=F)
+write.csv(output,paste('/data/joy/BBL/studies/pnc/n1601_dataFreeze/neuroimaging/t1struct/n1601_t1QaData_',Sys.Date(),'.csv', sep=''),quote=F,row.names=F)
