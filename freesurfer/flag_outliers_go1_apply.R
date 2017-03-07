@@ -14,7 +14,7 @@ sdthresh<-commandArgs(TRUE)[3]
 #sdthresh<-2
 manual_t1_qa<-read.csv(commandArgs(TRUE)[4])
 #manual_t1_qa<-read.csv("/data/joy/BBL/studies/pnc/n1601_dataFreeze/neuroimaging/t1struct/n1601_t1QaData_20170306.csv")
-subjnum<-read.csv(commandArgs(TRUE)[5])
+subjnum<-commandArgs(TRUE)[5]
 #subjnum<- "n2416"
 
 ### DIRS ###

@@ -52,30 +52,30 @@ go1_list=/data/joy/BBL/projects/pncReproc2015/antsCT/n1601_bblid_scanid_dateid.c
 t1_qa=/data/joy/BBL/studies/pnc/n1601_dataFreeze/neuroimaging/t1struct/n1601_t1QaData_20170306.csv
 
 ##### 1) Create subcortical volume segmentation csv - aseg stats##### 
-if [ ! -e "$output_dir/aseg.stats" ]; then
-	mkdir -p $output_dir/aseg.stats
-fi
-asegstats2table --subjectsfile=$slist -t $output_dir/aseg.stats/"$subjnum"_aseg.stats.volume.csv -m volume --skip
+#if [ ! -e "$output_dir/aseg.stats" ]; then
+#	mkdir -p $output_dir/aseg.stats
+#fi
+#asegstats2table --subjectsfile=$slist -t $output_dir/aseg.stats/"$subjnum"_aseg.stats.volume.csv -m volume --skip
 
 ##### 2) Create mean QA data charts (thickness and surface area charts)##### 
-/home/mquarmley/pncReproc2015Scripts/freesurfer/aparc.stats.meanthickness.totalarea.sh $slist $output_dir $SUBJECTS_DIR $subjnum
+#/home/mquarmley/pncReproc2015Scripts/freesurfer/aparc.stats.meanthickness.totalarea.sh $slist $output_dir $SUBJECTS_DIR $subjnum
 
 ##### 3) Create parcellation csv's - aparc stats##### 
-aparcstats2table --hemi lh --subjectsfile=$slist -t $output_dir/aparc.stats/"$subjnum"_lh.aparc.stats.thickness.csv -m thickness --skip
-aparcstats2table --hemi rh --subjectsfile=$slist -t $output_dir/aparc.stats/"$subjnum"_rh.aparc.stats.thickness.csv -m thickness --skip
-aparcstats2table --hemi lh --subjectsfile=$slist -t $output_dir/aparc.stats/"$subjnum"_lh.aparc.stats.volume.csv -m volume --skip
-aparcstats2table --hemi rh --subjectsfile=$slist -t $output_dir/aparc.stats/"$subjnum"_rh.aparc.stats.volume.csv -m volume --skip
-aparcstats2table --hemi lh --subjectsfile=$slist -t $output_dir/aparc.stats/"$subjnum"_lh.aparc.stats.area.csv --skip
-aparcstats2table --hemi rh --subjectsfile=$slist -t $output_dir/aparc.stats/"$subjnum"_rh.aparc.stats.area.csv --skip
+#aparcstats2table --hemi lh --subjectsfile=$slist -t $output_dir/aparc.stats/"$subjnum"_lh.aparc.stats.thickness.csv -m thickness --skip
+#aparcstats2table --hemi rh --subjectsfile=$slist -t $output_dir/aparc.stats/"$subjnum"_rh.aparc.stats.thickness.csv -m thickness --skip
+#aparcstats2table --hemi lh --subjectsfile=$slist -t $output_dir/aparc.stats/"$subjnum"_lh.aparc.stats.volume.csv -m volume --skip
+#aparcstats2table --hemi rh --subjectsfile=$slist -t $output_dir/aparc.stats/"$subjnum"_rh.aparc.stats.volume.csv -m volume --skip
+#aparcstats2table --hemi lh --subjectsfile=$slist -t $output_dir/aparc.stats/"$subjnum"_lh.aparc.stats.area.csv --skip
+#aparcstats2table --hemi rh --subjectsfile=$slist -t $output_dir/aparc.stats/"$subjnum"_rh.aparc.stats.area.csv --skip
 
 ##### 4) Create CNR and Euler Numbers csv's##### 
 #/home/mquarmley/pncReproc2015Scripts/freesurfer/cnr_euler_number_calculation.sh $slist $SUBJECTS_DIR $output_dir $subjnum
 
 ##### 5) Flag subjects based on whether they are an outlier (>2 SD) on several measures##### 
-/share/apps/R/R-3.1.1/bin/R --slave --file=/home/mquarmley/pncReproc2015Scripts/freesurfer/flag_outliers_go1_apply.R --args $output_dir $go1_list $sdthresh $t1_qa $subjnum
+/share/apps/R/R-3.2.3/bin/R --slave --file=/home/mquarmley/pncReproc2015Scripts/freesurfer/flag_outliers_go1_apply.R --args $output_dir $go1_list $sdthresh $t1_qa $subjnum
 
 ##### 6) Flag  (gray/csf flag, gray/white flag, euler number flag, number outliers rois thickness flag, total outliers)##### 
-/share/apps/R/R-3.1.1/bin/R --slave --file=/home/mquarmley/pncReproc2015Scripts/freesurfer/cnr_euler_qa_go1_apply.R --args $output_dir $go1_list $t1_qa $subjnum
+/share/apps/R/R-3.2.3/bin/R --slave --file=/home/mquarmley/pncReproc2015Scripts/freesurfer/cnr_euler_qa_go1_apply.R --args $output_dir $go1_list $t1_qa $subjnum
 
 ##### 7) Create SNR csv##### 
 #run QA tools recon checker on each subject
