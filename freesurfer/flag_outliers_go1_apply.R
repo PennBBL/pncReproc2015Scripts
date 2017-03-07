@@ -106,8 +106,8 @@ sd_thresh<-(sdthresh*(sd(subset.data[,i])))
 sd_above_value<- mean(subset.data[,i])+sd_thresh
 sd_below_value<- mean(subset.data[,i])-sd_thresh
 
-x<- cbind(sd_above_value, 
-output<- cbind(output,x)
+#x<- cbind(sd_above_value,sd_below_value) 
+#output<- cbind(output,x)
 
 tmp_lh[i]<- "0"
 tmp_lh[i][thickness.data[i]>sd_above_value]<- "1"
@@ -142,18 +142,22 @@ colnames(tmp_laterality)[1]<-"scanid"
 colnames(tmp_laterality)[2:ncol(tmp_laterality)]<- lh.names
 
 
-for (i in lh.names){
-
+for (z in seq(1, length(lh.names))){
+i <- lh.names[z]
+  
 r_name<- paste("rh",substring(i,4,10000),sep="_")
 
 sd_above_value<-(mean((subset.data[,i] - subset.data[,r_name])/(subset.data[,i] + subset.data[,r_name]))+(sdthresh*(sd((subset.data[,i] - subset.data[,r_name])/(subset.data[,i] + subset.data[,r_name])))))
 sd_below_value<-(mean((subset.data[,i] - subset.data[,r_name])/(subset.data[,i] + subset.data[,r_name]))-(sdthresh*(sd((subset.data[,i] - subset.data[,r_name])/(subset.data[,i] + subset.data[,r_name])))))
 
-tmp_laterality[i]<- "0"
-tmp_laterality[i][(thickness.data[,i] - thickness.data[,r_name])/(thickness.data[,i] + thickness.data[,r_name])>sd_above_value]<- "1"
-tmp_laterality[i][(thickness.data[,i] - thickness.data[,r_name])/(thickness.data[,i] + thickness.data[,r_name])<sd_below_value]<- "1"
+tmp_laterality[,z+1]<- "0"
+tmp_laterality[,z+1][which((thickness.data[,i] - thickness.data[,r_name])/(thickness.data[,i] + thickness.data[,r_name])>sd_above_value)]<- "1"
+tmp_laterality[,z+1][which((thickness.data[,i] - thickness.data[,r_name])/(thickness.data[,i] + thickness.data[,r_name])<sd_below_value)]<- "1"
+
+tmp_laterality[,z+1]<- as.numeric(tmp_laterality[,z+1])
 
 }
+
 
 thickness.data$noutliers.lat.thickness.rois<-rowSums(tmp_laterality[2:ncol(tmp_laterality)])
 
