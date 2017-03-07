@@ -51,6 +51,9 @@ go1_list=/data/joy/BBL/projects/pncReproc2015/antsCT/n1601_bblid_scanid_dateid.c
 #a list of the manual qa so can exclude 0's first
 t1_qa=/data/joy/BBL/studies/pnc/n1601_dataFreeze/neuroimaging/t1struct/n1601_t1QaData_20170306.csv
 
+#demographics data 
+demos=/data/joy/BBL/studies/pnc/subjectData/n1601_go1_datarel_073015.csv
+
 ##### 1) Create subcortical volume segmentation csv - aseg stats##### 
 #if [ ! -e "$output_dir/aseg.stats" ]; then
 #	mkdir -p $output_dir/aseg.stats
@@ -75,7 +78,7 @@ t1_qa=/data/joy/BBL/studies/pnc/n1601_dataFreeze/neuroimaging/t1struct/n1601_t1Q
 /share/apps/R/R-3.2.3/bin/R --slave --file=/home/mquarmley/pncReproc2015Scripts/freesurfer/flag_outliers_go1_apply.R --args $output_dir $go1_list $sdthresh $t1_qa $subjnum
 
 ##### 6) Flag  (gray/csf flag, gray/white flag, euler number flag, number outliers rois thickness flag, total outliers)##### 
-/share/apps/R/R-3.2.3/bin/R --slave --file=/home/mquarmley/pncReproc2015Scripts/freesurfer/cnr_euler_qa_go1_apply.R --args $output_dir $go1_list $t1_qa $subjnum
+/share/apps/R/R-3.2.3/bin/R --slave --file=/home/mquarmley/pncReproc2015Scripts/freesurfer/cnr_euler_qa_go1_apply.R --args $output_dir $go1_list $t1_qa $subjnum $demos
 
 ##### 7) Create SNR csv##### 
 #run QA tools recon checker on each subject

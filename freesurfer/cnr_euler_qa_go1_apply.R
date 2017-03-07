@@ -17,12 +17,15 @@ library(ggplot2)
 
 #read in data
 output.dir<-commandArgs(TRUE)[1]
-subjnum<-read.csv(commandArgs(TRUE)[4])
+#output.dir<-"/data/joy/BBL/projects/pncReproc2015/freesurfer/stats5_3"
+subjnum<-commandArgs(TRUE)[4]
+#subjnum<- "n2416"
 cnr_data<- read.csv(paste(output.dir,"/cnr/",subjnum,"_cnr_buckner.csv",sep=""))
 euler_data<- read.csv(paste(output.dir,"/cnr/",subjnum,"_euler_number.csv",sep=""))
 calc_subset_list<-read.csv(commandArgs(TRUE)[2])
 manual_t1_qa<-read.csv(commandArgs(TRUE)[3])
-
+#demos<- read.csv("/data/joy/BBL/studies/pnc/subjectData/n1601_go1_datarel_073015.csv")
+demos<-read.csv(commandArgs(TRUE)[5])
 
 #merge the files together by datexscanid
 data<- cnr_data
@@ -48,7 +51,7 @@ write.csv(cor_cnr_euler_table, paste("/data/joy/BBL/studies/pnc/subjectData/free
 ####EULER AND AUTO QA MEASURES
 
 #read in auto qa csv
-auto_qa<- read.csv("/data/joy/BBL/projects/pncReproc2015/freesurfer/stats5_3/all.flags.n2416.csv")
+auto_qa<- read.csv(paste("/data/joy/BBL/projects/pncReproc2015/freesurfer/stats5_3/all.flags.",subjnum,".csv",sep=""))
 
 #subset auto qa to exclude those that failed freesurfer
 auto_qa<- auto_qa[which(! auto_qa$scanid %in% exclude_list),]
@@ -57,13 +60,10 @@ auto_qa<- auto_qa[which(! auto_qa$scanid %in% exclude_list),]
 cor_autoqa_table<- data.frame("measure"=c("gray/csf lh","gray/csf rh", "gray/white lh","gray/white rh","left_euler","right_euler"),"meanthickness_outlier"=c(cor(auto_qa$meanthickness_outlier,data$graycsflh),cor(auto_qa$meanthickness_outlier,data$graycsfrh),cor(auto_qa$meanthickness_outlier,data$graywhitelh),cor(auto_qa$meanthickness_outlier,data$graywhiterh),cor(auto_qa$meanthickness_outlier,data$left_euler),cor(auto_qa$meanthickness_outlier,data$right_euler)),"totalarea_outlier"=c(cor(auto_qa$totalarea_outlier,data$graycsflh),cor(auto_qa$totalarea_outlier,data$graycsfrh),cor(auto_qa$totalarea_outlier,data$graywhitelh),cor(auto_qa$totalarea_outlier,data$graywhiterh),cor(auto_qa$totalarea_outlier,data$left_euler),cor(auto_qa$totalarea_outlier,data$right_euler)),"cnr_outlier"=c(cor(auto_qa$cnr_outlier,data$graycsflh),cor(auto_qa$cnr_outlier,data$graycsfrh),cor(auto_qa$cnr_outlier,data$graywhitelh),cor(auto_qa$cnr_outlier,data$graywhiterh),cor(auto_qa$cnr_outlier,data$left_euler),cor(auto_qa$cnr_outlier,data$right_euler)),"snr_outlier"=c(cor(auto_qa$snr_outlier,data$graycsflh),cor(auto_qa$snr_outlier,data$graycsfrh),cor(auto_qa$snr_outlier,data$graywhitelh),cor(auto_qa$snr_outlier,data$graywhiterh),cor(auto_qa$snr_outlier,data$left_euler),cor(auto_qa$snr_outlier,data$right_euler)),"noutliers.thickness.rois_outlier"=c(cor(auto_qa$noutliers.thickness.rois_outlier,data$graycsflh),cor(auto_qa$noutliers.thickness.rois_outlier,data$graycsfrh),cor(auto_qa$noutliers.thickness.rois_outlier,data$graywhitelh),cor(auto_qa$noutliers.thickness.rois_outlier,data$graywhiterh),cor(auto_qa$noutliers.thickness.rois_outlier,data$left_euler),cor(auto_qa$noutliers.thickness.rois_outlier,data$right_euler)),"noutliers.lat.thickness.rois_outlier"=c(cor(auto_qa$noutliers.lat.thickness.rois_outlier,data$graycsflh),cor(auto_qa$noutliers.lat.thickness.rois_outlier,data$graycsfrh),cor(auto_qa$noutliers.lat.thickness.rois_outlier,data$graywhitelh),cor(auto_qa$noutliers.lat.thickness.rois_outlier,data$graywhiterh),cor(auto_qa$noutliers.lat.thickness.rois_outlier,data$left_euler),cor(auto_qa$noutliers.lat.thickness.rois_outlier,data$right_euler)))
 
 #write out table
-write.csv(cor_autoqa_table, paste("/data/joy/BBL/studies/pnc/subjectData/freesurfer/n2416/go1_go2_go3_fs53_cnr_euler_autoqa_correlation_table_",subjnum,".csv"))
+write.csv(cor_autoqa_table, paste("/data/joy/BBL/studies/pnc/subjectData/freesurfer/go1_go2_go3_fs53_cnr_euler_autoqa_correlation_table_",subjnum,".csv"))
 
 ############################################
 ###########DEMOGRAPHICS###############
-
-#read in demographic data
-demos<- read.csv("/data/joy/BBL/studies/pnc/subjectData/n1601_go1_datarel_073015.csv")
 
 #change scanid so can match demographics to data
 data2<- data
@@ -81,7 +81,7 @@ data2<- data2[! is.na(data2$dxpmr4),]
 ###########DISTRIBUTION PLOTS###############
 
 #write graphs to a pdf
-pdf(paste("/data/joy/BBL/studies/pnc/subjectData/freesurfer/n2416/go1_go2_go3_fs53_cnr_euler_distribution_plots_",subjum,".pdf"))
+pdf(paste("/data/joy/BBL/studies/pnc/subjectData/freesurfer/go1_go2_go3_fs53_cnr_euler_distribution_plots_",subjum,".pdf"))
 
 #loop through columns in data and plot histogram and scatterplot for each measure
 for (i in 3:ncol(data)){
