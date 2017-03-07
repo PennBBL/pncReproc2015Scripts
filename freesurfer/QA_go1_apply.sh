@@ -75,7 +75,7 @@ demos=/data/joy/BBL/studies/pnc/subjectData/n1601_go1_datarel_073015.csv
 #/home/mquarmley/pncReproc2015Scripts/freesurfer/cnr_euler_number_calculation.sh $slist $SUBJECTS_DIR $output_dir $subjnum
 
 ##### 5) Flag subjects based on whether they are an outlier (>2 SD) on several measures##### 
-/share/apps/R/R-3.2.3/bin/R --slave --file=/home/mquarmley/pncReproc2015Scripts/freesurfer/flag_outliers_go1_apply.R --args $output_dir $go1_list $sdthresh $t1_qa $subjnum
+#/share/apps/R/R-3.2.3/bin/R --slave --file=/home/mquarmley/pncReproc2015Scripts/freesurfer/flag_outliers_go1_apply.R --args $output_dir $go1_list $sdthresh $t1_qa $subjnum
 
 ##### 6) Flag  (gray/csf flag, gray/white flag, euler number flag, number outliers rois thickness flag, total outliers)##### 
 /share/apps/R/R-3.2.3/bin/R --slave --file=/home/mquarmley/pncReproc2015Scripts/freesurfer/cnr_euler_qa_go1_apply.R --args $output_dir $go1_list $t1_qa $subjnum $demos
