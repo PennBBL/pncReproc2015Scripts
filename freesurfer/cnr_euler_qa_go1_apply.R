@@ -23,7 +23,9 @@ subjnum<-commandArgs(TRUE)[4]
 cnr_data<- read.csv(paste(output.dir,"/cnr/",subjnum,"_cnr_buckner.csv",sep=""))
 euler_data<- read.csv(paste(output.dir,"/cnr/",subjnum,"_euler_number.csv",sep=""))
 calc_subset_list<-read.csv(commandArgs(TRUE)[2])
+#calc_subset_list<-read.csv("/data/joy/BBL/projects/pncReproc2015/antsCT/n1601_bblid_scanid_dateid.csv")
 manual_t1_qa<-read.csv(commandArgs(TRUE)[3])
+#manual_t1_qa<-read.csv("/data/joy/BBL/studies/pnc/n1601_dataFreeze/neuroimaging/t1struct/n1601_t1QaData_20170306.csv")
 #demos<- read.csv("/data/joy/BBL/studies/pnc/subjectData/n1601_go1_datarel_073015.csv")
 demos<-read.csv(commandArgs(TRUE)[5])
 
@@ -34,8 +36,9 @@ data$right_euler<- euler_data$right_euler[match(data$scanid,euler_data$scanid)]
 
 #exclude the subjects that failed freesurfer processing (in this sample 4 subjects failed due to very poor scan
 #quality and high motion)
-exclude_list<- c("*x3805","*x4047","*x5387","*x4981")
-data<- data[which(! data$scanid %in% exclude_list),]
+exclude_list<- c("3805","4047","5387","4981")
+data$scanid_short<-substring(data$scanid,10,100)
+data<- data[which(! data$scanid_short %in% exclude_list),]
 
 ############################################
 ###########MEASURE COMPARISON###############
@@ -54,7 +57,8 @@ write.csv(cor_cnr_euler_table, paste("/data/joy/BBL/studies/pnc/subjectData/free
 auto_qa<- read.csv(paste("/data/joy/BBL/projects/pncReproc2015/freesurfer/stats5_3/all.flags.",subjnum,".csv",sep=""))
 
 #subset auto qa to exclude those that failed freesurfer
-auto_qa<- auto_qa[which(! auto_qa$scanid %in% exclude_list),]
+auto_qa$scanid_short<-substring(auto_qa$scanid,10,100)
+auto_qa<- auto_qa[which(! auto_qa$scanid_short %in% exclude_list),]
 
 #create data frame with correlation r value of cnr/euler numbers vs autoqa
 cor_autoqa_table<- data.frame("measure"=c("gray/csf lh","gray/csf rh", "gray/white lh","gray/white rh","left_euler","right_euler"),"meanthickness_outlier"=c(cor(auto_qa$meanthickness_outlier,data$graycsflh),cor(auto_qa$meanthickness_outlier,data$graycsfrh),cor(auto_qa$meanthickness_outlier,data$graywhitelh),cor(auto_qa$meanthickness_outlier,data$graywhiterh),cor(auto_qa$meanthickness_outlier,data$left_euler),cor(auto_qa$meanthickness_outlier,data$right_euler)),"totalarea_outlier"=c(cor(auto_qa$totalarea_outlier,data$graycsflh),cor(auto_qa$totalarea_outlier,data$graycsfrh),cor(auto_qa$totalarea_outlier,data$graywhitelh),cor(auto_qa$totalarea_outlier,data$graywhiterh),cor(auto_qa$totalarea_outlier,data$left_euler),cor(auto_qa$totalarea_outlier,data$right_euler)),"cnr_outlier"=c(cor(auto_qa$cnr_outlier,data$graycsflh),cor(auto_qa$cnr_outlier,data$graycsfrh),cor(auto_qa$cnr_outlier,data$graywhitelh),cor(auto_qa$cnr_outlier,data$graywhiterh),cor(auto_qa$cnr_outlier,data$left_euler),cor(auto_qa$cnr_outlier,data$right_euler)),"snr_outlier"=c(cor(auto_qa$snr_outlier,data$graycsflh),cor(auto_qa$snr_outlier,data$graycsfrh),cor(auto_qa$snr_outlier,data$graywhitelh),cor(auto_qa$snr_outlier,data$graywhiterh),cor(auto_qa$snr_outlier,data$left_euler),cor(auto_qa$snr_outlier,data$right_euler)),"noutliers.thickness.rois_outlier"=c(cor(auto_qa$noutliers.thickness.rois_outlier,data$graycsflh),cor(auto_qa$noutliers.thickness.rois_outlier,data$graycsfrh),cor(auto_qa$noutliers.thickness.rois_outlier,data$graywhitelh),cor(auto_qa$noutliers.thickness.rois_outlier,data$graywhiterh),cor(auto_qa$noutliers.thickness.rois_outlier,data$left_euler),cor(auto_qa$noutliers.thickness.rois_outlier,data$right_euler)),"noutliers.lat.thickness.rois_outlier"=c(cor(auto_qa$noutliers.lat.thickness.rois_outlier,data$graycsflh),cor(auto_qa$noutliers.lat.thickness.rois_outlier,data$graycsfrh),cor(auto_qa$noutliers.lat.thickness.rois_outlier,data$graywhitelh),cor(auto_qa$noutliers.lat.thickness.rois_outlier,data$graywhiterh),cor(auto_qa$noutliers.lat.thickness.rois_outlier,data$left_euler),cor(auto_qa$noutliers.lat.thickness.rois_outlier,data$right_euler)))
@@ -65,14 +69,12 @@ write.csv(cor_autoqa_table, paste("/data/joy/BBL/studies/pnc/subjectData/freesur
 ############################################
 ###########DEMOGRAPHICS###############
 
-#change scanid so can match demographics to data
+#create data frame called data2
 data2<- data
-data2$scanid<- as.character(data2$scanid)
-data2$scanid<- substring(data2$scanid,10,nchar(data2$scanid))
 
 #merge dxpmr4 and age into cnr and euler data
-data2$age<- demos$ageAtGo1Scan[match(data2$scanid,demos$scanid)]
-data2$dxpmr4<- demos$goassessDxpmr4[match(data2$scanid,demos$scanid)]
+data2$age<- demos$ageAtGo1Scan[match(data2$scanid_short,demos$scanid)]
+data2$dxpmr4<- demos$goassessDxpmr4[match(data2$scanid_short,demos$scanid)]
 
 #subset data to only go1 data (only have go1 dx)
 data2<- data2[! is.na(data2$dxpmr4),]
@@ -81,10 +83,10 @@ data2<- data2[! is.na(data2$dxpmr4),]
 ###########DISTRIBUTION PLOTS###############
 
 #write graphs to a pdf
-pdf(paste("/data/joy/BBL/studies/pnc/subjectData/freesurfer/go1_go2_go3_fs53_cnr_euler_distribution_plots_",subjum,".pdf"))
+pdf(paste("/data/joy/BBL/studies/pnc/subjectData/freesurfer/go1_go2_go3_fs53_cnr_euler_distribution_plots_",subjnum,".pdf"))
 
 #loop through columns in data and plot histogram and scatterplot for each measure
-for (i in 3:ncol(data)){
+for (i in 3:9){
   
   #get range and dynamically create binwidth for histogram (cnr and euler numbers have very different value ranges)
   bw<- (max(data[,i])-min(data[,i]))/10
@@ -126,7 +128,7 @@ flags$mean_graycsf_cnr<- (flags$graycsflh+flags$graycsfrh)/2
 flags$mean_graywhite_cnr<- (flags$graywhitelh+flags$graywhiterh)/2
 
 #subset data frame to only IDs and averages
-flags<- flags[,c(1,2,10:12)]
+flags<- flags[,c(1,2,11:13)]
 
 
 #subset flags data to new data frame with only GO1 data without manual exclude of 0
