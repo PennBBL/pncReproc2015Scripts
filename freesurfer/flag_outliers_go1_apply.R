@@ -17,6 +17,15 @@ manual_t1_qa<-read.csv(commandArgs(TRUE)[4])
 subjnum<-commandArgs(TRUE)[5]
 #subjnum<- "n2416"
 
+#print(subjects.dir)
+#print(calc_subset_list)
+#print(sdthresh)
+#print(manual_t1_qa)
+#print(subjnum)
+
+sdthresh<- as.numeric(sdthresh)
+
+
 ### DIRS ###
 ############
 #stats.dir<-file.path(subjects.dir, 'stats')
