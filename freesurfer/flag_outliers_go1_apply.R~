@@ -32,8 +32,8 @@ mean.file<-file.path(aparc.dir, paste(subjnum, '_bilateral.meanthickness.totalar
 cnr.file<-file.path(stats.dir, 'cnr', paste(subjnum, '_cnr_buckner.csv',sep=""))
 snr.file<-file.path(stats.dir, 'cnr', paste(subjnum, '_snr.txt',sep=""))
 aseg.volume.file<-file.path(aseg.dir, paste(subjnum, '_aseg.stats.volume.csv',sep=""))
-lh.thickness.file<-file.path(aparc.dir, paste(subjnum, '_lh.aparc.stats.thickness.csv',sep=""))
-rh.thickness.file<-file.path(aparc.dir, paste(subjnum, '_rh.aparc.stats.thickness.csv',sep=""))
+lh.thickness.file<-file.path(aparc.dir,paste(subjnum, '_lh.aparc.stats.thickness.csv',sep=""))
+rh.thickness.file<-file.path(aparc.dir,paste(subjnum, '_rh.aparc.stats.thickness.csv',sep=""))
 
 ### READ MEAN DATA ###
 ######################

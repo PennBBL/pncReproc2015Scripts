@@ -69,7 +69,7 @@ aparcstats2table --hemi lh --subjectsfile=$slist -t $output_dir/aparc.stats/"$su
 aparcstats2table --hemi rh --subjectsfile=$slist -t $output_dir/aparc.stats/"$subjnum"_rh.aparc.stats.area.csv --skip
 
 ##### 4) Create CNR and Euler Numbers csv's##### 
-#/home/mquarmley/pncReproc2015Scripts/freesurfer/cnr_euler_number_calculation.sh $slist $SUBJECTS_DIR $output_dir $subjnum
+/home/mquarmley/pncReproc2015Scripts/freesurfer/cnr_euler_number_calculation.sh $slist $SUBJECTS_DIR $output_dir $subjnum
 
 ##### 5) Flag subjects based on whether they are an outlier (>2 SD) on several measures##### 
 /share/apps/R/R-3.1.1/bin/R --slave --file=/home/mquarmley/pncReproc2015Scripts/freesurfer/flag_outliers_go1_apply.R --args $output_dir $go1_list $sdthresh $t1_qa $subjnum
