@@ -45,16 +45,10 @@ bblidJLFIndex <- imagesToRM$bblid[which(imagesToRM$JLF==1)]
 
 # Now turn everything not useable to 1's in the output
 output <- as.data.frame(output)
-output$t1PostProcessExclude[output$bblid %in% bblidIndex[which(which(output$t1PostProcessExclude==1) %in% which(output$t1BETBrainExtraction==1)=='FALSE')]] <- 1
-#output$t1PostProcessExclude[output$bblid %in% bblidRedoIndex] <- 1
-output$t1RawDataExclude[output$bblid %in% bblid0Index] <- 1
-#output$t1Reprocess[output$bblid %in% bblidRedoIndex] <- 1
 output$t1BETBrainExtraction[output$scanid %in% skullFixSubjects[,3]] <- 1
-#output$t1GMDExclude[output$bblid %in% bblidGMDIndex] <- 1
-#output$t1CTExclude[output$bblid %in% bblidCTIndex] <- 1
-#output$t1ANTsSegmentationExclude[output$bblid %in% bblidANTSIndex] <- 1
-#output$t1JLFExclude[output$bblid %in% bblidJLFIndex] <- 1
-output$datexscanid <- subjId$datexscanid
+output$t1PostProcessExclude[output$bblid %in% bblidIndex] <- 1
+output$t1PostProcessExclude[which(output$t1BETBrainExtraction==1)] <- 0
+output$t1RawDataExclude[output$bblid %in% bblid0Index] <- 1
 output$averageManualRating <- manQAData$averageRating[match(output$scanid, manQAData$scanid)]
 output$ratingKS <- manQAData$ratingKS[match(output$scanid, manQAData$scanid)]
 output$ratingJB <- manQAData$ratingJB[match(output$scanid, manQAData$scanid)]
@@ -63,4 +57,4 @@ output$ratingLV <- manQAData$ratingLV[match(output$scanid, manQAData$scanid)]
 output$t1Exclude[which(output$t1PostProcessExclude==1 | output$t1RawDataExclude==1)] <- 1
 
 # Now write the output
-write.csv(output,paste('/data/joy/BBL/studies/pnc/n1601_dataFreeze/neuroimaging/t1struct/n1601_t1QaData_',Sys.Date(),'.csv', sep=''),quote=F,row.names=F)
+write.csv(output,paste('/data/joy/BBL/studies/pnc/n1601_dataFreeze/neuroimaging/t1struct/n1601_t1QaData_',format(Sys.Date(), format="%Y%m%d"),'.csv', sep=''),quote=F,row.names=F)
