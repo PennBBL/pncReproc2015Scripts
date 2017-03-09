@@ -181,7 +181,7 @@ flags$flagged<- flags$total_outliers
 flags$flagged[flags$flagged>0]<- 1
 
 #write out flagged data
-write.csv(flags,paste("/data/joy/BBL/projects/pncReproc2015/freesurfer/stats5_3/cnr_euler_flags_go1_based_",subjnum,".csv"))
+write.csv(flags,paste("/data/joy/BBL/projects/pncReproc2015/freesurfer/stats5_3/cnr_euler_flags_go1_based_",subjnum,".csv",sep=""))
 
 #################################################
 ###########EXCLUSIONS BY DIAGNOSIS###############
