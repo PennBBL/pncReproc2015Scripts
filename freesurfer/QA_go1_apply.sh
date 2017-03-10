@@ -101,3 +101,15 @@ paste temp2.txt temp3.txt > $output_dir/cnr/"$subjnum"_snr.txt
 rm -f temp*.txt
 
 
+#Run script to input the flagged subject csv's and determine is the subject is flagged for automatic FS QA and should be manually reviewed. This script also will output the total number of flags per outlier into a csv table.
+
+go1_flag=$output_dir/all.flags.go1.based."$subjnum".csv
+euler_flag=$output_dir/cnr_euler_flags_go1_based_"$subjnum".csv
+
+/share/apps/R/R-3.2.3/bin/R --slave --file=/home/mquarmley/pncReproc2015Scripts/freesurfer/sum_flags_auto_qa_for_manual_review.R --args $output_dir $subjnum $go1_flag $euler_flag $t1_qa
+
+
+
+
+
+
