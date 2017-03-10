@@ -30,9 +30,9 @@
 ########################################
 
 #Set variables
-#slist=/data/joy/BBL/studies/pnc/subjectData/freesurfer/go1_go2_go3_freesurfer53_qa_run_list_n2496.txt
+slist=/data/joy/BBL/studies/pnc/subjectData/freesurfer/go1_go2_go3_freesurfer53_qa_run_list_n2496.txt
 #slist=/data/joy/BBL/studies/pnc/subjectData/freesurfer/go1_go2_go3_freesurfer53_qa_run_list_n2416.txt
-slist=/data/joy/BBL/studies/pnc/subjectData/freesurfer/go_freesurfer53_qa_run_list_n1601.txt
+#slist=/data/joy/BBL/studies/pnc/subjectData/freesurfer/go_freesurfer53_qa_run_list_n1601.txt
 export output_dir=/data/joy/BBL/projects/pncReproc2015/freesurfer/stats5_3
 export SUBJECTS_DIR=/data/joy/BBL/studies/pnc/processedData/structural/freesurfer53
 export QA_TOOLS=/data/joy/BBL/applications/QAtools_v1.1/
@@ -43,7 +43,7 @@ export PATH=$FREESURFER_HOME/bin/:$PATH
 sdthresh=2
 
 #give it the subject n that you wish to be appended to each file name
-subjnum="n1601"
+subjnum="n2496"
 
 #a list of go1 subjects so can use for flagging outliers based on go1
 go1_list=/data/joy/BBL/projects/pncReproc2015/antsCT/n1601_bblid_scanid_dateid.csv
