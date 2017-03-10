@@ -54,7 +54,7 @@ write.csv(cor_cnr_euler_table, paste("/data/joy/BBL/studies/pnc/subjectData/free
 ####EULER AND AUTO QA MEASURES
 
 #read in auto qa csv
-auto_qa<- read.csv(paste("/data/joy/BBL/projects/pncReproc2015/freesurfer/stats5_3/all.flags.",subjnum,".csv",sep=""))
+auto_qa<- read.csv(paste("/data/joy/BBL/projects/pncReproc2015/freesurfer/stats5_3/all.flags.go1.based.",subjnum,".csv",sep=""))
 
 #subset auto qa to exclude those that failed freesurfer
 auto_qa$scanid_short<-substring(auto_qa$scanid,10,100)
