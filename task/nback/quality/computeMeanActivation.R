@@ -15,3 +15,11 @@ for (i in 1:nsubj) {
    con <- antsImageRead(as.character(conpath),3)
    contrasts$mean[i] <- mean(con[as.logical(as.array(mask))])
 }
+
+###################################################################
+# Activation outliers will be flagged using the following criteria:
+# MEAN - 2.5SD
+# -0.5527181
+# MEAN + 2.5SD
+# 0.9300575
+###################################################################

@@ -3,7 +3,11 @@
 ###################################################################
 #  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  ☭  #
 ###################################################################
-NBACK=/data/joy/BBL/studies/pnc/processedData/nback/nback_201607/nback_201607_201607050934/
+NBACK=/data/joy/BBL/studies/pnc/processedData/nback/nback_201607/
+QOUT=/data/joy/BBL/projects/pncReproc2015/nback/quality/
+DATAREL=/data/joy/BBL/studies/pnc/n1601_dataFreeze/neuroimaging/nback/
+DATARELL=/data/joy/BBL/studies/pnc/n2416_dataFreeze/neuroimaging/nback/
+SAMPLE=2416
 
 ###################################################################
 # 1. Assemble QA outputs from the XCP Engine.
@@ -12,41 +16,127 @@ NBACK=/data/joy/BBL/studies/pnc/processedData/nback/nback_201607/nback_201607_20
    -p ${NBACK} \
    -f "*quality.csv" \
    -o XCP_QAVARS.csv
-mv -f ${NBACK}/XCP_QAVARS.csv .
-xcpVars=$(cat XCP_QAVARS.csv|sed s@'subject\[0\]'@'bblid'@g|sed s@'subject\[1\]'@'datexscanid'@g)
+mv -f ${NBACK}/XCP_QAVARS.csv ${QOUT}/XCP_QAVARS.csv
+xcpVars=$(cat ${QOUT}/XCP_QAVARS.csv|sed s@'subject\[0\]'@'bblid'@g|sed s@'subject\[1\]'@'datexscanid'@g)
 for s in $xcpVars
    do
    s=$(echo $s|cut -d',' -f1),$(echo $s|cut -d'x' -f2-)
-   echo $s >> NBACK_XCP.csv
+   echo $s >> ${QOUT}/NBACK_XCP.csv
 done
 
 ###################################################################
 # Add maximum relative displacement.
 # (Not computed by XCP as of 28 September 2016.)
 ###################################################################
-n1601=$(tail -n+2 n1601_glasserNbackSigChange.csv|cut -d',' -f1-2)
-rm -f RELRMS.csv
-echo "bblid,scanid,rmsPath" >>  RELRMS.csv
-for s in $n1601
+[[ ${SAMPLE} == 2416 ]] && SUBJID=$(tail -n+2 n2416_IDs.csv)
+[[ ${SAMPLE} != 2416 ]] && SUBJID=$(tail -n+2 n1601_IDs.csv)
+rm -f ${QOUT}/RELRMS.csv
+echo "bblid,scanid,rmsPath" >>  ${QOUT}/RELRMS.csv
+for s in $SUBJID
    do
    su=$(echo ${s}|sed s@','@'/*'@g)
    [[ -z $(ls $NBACK/${su}/task/mc/*rel_rms.1D 2>/dev/null) ]] && continue
-   echo ${s},$(ls $NBACK/${su}/task/mc/*rel_rms.1D) >> RELRMS.csv
+   echo ${s},$(ls $NBACK/${su}/task/mc/*rel_rms.1D) >> ${QOUT}/RELRMS.csv
 done
 ./maxRelDisp.R
-rm -f RELRMS.csv
-cat MAXRELRMS.csv|cut -d',' -f2-3,5 >> RELRMS.csv
+rm -f ${QOUT}/RELRMS.csv
+cat ${QOUT}/MAXRELRMS.csv|cut -d',' -f2-3,5 >> ${QOUT}/RELRMS.csv
+
+###################################################################
+# Voxelwise coverage.
+###################################################################
+SUBJID=$(tail -n+2 n1601_IDs.csv)
+SAMPLE=1601
+for s in $SUBJID
+   do
+   i=$(echo $s|cut -d',' -f1)
+   t=$(echo $s|cut -d',' -f2)
+   n=$(ls -d1 ${NBACK}/${i}/*${t}/norm/*_maskStd.nii.gz 2>/dev/null)
+   [[ -n ${n} ]] \
+      && echo ${i},${t},${n} >> ${QOUT}/NBACK_STD_MASKS1601.csv
+done
+rm -f ${QOUT}/NBACK_COVERAGE_PROCESSED${SAMPLE}.csv
+rm -f ${QOUT}/NBACK_COVERAGE${SAMPLE}.csv
+${XCPEDIR}/utils/coverMask.R \
+   -i ${QOUT}/NBACK_STD_MASKS${SAMPLE}.csv \
+   -m coveragePoints.nii.gz \
+   -o ${QOUT}/maskNbackVoxelwiseCoverage${SAMPLE}.nii.gz \
+   >> ${QOUT}/NBACK_COVERAGE${SAMPLE}.csv
+nmasks=$(cat ${QOUT}/NBACK_COVERAGE${SAMPLE}.csv|grep 1$|wc -l)
+masks=$(cat ${QOUT}/NBACK_COVERAGE${SAMPLE}.csv|grep 1$|cut -d',' -f3)
+fslmerge -t \
+   ${QOUT}/maskNbackProbabilisticCoverage${SAMPLE}.nii.gz \
+   ${masks}
+fslmaths ${QOUT}/maskNbackProbabilisticCoverage${SAMPLE}.nii.gz \
+   -Tmean \
+   ${QOUT}/maskNbackProbabilisticCoverage${SAMPLE}.nii.gz
+fslmaths ${QOUT}/maskNbackProbabilisticCoverage${SAMPLE}.nii.gz \
+   -thr 1 \
+   -bin \
+   ${QOUT}/maskNbackCoverage${SAMPLE}.nii.gz
+
+SAMPLE=2416
+SUBJID=$(tail -n+2 n2416_IDs.csv)
+for s in $SUBJID
+   do
+   i=$(echo $s|cut -d',' -f1)
+   t=$(echo $s|cut -d',' -f2)
+   n=$(ls -d1 ${NBACK}/${i}/*${t}/norm/*_maskStd.nii.gz 2>/dev/null)
+   [[ -n ${n} ]] \
+      && echo ${i},${t},${n} >> ${QOUT}/NBACK_STD_MASKS2416.csv
+done
+rm -f ${QOUT}/NBACK_COVERAGE_PROCESSED${SAMPLE}.csv
+rm -f ${QOUT}/NBACK_COVERAGE${SAMPLE}.csv
+${XCPEDIR}/utils/coverMask.R \
+   -i ${QOUT}/NBACK_STD_MASKS${SAMPLE}.csv \
+   -m coveragePoints.nii.gz \
+   -o ${QOUT}/maskNbackVoxelwiseCoverage${SAMPLE}.nii.gz \
+   >> ${QOUT}/NBACK_COVERAGE${SAMPLE}.csv
+nmasks=$(cat ${QOUT}/NBACK_COVERAGE${SAMPLE}.csv|grep 1$|wc -l)
+masks=$(cat ${QOUT}/NBACK_COVERAGE${SAMPLE}.csv|grep 1$|cut -d',' -f3)
+fslmerge -t \
+   ${QOUT}/maskNbackProbabilisticCoverage${SAMPLE}.nii.gz \
+   ${masks}
+fslmaths ${QOUT}/maskNbackProbabilisticCoverage${SAMPLE}.nii.gz \
+   -Tmean \
+   ${QOUT}/maskNbackProbabilisticCoverage${SAMPLE}.nii.gz
+fslmaths ${QOUT}/maskNbackProbabilisticCoverage${SAMPLE}.nii.gz \
+   -thr 1 \
+   -bin \
+   ${QOUT}/maskNbackCoverage${SAMPLE}.nii.gz
+
+###################################################################
+# Preprocess the coverage data by stripping out the date.
+###################################################################
+echo "bblid,scanid,nbackVoxelwiseCoverageInclude" >> ${QOUT}/NBACK_COVERAGE_PROCESSED${SAMPLE}.csv
+cat ${QOUT}/NBACK_COVERAGE${SAMPLE}.csv \
+   |cut -d',' -f1,2,5 \
+   >> ${QOUT}/NBACK_COVERAGE_PROCESSED${SAMPLE}.csv
 
 ###################################################################
 # And manually flagged activation outliers.
 ###################################################################
-activ=$(tail -n+2 NBACK_XCP.csv|cut -d',' -f1-2)
-rm -f ACTIVATION.csv
-echo "bblid,scanid,nbackMeanActivationExclude," >> ACTIVATION.csv
+unset act
+for s in ${SUBJID}
+   do
+   i=$(echo $s|cut -d',' -f1)
+   t=$(echo $s|cut -d',' -f2)
+   act="${act} $(ls -d1 ${NBACK}${i}/*${t}/norm/*_sigchange_cope4_2back-0backStd.nii.gz)"
+done
+fslmerge -t ${QOUT}/mergedSigchangeContrastNback.nii.gz  ${act}
+rm -f ${QOUT}/activationOutliersLow.csv
+for i in $act
+   do m=$(fslstats $i -k $QOUT/nbackSigchangeMask.nii.gz -M)
+   [[ $(echo "$m"' < -0.5527181'|bc) -ne 0 ]] \
+      && echo $i,1 >> ${QOUT}/activationOutliersLow.csv
+done
+activ=$(tail -n+2 ${QOUT}/NBACK_XCP.csv|cut -d',' -f1-2)
+rm -f ${QOUT}/ACTIVATION.csv
+echo "bblid,scanid,nbackMeanActivationExclude," >> ${QOUT}/ACTIVATION.csv
 for s in $activ
    do
-   test=$(grep -i $(echo ${s}|cut -d',' -f1|sed s@'$'@'/20'@g) activationOutliersHigh.csv)
-   [[ -z ${test} ]] && test=$(grep -i $(echo ${s}|sed s@'$'@'_20'@g) activationOutliersLow.csv)
+   test=$(grep -i $(echo ${s}|cut -d',' -f1|sed s@'$'@'/20'@g) ${QOUT}/activationOutliersHigh.csv)
+   [[ -z ${test} ]] && test=$(grep -i $(echo ${s}|sed s@'$'@'_20'@g) ${QOUT}/activationOutliersLow.csv)
    s=$(echo ${s}|sed s@'/'@','@g)
    if [[ -z ${test} ]]
       then
@@ -54,116 +144,133 @@ for s in $activ
    else
       s=${s},$(echo ${test}|cut -d',' -f2)
    fi
-   echo ${s} >> ACTIVATION.csv
+   echo ${s} >> ${QOUT}/ACTIVATION.csv
 done
 
 ###################################################################
 # 2. R script assimilates the above with variables from previous
 #    QA efforts.
-#    First, preprocess the coverage data by stripping out the date.
 ###################################################################
-rm -f NBACK_COVERAGE_PROCESSED.csv
-echo "bblid,scanid,nbackVoxelwiseCoverageInclude" >> NBACK_COVERAGE_PROCESSED.csv
-covVars=$(cat NBACK_COVERAGE.csv)
-for s in $covVars
-   do
-   s=$(echo $s|cut -d',' -f1),$(echo $s|cut -d'x' -f2-|cut -d',' -f1,4)
-   echo $s >> NBACK_COVERAGE_PROCESSED.csv
-done
-###################################################################
-#    Then, merge them all.
-###################################################################
-./nbackQA_assembleVars.R
+./nbackQA${SAMPLE}_assembleVars.R
 
 ###################################################################
-# 4. Assemble ROIwise outputs from the XCP Engine.
+# 3. Assemble ROIwise outputs from the XCP Engine.
 #    Each block below performs the assembly for one contrast for
 #    one parcellation.
 #
 #    First, single-CoPE outputs for JLF.
 ###################################################################
 rm -f NBACK_ROI_JLF*
-/data/joy/BBL/applications/xcpEngine/utils/combineOutput \
-   -p ${NBACK} \
-   -f "*JLF_val_sigchange_cope1*" \
-   -o NBACK_ROI1.txt
-mv -f ${NBACK}/NBACK_ROI1.txt NBACK_ROI_JLF1.txt
-/data/joy/BBL/applications/xcpEngine/utils/combineOutput \
-   -p ${NBACK} \
-   -f "*JLF_val_sigchange_cope2*" \
-   -o NBACK_ROI2.txt
-mv -f ${NBACK}/NBACK_ROI2.txt NBACK_ROI_JLF2.txt
-/data/joy/BBL/applications/xcpEngine/utils/combineOutput \
-   -p ${NBACK} \
-   -f "*JLF_val_sigchange_cope3*" \
-   -o NBACK_ROI3.txt
-mv -f ${NBACK}/NBACK_ROI3.txt NBACK_ROI_JLF3.txt
-/data/joy/BBL/applications/xcpEngine/utils/combineOutput \
-   -p ${NBACK} \
-   -f "*JLF_val_sigchange_cope4*" \
-   -o NBACK_ROI4.txt
-mv -f ${NBACK}/NBACK_ROI4.txt NBACK_ROI_JLF4.txt
-/data/joy/BBL/applications/xcpEngine/utils/combineOutput \
-   -p ${NBACK} \
-   -f "*JLF_val_sigchange_cope5*" \
-   -o NBACK_ROI5.txt
-mv -f ${NBACK}/NBACK_ROI5.txt NBACK_ROI_JLF5.txt
-/data/joy/BBL/applications/xcpEngine/utils/combineOutput \
-   -p ${NBACK} \
-   -f "*JLF_val_sigchange_cope6*" \
-   -o NBACK_ROI6.txt
-mv -f ${NBACK}/NBACK_ROI6.txt NBACK_ROI_JLF6.txt
-/data/joy/BBL/applications/xcpEngine/utils/combineOutput \
-   -p ${NBACK} \
-   -f "*JLF_val_sigchange_cope7*" \
-   -o NBACK_ROI7.txt
-mv -f ${NBACK}/NBACK_ROI7.txt NBACK_ROI_JLF7.txt
+copes="1 2 3 4 5 6 7"
+for i in $copes
+   do
+   /data/joy/BBL/applications/xcpEngine/utils/combineOutput \
+      -p ${NBACK} \
+      -f "*JLFintersect_val_sigchange_cope${i}*" \
+      -o NBACK_ROI${i}.txt
+   mv -f ${NBACK}/NBACK_ROI${i}.txt ${QOUT}/NBACK_ROI_JLF${i}.txt
+done
 ###################################################################
 # And now, repeat the above for the Glasser parcellation.
 ###################################################################
 rm -f NBACK_ROI_GlasserPNC*
-/data/joy/BBL/applications/xcpEngine/utils/combineOutput \
-   -p ${NBACK} \
-   -f "*GlasserPNC_val_sigchange_cope1*" \
-   -o NBACK_ROI1.txt
-mv -f ${NBACK}/NBACK_ROI1.txt NBACK_ROI_GlasserPNC1.txt
-/data/joy/BBL/applications/xcpEngine/utils/combineOutput \
-   -p ${NBACK} \
-   -f "*GlasserPNC_val_sigchange_cope2*" \
-   -o NBACK_ROI2.txt
-mv -f ${NBACK}/NBACK_ROI2.txt NBACK_ROI_GlasserPNC2.txt
-/data/joy/BBL/applications/xcpEngine/utils/combineOutput \
-   -p ${NBACK} \
-   -f "*GlasserPNC_val_sigchange_cope3*" \
-   -o NBACK_ROI3.txt
-mv -f ${NBACK}/NBACK_ROI3.txt NBACK_ROI_GlasserPNC3.txt
-/data/joy/BBL/applications/xcpEngine/utils/combineOutput \
-   -p ${NBACK} \
-   -f "*GlasserPNC_val_sigchange_cope4*" \
-   -o NBACK_ROI4.txt
-mv -f ${NBACK}/NBACK_ROI4.txt NBACK_ROI_GlasserPNC4.txt
-/data/joy/BBL/applications/xcpEngine/utils/combineOutput \
-   -p ${NBACK} \
-   -f "*GlasserPNC_val_sigchange_cope5*" \
-   -o NBACK_ROI5.txt
-mv -f ${NBACK}/NBACK_ROI5.txt NBACK_ROI_GlasserPNC5.txt
-/data/joy/BBL/applications/xcpEngine/utils/combineOutput \
-   -p ${NBACK} \
-   -f "*GlasserPNC_val_sigchange_cope6*" \
-   -o NBACK_ROI6.txt
-mv -f ${NBACK}/NBACK_ROI6.txt NBACK_ROI_GlasserPNC6.txt
-/data/joy/BBL/applications/xcpEngine/utils/combineOutput \
-   -p ${NBACK} \
-   -f "*GlasserPNC_val_sigchange_cope7*" \
-   -o NBACK_ROI7.txt
-mv -f ${NBACK}/NBACK_ROI7.txt NBACK_ROI_GlasserPNC7.txt
+for i in $copes
+   do
+   /data/joy/BBL/applications/xcpEngine/utils/combineOutput \
+      -p ${NBACK} \
+      -f "*GlasserPNC_val_sigchange_cope${i}*" \
+      -o NBACK_ROI${i}.txt
+   mv -f ${NBACK}/NBACK_ROI${i}.txt ${QOUT}/NBACK_ROI_GlasserPNC${i}.txt
+done
+###################################################################
+# For GraSP.
+###################################################################
+rm -f NBACK_ROI_GraSP*
+for i in $copes
+   do
+   /data/joy/BBL/applications/xcpEngine/utils/combineOutput \
+      -p ${NBACK} \
+      -f "*GraSP227_val_sigchange_cope${i}*" \
+      -o NBACK_ROI${i}.txt
+   mv -f ${NBACK}/NBACK_ROI${i}.txt ${QOUT}/NBACK_ROI_GraSP227${i}.txt
+done
+###################################################################
+# And finally, for Lausanne.
+###################################################################
+scales="33 60 125 250"
+for sc in $scales
+   do
+   rm -f NBACK_ROI_Lausanne${sc}*
+   for i in $copes
+      do
+      /data/joy/BBL/applications/xcpEngine/utils/combineOutput \
+         -p ${NBACK} \
+         -f "*Lausanne${sc}_val_sigchange_cope${i}*" \
+         -o NBACK_ROI${i}.txt
+      mv -f ${NBACK}/NBACK_ROI${i}.txt ${QOUT}/NBACK_ROI_Lausanne${sc}${i}.txt
+   done
+done
+
+# b=NBACK_ROI_JLF1.txt; head -n1 ${b} >> ${b}_1; a=$(cat /data/joy/BBL/studies/pnc/subjectData/n2416_pnc_protocol_validation_params_status_20170105.csv|cut -d',' -f1,2,47|grep 1$|cut -d',' -f1-2); for i in $a; do j=$(echo $i|cut -d',' -f1); k=$(echo $i|cut -d',' -f2); cat $b|grep '^'$j|grep 'x'$k >> ${b}_1; done; mv ${b}_1 $b
+# b=NBACK_ROI_JLF1.txt; k=0; head -n1 ${b} >> ${b}_1; while [[ $k -le 2263 ]]; do k=$(expr $k + 1); i=$(head -n${k} ${b}|tail -n1|wc -w); [[ $i == 209 ]] && head -n${k} ${b}|tail -n1 >> ${b}_1; done; mv ${b}_1 $b
+
 ###################################################################
 # Merge across the CoPEs for JLF and for Glasser, and excise
 # unneeded columns. This is handled within R.
 ###################################################################
-mergeROIvals.R \
+mkdir -p ${QOUT}/${SAMPLE}
+./mergeROIvals${SAMPLE}.R \
    -r JLF \
-   -o n1601_jlfNbackSigChange.csv
-mergeROIvals.R \
+   -o ${QOUT}/${SAMPLE}/${SAMPLE}jlfNbackSigChange.csv
+./mergeROIvals${SAMPLE}.R \
    -r GlasserPNC \
-   -o n1601_glasserNbackSigChange.csv
+   -o ${QOUT}/${SAMPLE}/${SAMPLE}glasserNbackSigChange.csv
+./mergeROIvals${SAMPLE}.R \
+   -r GraSP227 \
+   -o ${QOUT}/${SAMPLE}/${SAMPLE}graspNbackSigChange.csv
+for sc in $scales
+   do
+   ./mergeROIvals${SAMPLE}.R \
+      -r Lausanne${sc} \
+      -o ${QOUT}/${SAMPLE}/${SAMPLE}lausanne${sc}NbackSigChange.csv
+done
+
+###################################################################
+# ...and move the data to the data release.
+###################################################################
+tables=$(ls -d1 ${QOUT}/${SAMPLE}/*)
+for t in $tables
+   do
+   parc=$(echo ${t}\
+      |rev\
+      |cut -d'/' -f1\
+      |rev\
+      |sed s@$SAMPLE@@g\
+      |sed s@'NbackSigChange.csv'@@g)
+   SUBJID=$(tail -n+2 n1601_IDs.csv)
+   target=${DATAREL}/n1601_${parc}NbackValues.csv
+   rm -f $target
+   head -n1 ${t}|sed s@'"'@@g >> ${target}
+   for s in $SUBJID
+      do
+      grep ^$s ${t}|sed s@'"'@@g >> ${target}
+   done
+   SUBJID=$(tail -n+2 n2416_IDs.csv)
+   target=${DATARELL}/n2416_${parc}NbackValues.csv
+   rm -f $target
+   head -n1 ${t}|sed s@'"'@@g >> ${target}
+   for s in $SUBJID
+      do
+      grep ^$s ${t}|sed s@'"'@@g >> ${target}
+   done
+done
+
+rm -f ${DATARELL}/n2416_NbackQAData.csv
+rm -f ${DATAREL}/n1601_NbackQAData.csv
+rm -f ${DATARELL}/n2416_NbackCoverageMask.nii.gz
+rm -f ${DATAREL}/n1601_NbackCoverageMask.nii.gz
+
+cat ${QOUT}/NBACK_QA_2416.csv|sed s@'"'@@g >> ${DATARELL}/n2416_NbackQAData.csv
+cat ${QOUT}/NBACK_QA_1601.csv|sed s@'"'@@g >> ${DATAREL}/n1601_NbackQAData.csv
+fslmaths ${QOUT}/maskNbackCoverage2416.nii.gz ${DATARELL}/n2416_NbackCoverageMask.nii.gz
+fslmaths ${QOUT}/maskNbackCoverage1601.nii.gz ${DATAREL}/n1601_NbackCoverageMask.nii.gz

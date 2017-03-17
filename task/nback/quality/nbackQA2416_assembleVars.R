@@ -8,7 +8,7 @@
 # Merge the extant data frames
 ###################################################################
 
-data <- read.csv('/data/joy/BBL/studies/pnc/subjectData/n1601_go1_datarel_020716.csv')
+data <- read.csv('/data/joy/BBL/studies/pnc/subjectData/n2416_pnc_protocol_validation_params_status_20170105.csv')
 xcp <- read.csv('/data/joy/BBL/projects/pncReproc2015/nback/quality/NBACK_XCP.csv')
 b0 <- read.csv('/data/joy/BBL/projects/pncReproc2015/nback/quality/B0MAPCORRECTION.csv')
 maxRelRMS <- read.csv('/data/joy/BBL/projects/pncReproc2015/nback/quality/RELRMS.csv')
@@ -52,7 +52,7 @@ nbackQA <- data.frame(
    nbackRpsMapCorrectionNotApplied=data2$B0MapUsable
 )
 
-write.csv(nbackQA,'/data/joy/BBL/projects/pncReproc2015/nback/quality/NBACK_QA_1601.csv',row.names=F)
+write.csv(nbackQA,'/data/joy/BBL/projects/pncReproc2015/nback/quality/NBACK_QA_2416.csv',row.names=F)
 
 ###################################################################
 # Generate a Venn partition.
@@ -64,6 +64,23 @@ qux <- data.frame(
    nbackQA$nbackMeanActivationExclude,
    nbackQA$nbackRelMaxRMSMotionExclude,
    nbackQA$nbackRelMeanRMSMotionExclude
+)
+baz <- vennCounts(qux)
+baz <- baz[baz[,6]!=0,]
+write.csv(baz,'/data/joy/BBL/projects/pncReproc2015/nback/quality/vennDiagram2416.csv')
+
+###################################################################
+# Cross-sectional subsample
+###################################################################
+data <- read.csv('/data/joy/BBL/studies/pnc/subjectData/n1601_go1_datarel_020716.csv')
+nbackQA1601 <- nbackQA[which(nbackQA$scanid %in% intersect(nbackQA$scanid,data$scanid)),]
+write.csv(nbackQA1601,'/data/joy/BBL/projects/pncReproc2015/nback/quality/NBACK_QA_1601.csv',row.names=F)
+qux <- data.frame(
+   nbackQA1601$nbackNoDataExclude,
+   nbackQA1601$nbackVoxelwiseCoverageExclude,
+   nbackQA1601$nbackMeanActivationExclude,
+   nbackQA1601$nbackRelMaxRMSMotionExclude,
+   nbackQA1601$nbackRelMeanRMSMotionExclude
 )
 baz <- vennCounts(qux)
 baz <- baz[baz[,6]!=0,]
