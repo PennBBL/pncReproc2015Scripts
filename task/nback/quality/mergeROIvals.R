@@ -38,19 +38,18 @@ opath <- opt$out
 ###################################################################
 
 dir <- getwd()
-#roiName <- 'JLF'
-#opath <- 'n1601_jlfNbackSigChange.csv'
+odir <- '/data/joy/BBL/projects/pncReproc2015/nback/quality'
 
 colNamesPath <- paste(dir,paste(roiName,'_names.csv',sep=''),sep='/')
 colIndexPath <- paste(dir,paste(roiName,'_index.csv',sep=''),sep='/')
-roiPaths <- paste(dir,paste('*ROI*',roiName,'*.txt',sep=''),sep='/')
+roiPaths <- paste(odir,paste('*ROI*',roiName,'*.txt',sep=''),sep='/')
 roiPaths <- system(paste('ls',roiPaths),intern=T)
 
 nbackVals <- read.csv(paste(dir,'n1601_IDs.csv',sep='/'))
 
 columnNumbers <- as.numeric(read.csv(colIndexPath,header=F))
 columnNames <- unlist(read.csv(colNamesPath,header=F))
-measures <- unlist(read.table(paste(dir,'measures.csv',sep='/'),header=F))
+measures <- unlist(read.table(paste(odir,'measures.csv',sep='/'),header=F))
 
 for (p in 1:length(roiPaths)) {
    roiVals <- read.table(roiPaths[p])
@@ -74,7 +73,7 @@ for (p in 1:length(roiPaths)) {
    ################################################################
    # Merge and match by scan ID
    ################################################################
-   nbackVals <- merge(nbackVals,roiVals)
+   nbackVals <- merge(nbackVals,roiVals,all.x=T)
 }
 
-write.csv(nbackVals,paste(dir,'/',opath,sep=''))
+write.csv(nbackVals,opath,row.names=F)
