@@ -40,8 +40,13 @@ cat $listSubjects | while read i; do
     echo $bblid,$scanid;
     
     #Find output directory
+    subDir=`echo ${OutRoot}/${bblid}/`;
+    mkdir $subDir;
+    subDir=`echo ${OutRoot}/${bblid}/${scanid}/`;
+    mkdir $subDir;
     subDir=`ls -d ${OutRoot}/${bblid}/${scanid}/`;
     echo $subDir;
+    
 
     ##Find extracted brain, segmentation from atropos
     mprage=`ls -d ${InRoot}/${bblid}/${scanid}/ExtractedBrain0N4.nii.gz`;
