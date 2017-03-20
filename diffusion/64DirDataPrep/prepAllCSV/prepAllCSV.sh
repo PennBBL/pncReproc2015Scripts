@@ -1,12 +1,13 @@
 #!/bin/bash
 
 # Do FA values
+# Do FA values
 rm /data/joy/BBL/projects/pncReproc2015/diffusion/prepFAValues/tmpVals1.csv
-for i in `find /data/joy/BBL/projects/pncReproc2015/diffusionResourceFiles/S-lstat_extraction_lists/dtitk_fa_path_nativespace2_JHU-ICBM-tracts-maxprob-thr0-1mm-LPI-2dtitk_lstat/subjects/ -name *_mean.csv` ; do vals=`tr -s '\n' ',' < ${i} | tr -d '"'` ; echo "${i},${vals}" ; done >> /data/joy/BBL/projects/pncReproc2015/diffusion/prepFAValues/tmpVals1.csv
-rm /data/joy/BBL/projects/pncReproc2015/diffusion/prepFAValues/tmpVals2.csv
-for i in `find /data/joy/BBL/projects/pncReproc2015/diffusionResourceFiles/S-lstat_extraction_lists/dtitk_fa_path_nativespace_JHU-ICBM-tracts-maxprob-thr0-1mm-LPI-2dtitk_lstat/subjects/ -name *_mean.csv` ; do vals=`tr -s '\n' ',' < ${i} | tr -d '"'` ; echo "${i},${vals}" ; done >> /data/joy/BBL/projects/pncReproc2015/diffusion/prepFAValues/tmpVals2.csv
+for i in `find /data/joy/BBL/projects/pncReproc2015/diffusionResourceFiles/S-lstat_extraction_lists/n2416_64dir_nativespace_fa_JHU-ICBM-tracts-maxprob-thr25-1mm-LPI_2dtitk_go1_n14_template_lstat/subjects/ -name *_mean.csv` ; do vals=`tr -s '\n' ',' < ${i} | tr -d '"'` ; echo "${i},${vals}" ; done >> /data/joy/BBL/projects/pncReproc2015/diffusion/prepFAValues/tmpVals1.csv
+#rm /data/joy/BBL/projects/pncReproc2015/diffusion/prepFAValues/tmpVals2.csv
+#for i in `find /data/joy/BBL/projects/pncReproc2015/diffusionResourceFiles/S-lstat_extraction_lists/dtitk_fa_path_nativespace_JHU-ICBM-tracts-maxprob-thr0-1mm-LPI-2dtitk_lstat/subjects/ -name *_mean.csv` ; do vals=`tr -s '\n' ',' < ${i} | tr -d '"'` ; echo "${i},${vals}" ; done >> /data/joy/BBL/projects/pncReproc2015/diffusion/prepFAValues/tmpVals2.csv
 rm /data/joy/BBL/projects/pncReproc2015/diffusion/prepFAValues/tmpVals3.csv
-for i in `find /data/joy/BBL/projects/pncReproc2015/diffusionResourceFiles/S-lstat_extraction_lists/dtitk_fa_ad_tr_rd_path_nativespace3_JHU-ICBM-tracts-maxprob-thr0-1mm-LPI-2dtitk_lstat/subjects/ -name *fa*_mean.csv` ; do vals=`tr -s '\n' ',' < ${i} | tr -d '"'` ; echo "${i},${vals}" ; done >> /data/joy/BBL/projects/pncReproc2015/diffusion/prepFAValues/tmpVals3.csv
+#for i in `find /data/joy/BBL/projects/pncReproc2015/diffusionResourceFiles/S-lstat_extraction_lists/dtitk_fa_ad_tr_rd_path_nativespace3_JHU-ICBM-tracts-maxprob-thr0-1mm-LPI-2dtitk_lstat/subjects/ -name *fa*_mean.csv` ; do vals=`tr -s '\n' ',' < ${i} | tr -d '"'` ; echo "${i},${vals}" ; done >> /data/joy/BBL/projects/pncReproc2015/diffusion/prepFAValues/tmpVals3.csv
 cd /data/joy/BBL/projects/pncReproc2015/diffusion/prepFAValues/
 rm /data/joy/BBL/projects/pncReproc2015/diffusion/prepFAValues/merged.csv
 /home/arosen/adroseHelperScripts/bash/mergeCSV.sh 1
@@ -22,11 +23,11 @@ cd /data/joy/BBL/projects/pncReproc2015/diffusion/prepFAValues/tmp/
 
 # Now do AD
 rm /data/joy/BBL/projects/pncReproc2015/diffusion/prepADValues/tmpVals1.csv
-for i in `find /data/joy/BBL/projects/pncReproc2015/diffusionResourceFiles/S-lstat_extraction_lists/dtitk_ad_path_nativespace2_JHU-ICBM-tracts-maxprob-thr0-1mm-LPI-2dtitk_lstat/subjects/ -name *_mean.csv` ; do vals=`tr -s '\n' ',' < ${i} | tr -d '"'` ; echo "${i},${vals}" ; done >> /data/joy/BBL/projects/pncReproc2015/diffusion/prepADValues/tmpVals1.csv
+for i in `find /data/joy/BBL/projects/pncReproc2015/diffusionResourceFiles/S-lstat_extraction_lists/n2416_64dir_nativespace_ad_JHU-ICBM-tracts-maxprob-thr25-1mm-LPI_2dtitk_go1_n14_template_lstat/subjects/ -name *_mean.csv` ; do vals=`tr -s '\n' ',' < ${i} | tr -d '"'` ; echo "${i},${vals}" ; done >> /data/joy/BBL/projects/pncReproc2015/diffusion/prepADValues/tmpVals1.csv
 rm /data/joy/BBL/projects/pncReproc2015/diffusion/prepADValues/tmpVals2.csv
-for i in `find /data/joy/BBL/projects/pncReproc2015/diffusionResourceFiles/S-lstat_extraction_lists/dtitk_ad_path_nativespace_JHU-ICBM-tracts-maxprob-thr0-1mm-LPI-2dtitk_lstat/subjects/ -name *_mean.csv` ; do vals=`tr -s '\n' ',' < ${i} | tr -d '"'` ; echo "${i},${vals}" ; done >> /data/joy/BBL/projects/pncReproc2015/diffusion/prepADValues/tmpVals2.csv
+#for i in `find /data/joy/BBL/projects/pncReproc2015/diffusionResourceFiles/S-lstat_extraction_lists/dtitk_ad_path_nativespace_JHU-ICBM-tracts-maxprob-thr0-1mm-LPI-2dtitk_lstat/subjects/ -name *_mean.csv` ; do vals=`tr -s '\n' ',' < ${i} | tr -d '"'` ; echo "${i},${vals}" ; done >> /data/joy/BBL/projects/pncReproc2015/diffusion/prepADValues/tmpVals2.csv
 rm /data/joy/BBL/projects/pncReproc2015/diffusion/prepADValues/tmpVals3.csv
-for i in `find /data/joy/BBL/projects/pncReproc2015/diffusionResourceFiles/S-lstat_extraction_lists/dtitk_fa_ad_tr_rd_path_nativespace3_JHU-ICBM-tracts-maxprob-thr0-1mm-LPI-2dtitk_lstat/subjects/ -name *ad*_mean.csv` ; do vals=`tr -s '\n' ',' < ${i} | tr -d '"'` ; echo "${i},${vals}" ; done >> /data/joy/BBL/projects/pncReproc2015/diffusion/prepADValues/tmpVals3.csv
+#for i in `find /data/joy/BBL/projects/pncReproc2015/diffusionResourceFiles/S-lstat_extraction_lists/dtitk_fa_ad_tr_rd_path_nativespace3_JHU-ICBM-tracts-maxprob-thr0-1mm-LPI-2dtitk_lstat/subjects/ -name *ad*_mean.csv` ; do vals=`tr -s '\n' ',' < ${i} | tr -d '"'` ; echo "${i},${vals}" ; done >> /data/joy/BBL/projects/pncReproc2015/diffusion/prepADValues/tmpVals3.csv
 cd /data/joy/BBL/projects/pncReproc2015/diffusion/prepADValues/
 rm /data/joy/BBL/projects/pncReproc2015/diffusion/prepADValues/merged.csv
 /home/arosen/adroseHelperScripts/bash/mergeCSV.sh 1
@@ -43,11 +44,11 @@ cd /data/joy/BBL/projects/pncReproc2015/diffusion/prepADValues/tmp/
 
 # Now do RD
 rm /data/joy/BBL/projects/pncReproc2015/diffusion/prepRDValues/tmpVals1.csv
-for i in `find /data/joy/BBL/projects/pncReproc2015/diffusionResourceFiles/S-lstat_extraction_lists/dtitk_rd_path_nativespace2_JHU-ICBM-tracts-maxprob-thr0-1mm-LPI-2dtitk_lstat/subjects/ -name *_mean.csv` ; do vals=`tr -s '\n' ',' < ${i} | tr -d '"'` ; echo "${i},${vals}" ; done >> /data/joy/BBL/projects/pncReproc2015/diffusion/prepRDValues/tmpVals1.csv
-rm /data/joy/BBL/projects/pncReproc2015/diffusion/prepRDValues/tmpVals2.csv
-for i in `find /data/joy/BBL/projects/pncReproc2015/diffusionResourceFiles/S-lstat_extraction_lists/dtitk_rd_path_nativespace_JHU-ICBM-tracts-maxprob-thr0-1mm-LPI-2dtitk_lstat/subjects/ -name *_mean.csv` ; do vals=`tr -s '\n' ',' < ${i} | tr -d '"'` ; echo "${i},${vals}" ; done >> /data/joy/BBL/projects/pncReproc2015/diffusion/prepRDValues/tmpVals2.csv
-rm /data/joy/BBL/projects/pncReproc2015/diffusion/prepRDValues/tmpVals3.csv
-for i in `find /data/joy/BBL/projects/pncReproc2015/diffusionResourceFiles/S-lstat_extraction_lists/dtitk_fa_ad_tr_rd_path_nativespace3_JHU-ICBM-tracts-maxprob-thr0-1mm-LPI-2dtitk_lstat/subjects/ -name *rd*_mean.csv` ; do vals=`tr -s '\n' ',' < ${i} | tr -d '"'` ; echo "${i},${vals}" ; done >> /data/joy/BBL/projects/pncReproc2015/diffusion/prepRDValues/tmpVals3.csv
+for i in `find /data/joy/BBL/projects/pncReproc2015/diffusionResourceFiles/S-lstat_extraction_lists/n2416_64dir_nativespace_rd_JHU-ICBM-tracts-maxprob-thr25-1mm-LPI_2dtitk_go1_n14_template_lstat/subjects/ -name *_mean.csv` ; do vals=`tr -s '\n' ',' < ${i} | tr -d '"'` ; echo "${i},${vals}" ; done >> /data/joy/BBL/projects/pncReproc2015/diffusion/prepRDValues/tmpVals1.csv
+#rm /data/joy/BBL/projects/pncReproc2015/diffusion/prepRDValues/tmpVals2.csv
+#for i in `find /data/joy/BBL/projects/pncReproc2015/diffusionResourceFiles/S-lstat_extraction_lists/dtitk_rd_path_nativespace_JHU-ICBM-tracts-maxprob-thr0-1mm-LPI-2dtitk_lstat/subjects/ -name *_mean.csv` ; do vals=`tr -s '\n' ',' < ${i} | tr -d '"'` ; echo "${i},${vals}" ; done >> /data/joy/BBL/projects/pncReproc2015/diffusion/prepRDValues/tmpVals2.csv
+#rm /data/joy/BBL/projects/pncReproc2015/diffusion/prepRDValues/tmpVals3.csv
+#for i in `find /data/joy/BBL/projects/pncReproc2015/diffusionResourceFiles/S-lstat_extraction_lists/dtitk_fa_ad_tr_rd_path_nativespace3_JHU-ICBM-tracts-maxprob-thr0-1mm-LPI-2dtitk_lstat/subjects/ -name *rd*_mean.csv` ; do vals=`tr -s '\n' ',' < ${i} | tr -d '"'` ; echo "${i},${vals}" ; done >> /data/joy/BBL/projects/pncReproc2015/diffusion/prepRDValues/tmpVals3.csv
 rm /data/joy/BBL/projects/pncReproc2015/diffusion/prepRDValues/merged.csv
 cd /data/joy/BBL/projects/pncReproc2015/diffusion/prepRDValues/
 /home/arosen/adroseHelperScripts/bash/mergeCSV.sh 1
@@ -64,11 +65,11 @@ cd /data/joy/BBL/projects/pncReproc2015/diffusion/prepRDValues/tmp/
 
 # Now do TR
 rm /data/joy/BBL/projects/pncReproc2015/diffusion/prepTRValues/tmpVals1.csv
-for i in `find /data/joy/BBL/projects/pncReproc2015/diffusionResourceFiles/S-lstat_extraction_lists/dtitk_tr_path_nativespace_JHU-ICBM-tracts-maxprob-thr0-1mm-LPI-2dtitk_lstat/subjects/ -name *_mean.csv` ; do vals=`tr -s '\n' ',' < ${i} | tr -d '"'` ; echo "${i},${vals}" ; done >> /data/joy/BBL/projects/pncReproc2015/diffusion/prepTRValues/tmpVals1.csv
-rm /data/joy/BBL/projects/pncReproc2015/diffusion/prepTRValues/tmpVals2.csv
-for i in `find /data/joy/BBL/projects/pncReproc2015/diffusionResourceFiles/S-lstat_extraction_lists/dtitk_tr_path2_nativespace_JHU-ICBM-tracts-maxprob-thr0-1mm-LPI-2dtitk_lstat/subjects/ -name *_mean.csv` ; do vals=`tr -s '\n' ',' < ${i} | tr -d '"'` ; echo "${i},${vals}" ; done >> /data/joy/BBL/projects/pncReproc2015/diffusion/prepTRValues/tmpVals2.csv
-rm /data/joy/BBL/projects/pncReproc2015/diffusion/prepTRValues/tmpVals3.csv
-for i in `find /data/joy/BBL/projects/pncReproc2015/diffusionResourceFiles/S-lstat_extraction_lists/dtitk_fa_ad_tr_rd_path_nativespace3_JHU-ICBM-tracts-maxprob-thr0-1mm-LPI-2dtitk_lstat/subjects/ -name *_tr_*_mean.csv` ; do vals=`tr -s '\n' ',' < ${i} | tr -d '"'` ; echo "${i},${vals}" ; done >> /data/joy/BBL/projects/pncReproc2015/diffusion/prepTRValues/tmpVals3.csv
+for i in `find /data/joy/BBL/projects/pncReproc2015/diffusionResourceFiles/S-lstat_extraction_lists/n2416_64dir_nativespace_tr_JHU-ICBM-tracts-maxprob-thr25-1mm-LPI_2dtitk_go1_n14_template_lstat/subjects/ -name *_mean.csv` ; do vals=`tr -s '\n' ',' < ${i} | tr -d '"'` ; echo "${i},${vals}" ; done >> /data/joy/BBL/projects/pncReproc2015/diffusion/prepTRValues/tmpVals1.csv
+#rm /data/joy/BBL/projects/pncReproc2015/diffusion/prepTRValues/tmpVals2.csv
+#for i in `find /data/joy/BBL/projects/pncReproc2015/diffusionResourceFiles/S-lstat_extraction_lists/dtitk_tr_path2_nativespace_JHU-ICBM-tracts-maxprob-thr0-1mm-LPI-2dtitk_lstat/subjects/ -name *_mean.csv` ; do vals=`tr -s '\n' ',' < ${i} | tr -d '"'` ; echo "${i},${vals}" ; done >> /data/joy/BBL/projects/pncReproc2015/diffusion/prepTRValues/tmpVals2.csv
+#rm /data/joy/BBL/projects/pncReproc2015/diffusion/prepTRValues/tmpVals3.csv
+#for i in `find /data/joy/BBL/projects/pncReproc2015/diffusionResourceFiles/S-lstat_extraction_lists/dtitk_fa_ad_tr_rd_path_nativespace3_JHU-ICBM-tracts-maxprob-thr0-1mm-LPI-2dtitk_lstat/subjects/ -name *_tr_*_mean.csv` ; do vals=`tr -s '\n' ',' < ${i} | tr -d '"'` ; echo "${i},${vals}" ; done >> /data/joy/BBL/projects/pncReproc2015/diffusion/prepTRValues/tmpVals3.csv
 rm /data/joy/BBL/projects/pncReproc2015/diffusion/prepTRValues/merged.csv
 cd /data/joy/BBL/projects/pncReproc2015/diffusion/prepTRValues/
 /home/arosen/adroseHelperScripts/bash/mergeCSV.sh 1
