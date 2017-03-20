@@ -5,12 +5,14 @@
 ###################################################################
 REST=/data/joy/BBL/studies/pnc/processedData/restbold/restbold_201607151621/
 QOUT=/data/joy/BBL/projects/pncReproc2015/restbold/quality
+DATAREL=/data/joy/BBL/studies/pnc/n1601_dataFreeze/neuroimaging/rest/
+DATARELL=/data/joy/BBL/studies/pnc/n2416_dataFreeze/neuroimaging/rest/
 SAMPLE=2416
-# Leave $SAMPLE blank for 1601, or set SAMPLE=2416 for 2416
 
 ###################################################################
 # 1. Assemble QA outputs from the XCP Engine.
 ###################################################################
+rm -f ${QOUT}/REST_XCP.csv
 /data/joy/BBL/applications/xcpEngine/utils/combineOutput \
    -p ${REST} \
    -f "*quality.csv" \
@@ -28,19 +30,62 @@ done
 #    QA efforts.
 #    First, preprocess the coverage data by stripping out the date.
 ###################################################################
+[[ ${SAMPLE} == 2416 ]] && SUBJID=$(tail -n+2 n2416_IDs.csv)
+[[ ${SAMPLE} != 2416 ]] && SUBJID=$(tail -n+2 n1601_IDs.csv)
 rm -f ${QOUT}/REST_COVERAGE_PROCESSED${SAMPLE}.csv
 ${XCPEDIR}/utils/coverMask.R \
    -i ${QOUT}/REST_STD_MASKS${SAMPLE}.csv \
    -m coveragePoints.nii.gz \
    -o maskRestVoxelwiseCoverage${SAMPLE}.nii.gz \
    >> ${QOUT}/REST_COVERAGE${SAMPLE}.csv
-echo "bblid,scanid,restVoxelwiseCoverageInclude" >> ${QOUT}/REST_COVERAGE_PROCESSED${SAMPLE}.csv
-covVars=$(cat ${QOUT}/REST_COVERAGE${SAMPLE}.csv)
-for s in $covVars
+echo "bblid,scanid,restVoxelwiseCoverageInclude" \
+   >> ${QOUT}/REST_COVERAGE_PROCESSED${SAMPLE}.csv
+cat ${QOUT}/REST_COVERAGE${SAMPLE}.csv\
+   |cut -d',' -f1,2,5 \
+   >> ${QOUT}/REST_COVERAGE_PROCESSED${SAMPLE}.csv
+
+SUBJID=$(tail -n+2 n1601_IDs.csv)
+SAMPLE=1601
+for s in $SUBJID
    do
-   s=$(echo $s|cut -d',' -f1),$(echo $s|cut -d'x' -f2-|cut -d',' -f1,4)
-   echo $s >> ${QOUT}/REST_COVERAGE_PROCESSED.csv
+   n=$(grep ^${s} ${QOUT}/REST_COVERAGE2416.csv|grep ',1'$)
+   [[ -n ${n} ]] \
+      && echo ${n} >> ${QOUT}/REST_STD_COVER${SAMPLE}.csv
 done
+nmasks=$(cat ${QOUT}/REST_STD_COVER${SAMPLE}.csv|grep 1$|wc -l)
+masks=$(cat ${QOUT}/REST_STD_COVER${SAMPLE}.csv|grep 1$|cut -d',' -f3)
+fslmerge -t \
+   ${QOUT}/maskRestProbabilisticCoverage${SAMPLE}.nii.gz \
+   ${masks}
+fslmaths ${QOUT}/maskRestProbabilisticCoverage${SAMPLE}.nii.gz \
+   -Tmean \
+   ${QOUT}/maskRestProbabilisticCoverage${SAMPLE}.nii.gz
+fslmaths ${QOUT}/maskRestProbabilisticCoverage${SAMPLE}.nii.gz \
+   -thr 1 \
+   -bin \
+   ${QOUT}/maskRestCoverage${SAMPLE}.nii.gz
+   
+SUBJID=$(tail -n+2 n2416_IDs.csv)
+SAMPLE=2416
+for s in $SUBJID
+   do
+   n=$(grep ^${s} ${QOUT}/REST_COVERAGE2416.csv|grep ',1'$)
+   [[ -n ${n} ]] \
+      && echo ${n} >> ${QOUT}/REST_STD_COVER${SAMPLE}.csv
+done
+nmasks=$(cat ${QOUT}/REST_STD_COVER${SAMPLE}.csv|grep 1$|wc -l)
+masks=$(cat ${QOUT}/REST_STD_COVER${SAMPLE}.csv|grep 1$|cut -d',' -f3)
+fslmerge -t \
+   ${QOUT}/maskNbackProbabilisticCoverage${SAMPLE}.nii.gz \
+   ${masks}
+fslmaths ${QOUT}/maskNbackProbabilisticCoverage${SAMPLE}.nii.gz \
+   -Tmean \
+   ${QOUT}/maskNbackProbabilisticCoverage${SAMPLE}.nii.gz
+fslmaths ${QOUT}/maskNbackProbabilisticCoverage${SAMPLE}.nii.gz \
+   -thr 1 \
+   -bin \
+   ${QOUT}/maskNbackCoverage${SAMPLE}.nii.gz
+
 ###################################################################
 #    Then, merge them all.
 ###################################################################
@@ -53,17 +98,18 @@ done
 #
 #    First, ReHo outputs for JLF.
 ###################################################################
+mkdir -p ${QOUT}/2416
 rm -f ${QOUT}/measures.csv
 echo "reho" >> ${QOUT}/measures.csv
 rm -f ${QOUT}/REST_ROI_JLF*
 /data/joy/BBL/applications/xcpEngine/utils/combineOutput \
    -p ${REST} \
-   -f "*JLF_val_reho.1D" \
+   -f "*JLFintersect_val_reho.1D" \
    -o REST_ROI1.txt
 mv -f ${REST}/REST_ROI1.txt ${QOUT}/REST_ROI_JLF1.txt
 ./mergeROIvals${SAMPLE}.R \
    -r JLF \
-   -o ${QOUT}/${SAMPLE}jlfRestReHo.csv
+   -o ${QOUT}/${SAMPLE}/${SAMPLE}jlfRestReHo.csv
 ###################################################################
 #    ReHo outputs for Glasser.
 ###################################################################
@@ -75,21 +121,49 @@ rm -f ${QOUT}/REST_ROI_GlasserPNC*
 mv -f ${REST}/REST_ROI1.txt ${QOUT}/REST_ROI_GlasserPNC1.txt
 ./mergeROIvals${SAMPLE}.R \
    -r GlasserPNC \
-   -o ${QOUT}/${SAMPLE}glasserRestReHo.csv
+   -o ${QOUT}/${SAMPLE}/${SAMPLE}glasserRestReHo.csv
+###################################################################
+#    ReHo outputs for GraSP.
+###################################################################
+rm -f ${QOUT}/REST_ROI_GraSP*
+/data/joy/BBL/applications/xcpEngine/utils/combineOutput \
+   -p ${REST} \
+   -f "*GraSP227_val_reho.1D" \
+   -o REST_ROI1.txt
+mv -f ${REST}/REST_ROI1.txt ${QOUT}/REST_ROI_GraSP2271.txt
+./mergeROIvals${SAMPLE}.R \
+   -r GraSP227 \
+   -o ${QOUT}/${SAMPLE}/${SAMPLE}graspRestReHo.csv
+###################################################################
+#    ReHo outputs for Lausanne.
+###################################################################
+scales="33 60 125 250"
+for sc in $scales
+   do
+   rm -f ${QOUT}/REST_ROI_GraSP*
+   /data/joy/BBL/applications/xcpEngine/utils/combineOutput \
+      -p ${REST} \
+      -f "*Lausanne${sc}_val_reho.1D" \
+      -o REST_ROI1.txt
+   mv -f ${REST}/REST_ROI1.txt ${QOUT}/REST_ROI_Lausanne${sc}1.txt
+   ./mergeROIvals${SAMPLE}.R \
+      -r Lausanne${sc} \
+      -o ${QOUT}/${SAMPLE}/${SAMPLE}lausanne${sc}RestReHo.csv
+done
 ###################################################################
 #   ALFF outputs for JLF.
 ###################################################################
-rm -f measures.csv
-echo "alff" >> measures.csv
+rm -f ${QOUT}/measures.csv
+echo "alff" >> ${QOUT}/measures.csv
 rm -f ${QOUT}/REST_ROI_JLF*
 /data/joy/BBL/applications/xcpEngine/utils/combineOutput \
    -p ${REST} \
-   -f "*JLF_val_alff.1D" \
+   -f "*JLFintersect_val_alff.1D" \
    -o REST_ROI1.txt
 mv -f ${REST}/REST_ROI1.txt ${QOUT}/REST_ROI_JLF1.txt
 ./mergeROIvals${SAMPLE}.R \
    -r JLF \
-   -o ${QOUT}/${SAMPLE}jlfRestALFF.csv
+   -o ${QOUT}/${SAMPLE}/${SAMPLE}jlfRestALFF.csv
 ###################################################################
 #   ALFF outputs for Glasser.
 ###################################################################
@@ -101,4 +175,106 @@ rm -f REST_ROI_GlasserPNC*
 mv -f ${REST}/REST_ROI1.txt ${QOUT}/REST_ROI_GlasserPNC1.txt
 ./mergeROIvals${SAMPLE}.R \
    -r GlasserPNC \
-   -o ${QOUT}/${SAMPLE}glasserRestALFF.csv
+   -o ${QOUT}/${SAMPLE}/${SAMPLE}glasserRestALFF.csv
+###################################################################
+#    ALFF outputs for GraSP.
+###################################################################
+rm -f ${QOUT}/REST_ROI_GraSP*
+/data/joy/BBL/applications/xcpEngine/utils/combineOutput \
+   -p ${REST} \
+   -f "*GraSP227_val_alff.1D" \
+   -o REST_ROI1.txt
+mv -f ${REST}/REST_ROI1.txt ${QOUT}/REST_ROI_GraSP2271.txt
+./mergeROIvals${SAMPLE}.R \
+   -r GraSP227 \
+   -o ${QOUT}/${SAMPLE}/${SAMPLE}graspRestALFF.csv
+###################################################################
+#    ALFF outputs for Lausanne.
+###################################################################
+scales="33 60 125 250"
+for sc in $scales
+   do
+   rm -f ${QOUT}/REST_ROI_GraSP*
+   /data/joy/BBL/applications/xcpEngine/utils/combineOutput \
+      -p ${REST} \
+      -f "*Lausanne${sc}_val_alff.1D" \
+      -o REST_ROI1.txt
+   mv -f ${REST}/REST_ROI1.txt ${QOUT}/REST_ROI_Lausanne${sc}1.txt
+   ./mergeROIvals${SAMPLE}.R \
+      -r Lausanne${sc} \
+      -o ${QOUT}/${SAMPLE}/${SAMPLE}lausanne${sc}RestALFF.csv
+done
+
+###################################################################
+# ...and move the data to the data release.
+###################################################################
+tables=$(ls -d1 ${QOUT}/2416/*)
+for t in $tables
+   do
+   parcM=$(echo ${t}\
+      |rev\
+      |cut -d'/' -f1\
+      |rev\
+      |sed s@$SAMPLE@@g\
+      |sed s@'.csv'@@g\
+      |sed s@'Rest'@'#'@g)
+   parc=$(echo $parcM|cut -d'#' -f1)
+   M=$(echo $parcM|cut -d'#' -f2)
+   SUBJID=$(tail -n+2 n1601_IDs.csv)
+   target=${DATAREL}/n1601_${parc}${M}Values.csv
+   rm -f $target
+   head -n1 ${t}|sed s@'"'@@g >> ${target}
+   for s in $SUBJID
+      do
+      grep ^$s ${t}|sed s@'"'@@g >> ${target}
+   done
+   SUBJID=$(tail -n+2 n2416_IDs.csv)
+   target=${DATARELL}/n2416_${parc}${M}Values.csv
+   rm -f $target
+   head -n1 ${t}|sed s@'"'@@g >> ${target}
+   for s in $SUBJID
+      do
+      grep ^$s ${t}|sed s@'"'@@g >> ${target}
+   done
+done
+
+rm -f ${DATARELL}/n2416_RestQAData.csv
+rm -f ${DATAREL}/n1601_RestQAData.csv
+rm -f ${DATARELL}/n2416_RestCoverageMask.nii.gz
+rm -f ${DATAREL}/n1601_RestCoverageMask.nii.gz
+
+cat ${QOUT}/REST_QA_2416.csv|sed s@'"'@@g >> ${DATARELL}/n2416_RestQAData.csv
+cat ${QOUT}/REST_QA_1601.csv|sed s@'"'@@g >> ${DATAREL}/n1601_RestQAData.csv
+fslmaths ${QOUT}/maskRestCoverage2416.nii.gz ${DATARELL}/n2416_RestCoverageMask.nii.gz
+fslmaths ${QOUT}/maskRestCoverage1601.nii.gz ${DATAREL}/n1601_RestCoverageMask.nii.gz
+
+netNames='264PowerPNC GlasserPNC GraSP170 GraSP227 GraSP581 JLFintersect Lausanne33 Lausanne60 Lausanne125 Lausanne250'
+for netName in $netNames
+   do
+   target=${DATAREL}/restNetwork_${netName}
+   mkdir -p ${target}/${netName}Timeseries/
+   mkdir -p ${target}/${netName}Networks/
+   ids=$(tail -n+2 n1601_IDs.csv)
+   for id in $ids
+      do
+      i=$(echo $id|cut -d',' -f1)
+      t=$(echo $id|cut -d',' -f2)
+      net=$(ls -d1 $REST/${i}/*x${t}/net/${netName}/*_network.txt)
+      ts=$(ls -d1 $REST/${i}/*x${t}/net/${netName}/*_ts.1D)
+      cp ${ts} ${target}/${netName}Timeseries/${t}_ts.1D
+      cp ${net} ${target}/${netName}Networks/${t}_network.txt
+   done
+   target=${DATARELL}/restNetwork_${netName}
+   mkdir -p ${target}/${netName}Timeseries/
+   mkdir -p ${target}/${netName}Networks/
+   ids=$(tail -n+2 n2416_IDs.csv)
+   for id in $ids
+      do
+      i=$(echo $id|cut -d',' -f1)
+      t=$(echo $id|cut -d',' -f2)
+      net=$(ls -d1 $REST/${i}/*x${t}/net/${netName}/*_network.txt)
+      ts=$(ls -d1 $REST/${i}/*x${t}/net/${netName}/*_ts.1D)
+      cp ${ts} ${target}/${netName}Timeseries/${t}_ts.1D
+      cp ${net} ${target}/${netName}Networks/${t}_network.txt
+   done
+done

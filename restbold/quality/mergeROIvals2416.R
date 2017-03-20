@@ -39,9 +39,10 @@ opath <- opt$out
 
 dir <- getwd()
 odir <- '/data/joy/BBL/projects/pncReproc2015/restbold/quality'
+rdir <- '/data/joy/BBL/projects/pncReproc2015/template/roinames/'
 
-colNamesPath <- paste(dir,paste(roiName,'_names.csv',sep=''),sep='/')
-colIndexPath <- paste(dir,paste(roiName,'_index.csv',sep=''),sep='/')
+colNamesPath <- paste(rdir,paste(roiName,'_names.csv',sep=''),sep='/')
+colIndexPath <- paste(rdir,paste(roiName,'_index.csv',sep=''),sep='/')
 roiPaths <- paste(odir,paste('*ROI*',roiName,'*.txt',sep=''),sep='/')
 roiPaths <- system(paste('ls',roiPaths),intern=T)
 
@@ -77,3 +78,7 @@ for (p in 1:length(roiPaths)) {
 }
 
 write.csv(restVals,opath,row.names=F)
+#data <- read.csv('/data/joy/BBL/studies/pnc/subjectData/n1601_go1_datarel_020716.csv')
+#restVals1601 <- restVals[which(restVals$scanid %in% intersect(restVals$scanid,data$scanid)),]
+#write.csv(restVals1601,paste('/data/joy/BBL/projects/pncReproc2015/restbold/quality/1601/1601',roiName,'rest',measures[1],'.csv',sep=''),row.names=F)
+
