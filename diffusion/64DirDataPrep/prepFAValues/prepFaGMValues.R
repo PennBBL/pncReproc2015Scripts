@@ -37,4 +37,4 @@ output.df <- rbind(output.df, tmpToAdd)
 output.df <- output.df[!duplicated(output.df),]
 
 # Now write the csv
-write.csv(output.df, '/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/neuroimaging/dti/n1601_jlfFAValues.csv', quote=F, row.names=F)
+write.csv(output.df ,paste('/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/neuroimaging/dti/n1601_jlfFAValues_',format(Sys.Date(), format="%Y%m%d"),'.csv', sep=''), quote=F, row.names=F)
