@@ -37,6 +37,13 @@ imageToSegment=$1
 outputImage=$2
 [[ -z ${outputImage} ]] && Usage
 
+# Now check to see if our output image exists - if it does exit out
+if [ -f ${outputImage} ] ; then
+  echo "Output image: ${outputImage}"
+  echo "Already exists"
+  echo "I am not going to exit out =/"
+  exit 2 ; 
+fi
 
 # First lets declare any statics 
 lobarScript="/data/jet/grosspeople/Volumetric/SIEMENS/pipedream2014/antsMalf/scripts/oasisLabelsToLobar.sh"
