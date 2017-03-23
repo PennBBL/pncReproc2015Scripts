@@ -44,7 +44,7 @@ detach(gmdValues)
 gmdValues <- output
 
 # Now rm columns we aren't concerned with
-colsToRM <- c(4,5,15,16,17,18,19,22,23,24,25,32,33,34,35,36)
+colsToRM <- c(4,5,15,16,17,18,19,22,23,24,25,32,33,34,35,36,40,41)
 gmdValues <- gmdValues[,-colsToRM]
  
 # Now rm datexscanid in order to avoid PHI issues
@@ -52,7 +52,8 @@ gmdValues <- gmdValues[,-3]
 
 # Now write the csv
 write.csv(gmdValues, '/data/joy/BBL/projects/pncReproc2015/antsCT/jlfAntsValuesGMD.csv', quote=F, row.names=F)
+write.csv(gmdValues, paste('/data/joy/BBL/studies/pnc/n2416_dataFreeze/neuroimaging/t1struct/n2416_jlfAntsCTIntersectionGMD_',format(Sys.Date(), format="%Y%m%d"),'.csv', sep=''), quote=F, row.names=F)
 
 # Now prepare the n1601 output csv
 n1601.gmd.values <- merge(n1601.subjs, gmdValues, by=c('bblid', 'scanid'))
-write.csv(n1601.gmd.values, '/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/neuroimaging/t1struct/n1601_jlfAtroposIntersectionGMD.csv', quote=F, row.names=F)
+write.csv(n1601.gmd.values, paste('/data/joy/BBL/studies/pnc/n1601_dataFreeze/neuroimaging/t1struct/n1601_jlfAtroposIntersectionGMD_',format(Sys.Date(), format="%Y%m%d"),'.csv', sep=''), quote=F, row.names=F)
