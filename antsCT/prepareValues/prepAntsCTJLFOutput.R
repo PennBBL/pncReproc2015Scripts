@@ -6,6 +6,7 @@
 # Might make this into one big function but we will see how that goes =/
 
 # Load data
+source('/home/arosen/adroseHelperScripts/R/afgrHelpFunc.R')
 columnNames <- read.csv("/data/joy/BBL/projects/pncReproc2015/antsCT/ctJlfNames.csv")
 columnNumbers <- read.csv("/data/joy/BBL/projects/pncReproc2015/antsCT/justJLFColNamesafgrEdits.csv")
 # ctValues was created by using the command found below:
@@ -56,6 +57,7 @@ ctValues <- ctValues[,-3]
 
 # Now write the csv
 write.csv(ctValues, '/data/joy/BBL/projects/pncReproc2015/antsCT/jlfAntsValuesCT.csv', quote=F, row.names=F)
+write.csv(ctValues, paste('/data/joy/BBL/studies/pnc/n2416_dataFreeze/neuroimaging/t1struct/n2416_jlfAntsCTIntersectionCt_',format(Sys.Date(), format="%Y%m%d"),'.csv', sep=''), quote=F, row.names=F)
 
 # Now do the n1601 specific csv
 n1601.ct.vals <- merge(n1601.subjs, ctValues, by=c('bblid', 'scanid'))
