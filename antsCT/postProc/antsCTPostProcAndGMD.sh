@@ -150,7 +150,8 @@ ${AP}antsApplyTransforms -d 3 -i ${outputImg}_prob02.nii.gz \
 ${AP}antsApplyTransforms -d 3 -i ${parcMask} \
                          -r ${templateImg} -o ${antsDirectory}${parcDir}_subjectToTemplate.nii.gz \
                          -t ${antsDirectory}SubjectToTemplate0GenericAffine.mat \
-                         -t ${antsDirectory}SubjectToTemplate1Warp.nii.gz
+                         -t ${antsDirectory}SubjectToTemplate1Warp.nii.gz \
+			 -n MultiLabel
 
 ## Now create the jacobian mask so I can create a 
 ## volume modulated density mask
@@ -193,9 +194,9 @@ if [ ${parcCheck} -eq 1 ] ; then
   ctParcOutput="${antsDirectory}${parcDir}/${pfxSubjFileName}_${parcDir}_antsCT_val.1D"
   gmdParcOutput="${antsDirectory}${parcDir}/${pfxSubjFileName}_${parcDir}_antsGMD_val.1D"
   gmdIsolParcOutput="${antsDirectory}${parcDir}/${pfxSubjFileName}_${parcDir}_antsGMDIsol_val.1D"
-  parcCommandCT="${AFP}/3dROIstats -1DRformat ${roiValOutput} -nzmean -zerofill NA -mask ${parcMask} ${antsDirectory}CorticalThickness.nii.gz"
-  parcCommandGMD="${AFP}/3dROIstats -1DRformat ${roiValOutput} -nzmean -zerofill NA -mask ${parcMask} ${outputImg}_prob02.nii.gz"
-  parcCommandGMDIsol="${AFP}/3dROIstats -1DRformat ${roiValOutput} -nzmean -zerofill NA -mask ${parcMask} ${outputImg}_prob02_IsolatedGM.nii.gz"
+  parcCommandCT="${AFP}/3dROIstats -nomeanout -1DRformat ${roiValOutput} -nzmean -zerofill NA -mask ${parcMask} ${antsDirectory}CorticalThickness.nii.gz"
+  parcCommandGMD="${AFP}/3dROIstats -nomeanout -1DRformat ${roiValOutput} -nzmean -zerofill NA -mask ${parcMask} ${outputImg}_prob02.nii.gz"
+  parcCommandGMDIsol="${AFP}/3dROIstats -nomeanout -1DRformat ${roiValOutput} -nzmean -zerofill NA -mask ${parcMask} ${outputImg}_prob02_IsolatedGM.nii.gz"
 
   # Now run and log the commands
   ${parcCommandCT} > ${ctParcOutput}
@@ -229,7 +230,7 @@ if [ ${parcCheck} -eq 1 ] ; then
 
   # Now repeat these steps for the volume modulated GMD output
   gmdParcOutputVolMod="${antsDirectory}${parcDir}/${pfxSubjFileName}_${parcDir}_antsGMD_VolMod_val.1D"
-  parcCommandGMDVolMod="${AFP}/3dROIstats -1DRformat ${roiValOutput} -nzmean -zerofill NA -mask ${antsDirectory}${parcDir}_subjectToTemplate.nii.gz ${outputImg}_prob02SubjToTempVolumeModulated.nii.gz"
+  parcCommandGMDVolMod="${AFP}/3dROIstats -1DRformat -nomeanout ${roiValOutput} -nzmean -zerofill NA -mask ${antsDirectory}${parcDir}_subjectToTemplate.nii.gz ${outputImg}_prob02SubjToTempVolumeModulated.nii.gz"
 
   # Now run and log the commands
   ${parcCommandGMDVolMod} > ${gmdParcOutputVolMod}
