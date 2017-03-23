@@ -50,7 +50,7 @@ jlfWmVals[,2] <- strSplitMatrixReturn(charactersToSplit=jlfWmVals[,2], splitChar
 ctVals[,2] <- strSplitMatrixReturn(charactersToSplit=ctVals[,2], splitCharacter='x')[,2]
 
 # Now ablate the vessel!!!
-namesToRm <- c('Vessel')
+namesToRm <- c('Vessel', 'BasForebr')
 colsToRm <- NULL
 # Now go through a loop and grep the columns that we need to rm
 # and append those values to the colsToRm variable
