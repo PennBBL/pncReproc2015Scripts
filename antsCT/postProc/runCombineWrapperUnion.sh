@@ -7,4 +7,8 @@ dateid=`echo ${subj} | cut -f 3 -d ,`
 antsPath="/data/joy/BBL/studies/pnc/processedData/structural/antsCorticalThickness/${bblid}/${dateid}x${scanid}/BrainSegmentation.nii.gz"
 parcImg=`ls /data/joy/BBL/studies/pnc/processedData/structural/jlf/${bblid}/${dateid}x${scanid}/${bblid}_${dateid}x${scanid}_jlfLabels.nii.gz`
 outputImage="/data/joy/BBL/studies/pnc/processedData/structural/jlf/${bblid}/${dateid}x${scanid}/${bblid}_${dateid}x${scanid}_jlfLabelsANTsCTIntersection.nii.gz"
-/home/arosen/pncReproc2015Scripts/antsCT/postProc/createUnionJLFAndCTGMMask.sh ${parcImg} ${antsPath} ${outputImage} /home/arosen/volDiff.csv   
+if [ ! -f ${outputImage} ] ; then 
+  /home/arosen/pncReproc2015Scripts/antsCT/postProc/createUnionJLFAndCTGMMask.sh ${parcImg} ${antsPath} ${outputImage} /home/arosen/volDiff.csv ; 
+else
+  echo "All Done!" ; 
+fi
