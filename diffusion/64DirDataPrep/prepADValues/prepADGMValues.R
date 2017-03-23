@@ -17,7 +17,6 @@ n1601.subjs <- read.csv('/data/joy/BBL/projects/pncReproc2015/antsCT/n1601_bblid
 n1601.subjs <- n1601.subjs[,c(2,1)]
 original.data <- read.csv('/data/joy/BBL/studies/pnc/subjectData/n1601_go1_datarel_020716.csv')
 namesToAdd <- read.csv('/data/joy/BBL/projects/pncReproc2015/diffusion/prepMDValues/mdJlfNames.csv')
-
 namesToAdd <- gsub(x=namesToAdd$X, pattern='_md_', replacement='_ad_')
 
 # Now fix the subject identifier column

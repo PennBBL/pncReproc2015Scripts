@@ -50,4 +50,4 @@ output.df <- rbind(output.df, tmpToAdd)
 output.df <- output.df[!duplicated(output.df),]
 
 # Now write the csv
-write.csv(output.df, '/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/neuroimaging/dti/n1601_jlfRDValues.csv', quote=F, row.names=F)
+write.csv(output.df, '/data/joy/BBL/studies/pnc/n1601_dataFreeze/neuroimaging/dti/n1601_jlfRDValues.csv', quote=F, row.names=F)
