@@ -26,6 +26,19 @@ mdVals[,1] <-  strSplitMatrixReturn(strSplitMatrixReturn((strSplitMatrixReturn(s
 # Now fix the column names
 colnames(mdVals) <- c('scanid', 'bblid', as.character(namesToAdd))
 
+# Now remove ROI's we do not have confidence in 
+namesToRm <- c('Ventricle', 'Cerebellum', 'White', 'CSF', 'Vent', 'Vessel', 
+               'Ventral_DC', 'OpticChiasm', 'WM', 'fornix', 'antlimb_InC', 
+               'postlimbcerebr', 'corpus_callosum', 'BasForebr')
+colsToRm <- NULL
+# Now go through a loop and grep the columns that we need to rm
+# and append those values to the colsToRm variable
+for(value in namesToRm){
+  valuesToRm <- grep(value, names(mdVals))
+  colsToRm <- append(colsToRm, valuesToRm)
+}
+mdVals <- mdVals[,-colsToRm]
+
 # Now I need to add rows for the subjects that do not have data for the n1601
 output.df <- merge(n1601.subjs, mdVals, by=c('bblid', 'scanid'))
 bblidToAdd <- n1601.subjs$bblid[which(n1601.subjs$bblid %in% output.df$bblid == 'FALSE')]
