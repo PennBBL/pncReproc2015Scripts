@@ -6,7 +6,7 @@
 jlfDirectory="/data/joy/BBL/studies/pnc/processedData/structural/jlf/"
 jlfVolDir="/data/joy/BBL/projects/pncReproc2015/jlf/volumeValues/intersection/"
 ctDirectory="/data/joy/BBL/studies/pnc/processedData/structural/antsCorticalThickness/"
-scriptsDir="/home/arosen/pncReproc2015Scripts/jlf/volumeValuesScripts"
+scriptsDir="/data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts/jlf/volumeValuesScripts"
 subjInfoDir="/data/joy/BBL/studies/pnc/subjectData/"
 
 # First thing we have to do is create the raw volume output for the jlf labels
@@ -45,4 +45,4 @@ R --slave -f ${scriptsDir}/prepSubjFields.R ${jlfVolDir}voxelVolume_20160805.txt
 R --slave -f ${scriptsDir}/combineAllVolVals.R ${jlfVolDir}jlfVolValues_20160805properSubjFieldsProperColNames.csv  ${jlfVolDir}ctVolValues_20160805properSubjFieldsProperColNames.csv ${subjInfoDir}n1601_t1RawManualQA.csv ${subjInfoDir}n368_t1RawManualQA_GO2.csv ${jlfVolDir}voxelVolume_20160805properSubjFields.csv ${jlfVolDir}jlfWmVolValues_20160805properSubjFieldsProperColNames.csv
 
 # Now clean up 
-#rm -f *pr0perSubjField.csv *ProperColNames.csv ${jlfVolDir}voxelVolume_20160805.txt ${jlfVolDir}ctVolValues_20160805.txt ${jlfVolDir}jlfVolValues_20160805.txt
+rm -f ${jlfVolDir}*properSubjField.csv ${jlfVolDir}*ProperColNames.csv ${jlfVolDir}voxelVolume_20160805.txt ${jlfVolDir}ctVolValues_20160805.txt ${jlfVolDir}jlfVolValues_20160805.txt

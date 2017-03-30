@@ -30,8 +30,8 @@ n1601.subjs <- n1601.subjs[,c(2,1)]
 
 # Convert all of our voxel counts to mm3
 jlfVals <- merge(jlfVals, voxelDim, by=c('subject.0.', 'subject.1.'))
-jlfVals[,3:138] <- apply(jlfVals[,3:138], 2, function(x) (x * jlfVals$output))
-jlfVals <- jlfVals[,-139]
+jlfVals[,3:138] <- apply(jlfVals[,3:131], 2, function(x) (x * jlfVals$output))
+jlfVals <- jlfVals[,-132]
 jlfWmVals <- merge(jlfWmVals, voxelDim, by=c('subject.0.', 'subject.1.'))
 jlfWmVals[, 3:14] <- apply(jlfWmVals[,3:14], 2, function(x) (x * jlfWmVals$output))
 jlfWmVals <- jlfWmVals[,-15]
@@ -48,18 +48,6 @@ colnames(ctVals)[1:2] <- c('bblid', 'scanid')
 jlfVals[,2] <- strSplitMatrixReturn(charactersToSplit=jlfVals[,2], splitCharacter='x')[,2]
 jlfWmVals[,2] <- strSplitMatrixReturn(charactersToSplit=jlfWmVals[,2], splitCharacter='x')[,2]
 ctVals[,2] <- strSplitMatrixReturn(charactersToSplit=ctVals[,2], splitCharacter='x')[,2]
-
-# Now ablate the vessel!!!
-namesToRm <- c('Vessel', 'BasForebr')
-colsToRm <- NULL
-# Now go through a loop and grep the columns that we need to rm
-# and append those values to the colsToRm variable
-for(value in namesToRm){
-  valuesToRm <- grep(value, names(jlfVals))
-  colsToRm <- append(colsToRm, valuesToRm)
-}
-
-jlfVals <- jlfVals[,-colsToRm]
 
 ## Write the n2416 file's
 write.csv(jlfVals, paste('/data/joy/BBL/studies/pnc/n2416_dataFreeze/neuroimaging/t1struct/n2416_jlfAntsCTIntersectionVol_',format(Sys.Date(), format="%Y%m%d"),'.csv', sep=''), quote=F, row.names=F)
