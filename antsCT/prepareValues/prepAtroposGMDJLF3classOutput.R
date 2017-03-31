@@ -29,7 +29,7 @@ colsOfInterest <- append(c(1,2), colsOfInterest)
 gmdValues <- gmdValues[,colsOfInterest] 
 
 # and now change the name of the gmd columns
-columnNames <- gsub(x=gsub(x=columnValues$JLF.Column.Names, pattern='%MODALITY%', replacement='mprage'), pattern='%MEASURE%', replacement='ct')[which(columnValues$GMD==0)]
+columnNames <- gsub(x=gsub(x=columnValues$JLF.Column.Names, pattern='%MODALITY%', replacement='mprage'), pattern='%MEASURE%', replacement='gmd')[which(columnValues$GMD==0)]
 colnames(gmdValues)[3:length(gmdValues)] <- as.character(columnNames)
 
 # Now prepare the subject fields with bblid, scanid
