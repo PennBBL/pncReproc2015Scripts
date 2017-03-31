@@ -35,10 +35,6 @@ colnames(ctValues)[3:length(ctValues)] <- as.character(columnNames)
 # Now order and rename the files
 ctValues[,2] <- strSplitMatrixReturn(ctValues$subject.1., 'x')[,2]
 colnames(ctValues)[1:2] <- c('bblid', 'scanid')
-attach(ctValues)
-output <- as.data.frame(cbind(bblid, scanid, ctValues[,3:100]))
-detach(ctValues)
-ctValues <- output
 
 # Now write the csv
 write.csv(ctValues, '/data/joy/BBL/projects/pncReproc2015/antsCT/jlfAntsValuesCT.csv', quote=F, row.names=F)
