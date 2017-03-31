@@ -42,4 +42,4 @@ write.csv(ctValues, paste('/data/joy/BBL/studies/pnc/n2416_dataFreeze/neuroimagi
 
 # Now do the n1601 specific csv
 n1601.ct.vals <- merge(n1601.subjs, ctValues, by=c('bblid', 'scanid'))
-write.csv(n1601.ct.vals, '/data/joy/BBL/studies/pnc/n1601_dataFreeze/neuroimaging/t1struct/n1601_jlfAntsCTIntersectionCt.csv', quote=F, row.names=F)
+write.csv(n1601.ct.values, paste('/data/joy/BBL/studies/pnc/n1601_dataFreeze/neuroimaging/t1struct/n1601_jlfAtroposIntersectionCT_',format(Sys.Date(), format="%Y%m%d"),'.csv', sep=''), quote=F, row.names=F)
