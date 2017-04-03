@@ -17,20 +17,15 @@ jlfWmVals <- commandArgs()[10]
 jlfWmVals <- read.csv(jlfWmVals)
 ctVals <- commandArgs()[6]
 ctVals <- read.csv(ctVals)
-#manQA1 <- commandArgs()[7]
-#manQA1 <- read.csv(manQA1)
-#manQA2 <- commandArgs()[8]
-#manQA2 <- read.csv(manQA2)
 voxelDim <- commandArgs()[9]
 voxelDim <- read.csv(voxelDim)
 voxelDim <- voxelDim[which(duplicated(voxelDim)=='FALSE'),]
 n1601.subjs <- read.csv('/data/joy/BBL/projects/pncReproc2015/antsCT/n1601_bblid_scanid_dateid.csv')
 n1601.subjs <- n1601.subjs[,c(2,1)]
 
-
 # Convert all of our voxel counts to mm3
 jlfVals <- merge(jlfVals, voxelDim, by=c('subject.0.', 'subject.1.'))
-jlfVals[,3:138] <- apply(jlfVals[,3:131], 2, function(x) (x * jlfVals$output))
+jlfVals[,3:131] <- apply(jlfVals[,3:131], 2, function(x) (x * jlfVals$output))
 jlfVals <- jlfVals[,-132]
 jlfWmVals <- merge(jlfWmVals, voxelDim, by=c('subject.0.', 'subject.1.'))
 jlfWmVals[, 3:14] <- apply(jlfWmVals[,3:14], 2, function(x) (x * jlfWmVals$output))
@@ -51,7 +46,7 @@ ctVals[,2] <- strSplitMatrixReturn(charactersToSplit=ctVals[,2], splitCharacter=
 
 ## Write the n2416 file's
 write.csv(jlfVals, paste('/data/joy/BBL/studies/pnc/n2416_dataFreeze/neuroimaging/t1struct/n2416_jlfAntsCTIntersectionVol_',format(Sys.Date(), format="%Y%m%d"),'.csv', sep=''), quote=F, row.names=F)
-write.csv(ctVals, paste('/data/joy/BBL/studies/pnc/n2416_dataFreeze/neuroimaging/t1struct/n2416_ctVol_',format(Sys.Date(), format="%Y%m%d"),'.csv', sep=''), quote=F, row.names=F)
+write.csv(ctVals, paste('/data/joy/BBL/studies/pnc/n2416_dataFreeze/neuroimaging/t1struct/n2416_antsCtVol_',format(Sys.Date(), format="%Y%m%d"),'.csv', sep=''), quote=F, row.names=F)
 write.csv(jlfWmVals, paste('/data/joy/BBL/studies/pnc/n2416_dataFreeze/neuroimaging/t1struct/n2416_jlfWmVol_',format(Sys.Date(), format="%Y%m%d"),'.csv', sep=''), quote=F, row.names=F)
 
 ## Now write the n1601 file
@@ -61,6 +56,6 @@ n1601.vol.wm.vals <- merge(n1601.subjs, jlfWmVals, by=c('bblid', 'scanid'))
 n1601.vol.ct.vals <- merge(n1601.subjs, ctVals, by=c('bblid', 'scanid'))
 
 # Now write the output
-write.csv(n1601.vol.vals, '/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/neuroimaging/t1struct/n1601_jlfAntsCTIntersectionVol.csv', quote=F, row.names=F)
-write.csv(n1601.vol.wm.vals, '/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/neuroimaging/t1struct/n1601_jlfWmVol.csv', quote=F, row.names=F)
-write.csv(n1601.vol.ct.vals, '/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/neuroimaging/t1struct/n1601_jlfCt.csv', quote=F, row.names=F)
+write.csv(n1601.vol.vals, paste('/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/neuroimaging/t1struct/n1601_jlfAntsCTIntersectionVol_',format(Sys.Date(), format="%Y%m%d"),'.csv', sep='') quote=F, row.names=F)
+write.csv(n1601.vol.wm.vals, paste('/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/neuroimaging/t1struct/n1601_jlfWmVol_',format(Sys.Date(), format="%Y%m%d"),'.csv', sep=''), quote=F, row.names=F)
+write.csv(n1601.vol.ct.vals, paste('/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/neuroimaging/t1struct/n1601_antsCtVol_',format(Sys.Date(), format="%Y%m%d"),'.csv', sep=''), quote=F, row.names=F)
