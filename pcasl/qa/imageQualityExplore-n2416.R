@@ -63,7 +63,7 @@ allData <- merge(allData, meanPcaslVals, by=c('bblid', 'scanid', 'datexscanid'))
 ## of the n1601 subjects w/ pcasl data
 all.subj.id <- cbind(allData$bblid, as.character(allData$datexscanid))
 write.csv(all.subj.id, '/data/joy/BBL/projects/pncReproc2015/pcasl/QA/n2416/allSubjId.csv', quote=F, row.names=F)
-system("/bin/bash ~/pncReproc2015Scripts/pcasl/qa/combineImages-n2416.sh /data/joy/BBL/projects/pncReproc2015/pcasl/QA/n2416/allSubjId.csv /data/joy/BBL/projects/pncReproc2015/pcasl/QA/n2416/allSubjIdImageOrder")
+system("/bin/bash /data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts/pcasl/qa/combineImages-n2416.sh /data/joy/BBL/projects/pncReproc2015/pcasl/QA/n2416/allSubjId.csv /data/joy/BBL/projects/pncReproc2015/pcasl/QA/n2416/allSubjIdImageOrder")
 
 ## I now am going to find the optimal coverage to use based on the n1601 data and will 
 ## then check for voxel values for which to flag images that don't contain that value
@@ -103,7 +103,7 @@ flagged.dateid <- datexscanid[outputFlagged]
 ## Now repeat this process for the 1601 so we can have all subjects flagged from both timepoints together
 all.subj.id <- cbind(n1601Data$bblid, as.character(n1601Data$datexscanid))
 write.csv(all.subj.id, '/data/joy/BBL/projects/pncReproc2015/pcasl/QA/n2416/allSubjId.csv', quote=F, row.names=F)
-system("/bin/bash ~/pncReproc2015Scripts/pcasl/qa/combineImages-n2416.sh /data/joy/BBL/projects/pncReproc2015/pcasl/QA/n2416/allSubjId.csv /data/joy/BBL/projects/pncReproc2015/pcasl/QA/n2416/allSubjIdImageOrder")
+system("/bin/bash /data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts/pcasl/qa/combineImages-n2416.sh /data/joy/BBL/projects/pncReproc2015/pcasl/QA/n2416/allSubjId.csv /data/joy/BBL/projects/pncReproc2015/pcasl/QA/n2416/allSubjIdImageOrder")
 
 ## I now am going to find the optimal coverage to use based on the n1601 data and will 
 ## then check for voxel values for which to flag images that don't contain that value
@@ -151,7 +151,7 @@ non.flagged.bblid <- all.bblid[-outputFlagged]
 non.flagged.dateid <- all.date.id[-outputFlagged]
 non.flagged.subj <- cbind(non.flagged.bblid, as.character(non.flagged.dateid))
 write.csv(non.flagged.subj, '/data/joy/BBL/projects/pncReproc2015/pcasl/QA/n2416/allNonFlagged-it1-SubjId.csv', quote=F, row.names=F)
-#system("/bin/bash ~/pncReproc2015Scripts/pcasl/qa/combineImages-n2416.sh /data/joy/BBL/projects/pncReproc2015/pcasl/QA/n2416/allNonFlagged-it1-SubjId.csv /data/joy/BBL/projects/pncReproc2015/pcasl/QA/n2416/allNonFlaggedImage")
+#system("/bin/bash /data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts/pcasl/qa/combineImages-n2416.sh /data/joy/BBL/projects/pncReproc2015/pcasl/QA/n2416/allNonFlagged-it1-SubjId.csv /data/joy/BBL/projects/pncReproc2015/pcasl/QA/n2416/allNonFlaggedImage")
 
 # Now create the coverage flag column
 allData$pcaslCoverageExclude <- 0
@@ -194,12 +194,7 @@ output.df$pcaslVoxelwiseExclude[which(is.na(output.df$pcaslVoxelwiseExclude)=='T
 output.df$pcaslNoDataExclude[which(is.na(output.df$pcaslNoDataExclude)=='TRUE')] <- 1
 
 # Now write the output
-write.csv(output.df, paste('/data/joy/BBL/projects/pncReproc2015/pcasl/QA/n2416/n2416_PcaslQaData_',format(Sys.Date(), format="%Y%m%d"), '.csv', sep=''), quote=F, row.names=F)
 write.csv(output.df, paste('/data/joy/BBL/studies/pnc/n2416_dataFreeze/neuroimaging/asl/n2416_PcaslQaData_',format(Sys.Date(), format="%Y%m%d"), '.csv', sep=''), quote=F, row.names=F)
-# Now create the n1601 qa file
-n1601.output.df.qa <- merge(n1601.data, output.df, by=c('bblid', 'scanid'))
-n1601.output.df.qa <- n1601.output.df.qa[,-c(3,4)]
-write.csv(n1601.output.df.qa, paste('/data/joy/BBL/studies/pnc/n1601_dataFreeze/neuroimaging/asl/n1601_PcaslQaData_',format(Sys.Date(), format="%Y%m%d"), '.csv', sep=''), quote=F, row.names=F)
 
 # Now lets produce our venn diagram for those subjects that were flagged for removal
 qaData <- output.df
@@ -211,28 +206,16 @@ evenn(matLists=matrixValues, pathRes='/data/joy/BBL/projects/pncReproc2015/pcasl
 
 # Now prepare the n2416 pcasl SS values
 pcaslSSVals <- read.table('/data/joy/BBL/projects/pncReproc2015/pcasl/cbfValues/pcasl_20161202/pcasl_JLFintersect_ssT1.1D',header=T)
-pcaslColNames <- read.csv('/data/joy/BBL/projects/pncReproc2015/pcasl/cbfValues/nameAssistFiles/pcaslJlfNames.csv')
-pcaslColVals <- read.csv('/data/joy/BBL/projects/pncReproc2015/pcasl/cbfValues/nameAssistFiles/columsOfInterest.csv')
+tmpColumns <- read.csv('/data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts/jlf/labelList/inclusionCheck.csv')
+tmpNames <- gsub(x=gsub(x=tmpColumns$JLF.Column.Names, pattern='%MODALITY%', replacement='pcasl'), pattern='%MEASURE%', replacement='cbf')[which(tmpColumns$PCASL==0)]
+tmpNames <- c('bblid', 'scanid', as.character(tmpNames))
+tmpCols <- tmpColumns$Label.Number[which(tmpColumns$PCASL==0)]+2
 pcaslSSVals[,2] <-strSplitMatrixReturn(pcaslSSVals$subject.1.,'x')[,2]
-colnames(pcaslSSVals)[1:2] <- c('bblid', 'scanid')
 
-# Now remove extra columns
-pcaslSSVals <- pcaslSSVals[,pcaslColVals$x]
-colnames(pcaslSSVals)[3:153] <- as.character(pcaslColNames$X)
+# Now remove extra columns and fix names
+pcaslSSVals <- pcaslSSVals[,c(1,2,tmpCols)]
+colnames(pcaslSSVals) <- tmpNames
 
-# Now remove nonsense columns
-namesToRm <- c('Ventricle', 'Cerebellum', 'White', 'CSF', 'Vent', 'Vessel', 
-               'Ventral_DC', 'OpticChiasm', 'CerVerLob', 'BasForebr', 'Brain_Stem',
-               'WM', 'fornix', 'antlimb_InC', 'postlimbcerebr', 'corpus_callosum')
-colsToRm <- NULL
-# Now go through a loop and grep the columns that we need to rm
-# and append those values to the colsToRm variable
-for(value in namesToRm){
-  valuesToRm <- grep(value, names(pcaslSSVals))
-  colsToRm <- append(colsToRm, valuesToRm)
-}
-colsToRm <- unique(colsToRm)
-pcaslSSVals <- pcaslSSVals[,-colsToRm]
 # Now remove all negative values
 pcaslSSVals[pcaslSSVals<0] <- 'NA'
 
@@ -247,7 +230,3 @@ pcaslSSVals <- rbind(pcaslSSVals, tmpToAdd)
 
 # Now write the csv
 write.csv(pcaslSSVals, paste('/data/joy/BBL/studies/pnc/n2416_dataFreeze/neuroimaging/asl/n2416_jlfAntsCTIntersectionPcaslValues_',format(Sys.Date(), format="%Y%m%d"), '.csv', sep=''), row.names=F, quote=F)
-# Now do the n1601 
-n1601.output.df <- merge(n1601.data, pcaslSSVals, by=c('bblid', 'scanid'))
-n1601.output.df <- n1601.output.df.qa[,-c(3,4)]
-write.csv(n1601.output.df, paste('/data/joy/BBL/studies/pnc/n1601_dataFreeze/neuroimaging/asl/n1601_jlfAntsCTIntersectionPcaslValues_',format(Sys.Date(), format="%Y%m%d"), '.csv', sep=''), quote=F, row.names=F)

@@ -24,10 +24,11 @@ system('/data/joy/BBL/applications/xcpEngine/utils/combineOutput -p /data/joy/BB
 system('mv /data/joy/BBL/studies/pnc/processedData/pcasl/pcasl_201607291423/pcasl_JLFintersect_ssT1.1D /data/joy/BBL/projects/pncReproc2015/pcasl/cbfValues/pcasl_20161202/')
 # Now fix the column headers
 tmp <- read.table('/data/joy/BBL/projects/pncReproc2015/pcasl/cbfValues/pcasl_20161202/pcasl_JLFintersect_ssT1.1D', header=T)
-tmpCols <- read.csv('/data/joy/BBL/projects/pncReproc2015/pcasl/cbfValues/nameAssistFiles/columsOfInterest.csv')
-tmp <- tmp[,tmpCols$x]
-tmpNames <- read.csv('/data/joy/BBL/projects/pncReproc2015/pcasl/cbfValues/nameAssistFiles/pcaslJlfNames.csv')
-tmpNames <- c('bblid', 'scanid', as.character(tmpNames$X))
+tmpColumns <- read.csv('/data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts/jlf/labelList/inclusionCheck.csv')
+tmpCols <- tmpColumns$Label.Number[which(tmpColumns$PCASL==0)]+2
+tmp <- tmp[,c(1,2,tmpCols)]
+tmpNames <- gsub(x=gsub(x=tmpColumns$JLF.Column.Names, pattern='%MODALITY%', replacement='pcasl'), pattern='%MEASURE%', replacement='cbf')[which(tmpColumns$PCASL==0)]
+tmpNames <- c('bblid', 'scanid', as.character(tmpNames))
 colnames(tmp) <- tmpNames
 tmp[,2] <- strSplitMatrixReturn(charactersToSplit=tmp[,2], splitCharacter='x')[,2]
 write.csv(tmp, '/data/joy/BBL/projects/pncReproc2015/pcasl/cbfValues/pcasl_20161202/pcasl_JLF_ssT1-correctHeaders.csv', quote=F, row.names=F)
@@ -35,15 +36,8 @@ rm(tmp, tmpCols, tmpNames)
 pcaslSSVals <- read.csv('/data/joy/BBL/projects/pncReproc2015/pcasl/cbfValues/pcasl_20161202/pcasl_JLF_ssT1-correctHeaders.csv')
 n1601.data <- read.csv('/data/joy/BBL/studies/pnc/subjectData/n1601_go1_datarel_020716.csv')
 n1601.pcasl.include <- read.csv('/data/joy/BBL/projects/pncReproc2015/pcasl/QA/n1601-QA/n1601_asl_acquired_incomplete_usable.csv')
-n1601.t1.qa.data <- read.csv('/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/neuroimaging/t1struct/n1601_t1QaData.csv')
 no.rps.map.1601 <- read.csv('/data/joy/BBL/projects/pncReproc2015/pcasl/QA/n1601-QA/noRps-n1601.csv', header=F)
 all.mean.pcasl.values <- read.csv('/data/joy/BBL/projects/pncReproc2015/pcasl/cbfValues/pcasl_201607291423/meanCbfValues.csv')
-file.paths <- read.table('/data/joy/BBL/projects/pncReproc2015/pcasl/cbfValues/pcasl_201607291423/jlfPcaslImages.txt', header=F)
-
-# Now add the file.paths bblid and scanid
-names(file.paths) <- 'pcaslImagePath'
-file.paths$bblid <- strSplitMatrixReturn(file.paths[,1], '/')[,10]
-file.paths$scanid <- strSplitMatrixReturn(strSplitMatrixReturn(file.paths[,1], '/')[,11], 'x')[,2]
 
 # Now limit our data to just the 1601
 n1601.ss.vals <- merge(n1601.subjs, pcaslSSVals, by=c('bblid', 'scanid'))
@@ -110,13 +104,6 @@ non.flagged.subj <- cbind(non.flagged.bblid, as.character(non.flagged.dateid))
 write.csv(non.flagged.subj, '/data/joy/BBL/projects/pncReproc2015/pcasl/QA/n1601-QA/allNonFlagged-it1-SubjId.csv', quote=F, row.names=F)
 #system("/bin/bash /data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts/pcasl/qa/combineImages.sh /data/joy/BBL/projects/pncReproc2015/pcasl/QA/n1601-QA/allNonFlagged-it1-SubjId.csv /data/joy/BBL/projects/pncReproc2015/pcasl/QA/n1601-QA/allNonFlaggeImage")
 
-# I need to really quickly grab the bblid's from the subjects for whom I do not have RPS maps for
-
-
-# Now attach the T1 qa data to the pcasl values - we want to rm any of the subjects that the T1 failed QA from the data
-n1601.ss.vals <- merge(n1601.ss.vals, n1601.t1.qa.data, by=c('bblid', 'scanid'))
-
-
 # Now create the coverage flag column
 n1601.ss.vals$pcaslRpsMapCorrectionNotApplied <- rep(0, nrow(n1601.ss.vals))
 n1601.ss.vals$pcaslRpsMapCorrectionNotApplied[match(no.rps.map.1601$V2, n1601.ss.vals$scanid)] <- 1
@@ -131,19 +118,9 @@ n1601.ss.vals$pcaslMeanGMValueExclude <- rep(0, nrow(n1601.ss.vals))
 n1601.ss.vals$pcaslVoxelwiseExclude <- rep(0, nrow(n1601.ss.vals))
 n1601.ss.vals$pcaslVoxelwiseExclude[which(n1601.ss.vals$relMeanRMSmotion.y==1 |  n1601.ss.vals$temporalSignalNoiseRatio.y == 1 | n1601.ss.vals$nTR != 80 | n1601.ss.vals$pcaslCoverageExclude==1)] <- 1
 
-
 # Now I can prep the output csv
 pcaslValCols <- grep('pcasl_jlf_cbf', names(n1601.ss.vals))
 attach(n1601.ss.vals)
-#output <- cbind(bblid, scanid, pcaslExclude, t1Exclude, pcaslVoxelwiseCoverageExclude, 
-#          relMeanRMSmotion.x, relMeanRMSmotion.y, 
-#          temporalSignalNoiseRatio.x, temporalSignalNoiseRatio.y,
-#          normCrossCorr.x,nTR, pcaslNVolumesAcquiredExclude, pcaslNoDataExclude,
-#          pcaslMeanGMValue, pcaslRpsMapCorrectionNotApplied, pcaslMeanValueExclude ,n1601.ss.vals[,pcaslValCols])
-#output <- cbind(bblid, scanid, pcaslExclude, pcaslVoxelwiseExclude, pcaslNoDataExclude, t1Exclude, 
-#                relMeanRMSmotion.x, relMeanRMSmotion.y, temporalSignalNoiseRatio.x, temporalSignalNoiseRatio.y,
-#                normCrossCorr.x, nTR, pcaslNVolumesAcquiredExclude, pcaslCoverageExclude, pcaslRpsMapCorrectionNotApplied, 
-#                pcaslMeanGMValue, pcaslMeanGMValueExclude, n1601.ss.vals[,pcaslValCols])
 imageingData <- cbind(bblid, scanid, n1601.ss.vals[,pcaslValCols]) 
 qualityMetrics <- cbind(bblid, scanid, pcaslExclude, pcaslVoxelwiseExclude, pcaslNoDataExclude, 
                 relMeanRMSmotion.x, relMeanRMSmotion.y, temporalSignalNoiseRatio.x, temporalSignalNoiseRatio.y,
@@ -157,7 +134,6 @@ colnames(output.df) <- gsub(pattern='.x', replacement = '', x = colnames(output.
 colnames(output.df) <- gsub(pattern='.y', replacement = 'Exclude', x = colnames(output.df), fixed = TRUE)  
 names(output.df)[6:14] <- c('pcaslRelMeanRMSMotion', 'pcaslRelMeanRMSMotionExclude','pcaslTSNR', 'pcaslTSNRExclude',
                            'pcaslNormCrossCorr', 'pcaslNormCoverage', 'pcaslCoregCrossCorr', 'pcaslCoregCoverage', 'pcaslNVolumesAcquired')
-output.df <- merge(output.df, file.paths, by=c('bblid', 'scanid'))
 ## Now I need to create rows for the subjects I do not have data for 
 bblidToAdd <- n1601.subjs$bblid[which(n1601.subjs$bblid %in% output.df$bblid == 'FALSE')]
 scanidToAdd <- n1601.subjs$scanid[which(n1601.subjs$scanid %in% output.df$scanid == 'FALSE')]
@@ -175,25 +151,12 @@ output.df$pcaslVoxelwiseExclude[which(is.na(output.df$pcaslVoxelwiseExclude)=='T
 output.df$pcaslNoDataExclude[which(is.na(output.df$pcaslNoDataExclude)=='TRUE')] <- 1
 output.df <- output.df[,-20]
 
-write.csv(output.df, '/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/neuroimaging/asl/n1601_PcaslQaData.csv', quote=F, row.names=F)
+# Now write the csv
+write.csv(output.df, paste('/data/joy/BBL/studies/pnc/n1601_dataFreeze/neuroimaging/asl/n1601_PcaslQaData_',format(Sys.Date(), format="%Y%m%d"),'.csv', sep=''), quote=F, row.names=F)
 qaData <- output.df
 
 ## Now work with the imaging data here
 output.df <- imageingData
-# Now I need to rm the cerebellum, whitematter, the optic chiasm, and the 
-# ventral DC areas from the cbf values
-namesToRm <- c('Ventricle', 'Cerebellum', 'White', 'CSF', 'Vent', 'Vessel', 
-               'Ventral_DC', 'OpticChiasm', 'CerVerLob', 'BasForebr', 'Brain_Stem',
-               'WM', 'fornix', 'antlimb_InC', 'postlimbcerebr', 'corpus_callosum')
-colsToRm <- NULL
-# Now go through a loop and grep the columns that we need to rm
-# and append those values to the colsToRm variable
-for(value in namesToRm){
-  valuesToRm <- grep(value, names(output.df))
-  colsToRm <- append(colsToRm, valuesToRm)
-}
-
-output.df <- output.df[,-colsToRm]
 output.df[output.df<0] <- 'NA'
 
 # and now append the extra subjects 
@@ -204,8 +167,7 @@ tmpToAdd <- cbind(bblidToAdd, scanidToAdd, tmpToAdd)
 colnames(tmpToAdd) <- colnames(output.df)
 output.df <- rbind(output.df, tmpToAdd)
 
-
-write.csv(output.df, '/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/neuroimaging/asl/n1601_jlfAntsCTIntersectionPcaslValues.csv', quote=F, row.names=F)
+write.csv(output.df, paste('/data/joy/BBL/studies/pnc/n1601_dataFreeze/neuroimaging/asl/n1601_jlfAntsCTIntersectionPcaslValues_',format(Sys.Date(), format="%Y%m%d"),'.csv', sep=''), quote=F, row.names=F)
 
 # Now lets produce our venn diagram for those subjects that were flagged for removal
 excludeCols <- grep('Exclude', names(qaData))
