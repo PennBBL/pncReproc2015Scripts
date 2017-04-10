@@ -1,10 +1,9 @@
 #!/bin/bash
 
 # Do FA values
-# Do FA values
 rm /data/joy/BBL/projects/pncReproc2015/diffusion/prepFAValues/tmpVals1.csv
 for i in `find /data/joy/BBL/projects/pncReproc2015/diffusionResourceFiles/S-lstat_extraction_lists/n2416_64dir_nativespace_fa_JHU-ICBM-tracts-maxprob-thr25-1mm-LPI_2dtitk_go1_n14_template_lstat/subjects/ -name *_mean.csv` ; do vals=`tr -s '\n' ',' < ${i} | tr -d '"'` ; echo "${i},${vals}" ; done >> /data/joy/BBL/projects/pncReproc2015/diffusion/prepFAValues/tmpVals1.csv
-#rm /data/joy/BBL/projects/pncReproc2015/diffusion/prepFAValues/tmpVals2.csv
+rm /data/joy/BBL/projects/pncReproc2015/diffusion/prepFAValues/tmpVals2.csv
 #for i in `find /data/joy/BBL/projects/pncReproc2015/diffusionResourceFiles/S-lstat_extraction_lists/dtitk_fa_path_nativespace_JHU-ICBM-tracts-maxprob-thr0-1mm-LPI-2dtitk_lstat/subjects/ -name *_mean.csv` ; do vals=`tr -s '\n' ',' < ${i} | tr -d '"'` ; echo "${i},${vals}" ; done >> /data/joy/BBL/projects/pncReproc2015/diffusion/prepFAValues/tmpVals2.csv
 rm /data/joy/BBL/projects/pncReproc2015/diffusion/prepFAValues/tmpVals3.csv
 #for i in `find /data/joy/BBL/projects/pncReproc2015/diffusionResourceFiles/S-lstat_extraction_lists/dtitk_fa_ad_tr_rd_path_nativespace3_JHU-ICBM-tracts-maxprob-thr0-1mm-LPI-2dtitk_lstat/subjects/ -name *fa*_mean.csv` ; do vals=`tr -s '\n' ',' < ${i} | tr -d '"'` ; echo "${i},${vals}" ; done >> /data/joy/BBL/projects/pncReproc2015/diffusion/prepFAValues/tmpVals3.csv
@@ -132,3 +131,15 @@ rm /data/joy/BBL/projects/pncReproc2015/diffusion/prepMDValues/merged.csv
 cd /data/joy/BBL/projects/pncReproc2015/diffusion/prepMDValues/tmp/
 /home/arosen/adroseHelperScripts/bash/mergeCSV.sh 1
 mv /data/joy/BBL/projects/pncReproc2015/diffusion/prepMDValues/tmp/merged.csv /data/joy/BBL/projects/pncReproc2015/diffusion/prepMDValues/
+
+## Now do WM lobes
+for i in tr ad rd fa ; do 
+  tmpPath="/data/joy/BBL/projects/pncReproc2015/diffusionResourceFiles/S-lstat_extraction_lists/n2416_64dir_nativespace_${i}_pncTemplateJLF_WMSegmentation_LPI_2dtitk_go1_n14_template_lstat/subjects/"
+  tmpOutput="/data/joy/BBL/projects/pncReproc2015/diffusion/prep${i}WMLobularVal/"
+  mkdir -p ${tmpOutput}
+  rm ${tmpOutput}/*csv
+  for d in `find ${tmpPath} -name "*_mean.csv"` ; do 
+    vals=`tr -s '\n' ',' < ${d} | tr -d '"'`
+    echo ${d},${vals} >> ${tmpOutput}merged.csv ; 
+  done
+done
