@@ -19,6 +19,9 @@ colnames(pcaslValues) <- colNames
 # Now fix the scanid column
 pcaslValues$scanid <- strSplitMatrixReturn(charactersToSplit=pcaslValues$scanid, splitCharacter='x')[,2]
 
+# RM values less then 5
+pcaslValues[pcaslValues < 0] <- 'NA'
+
 # Now create our n2416 data frame
 output.data <- merge(n2416.data, pcaslValues, by=c('bblid', 'scanid'), all.x=T)
 
@@ -30,4 +33,3 @@ output.data <- merge(n1601.data, pcaslValues, by=c('bblid', 'scanid'), all.x=T)
 
 #write csv
 write.csv(output.data, paste('/data/joy/BBL/studies/pnc/n1601_dataFreeze/neuroimaging/asl/n1601_jlfWMPcasl_',format(Sys.Date(), format="%Y%m%d"),'.csv', sep=''), quote=F, row.names=F)
-
