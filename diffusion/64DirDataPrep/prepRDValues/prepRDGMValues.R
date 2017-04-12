@@ -11,7 +11,7 @@
 source('/home/arosen/adroseHelperScripts/R/afgrHelpFunc.R')
 
 # Load data
-mdVals <- read.csv('/data/joy/BBL/projects/pncReproc2015/diffusion/prepRDValues/merged.csv', header=F)
+mdVals <- read.csv('/data/joy/BBL/projects/pncReproc2015/diffusion/prepRDGMValues/merged.csv', header=F)
 mdVals <- mdVals[,-c(136)]
 n1601.subjs <- read.csv('/data/joy/BBL/projects/pncReproc2015/antsCT/n1601_bblid_scanid_dateid.csv')
 n1601.subjs <- n1601.subjs[,c(2,1)]

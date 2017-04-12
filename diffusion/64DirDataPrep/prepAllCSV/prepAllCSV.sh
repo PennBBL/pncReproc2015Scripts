@@ -99,9 +99,9 @@ cd /data/joy/BBL/projects/pncReproc2015/diffusion/prepFAGMValues/
 
 # Now do AD 
 rm /data/joy/BBL/projects/pncReproc2015/diffusion/prepRDGMValues/tmpVals1.csv
-for i in `find /data/joy/BBL/projects/pncReproc2015/diffusionResourceFiles/S-lstat_extraction_lists/dtitk_rd_path_nativespace_pncTemplateJLF_Labels_LPI_2dtitk_go1_n14_template_lstat/subjects/ -name *_mean.csv` ; do vals=`tr -s '\n' ',' < ${i} | tr -d '"'` ; echo "${i},${vals}" ; done >> /data/joy/BBL/projects/pncReproc2015/diffusion/prepRDGMValues/tmpVals1.csv
+for i in `find /data/joy/BBL/projects/pncReproc2015/diffusionResourceFiles/S-lstat_extraction_lists/dtitk_ad_path_nativespace_pncTemplateJLF_Labels_LPI_2dtitk_go1_n14_template_lstat/subjects/ -name *_mean.csv` ; do vals=`tr -s '\n' ',' < ${i} | tr -d '"'` ; echo "${i},${vals}" ; done >> /data/joy/BBL/projects/pncReproc2015/diffusion/prepADGMValues/tmpVals1.csv
 rm /data/joy/BBL/projects/pncReproc2015/diffusion/prepRDGMValues/tmpVals2.csv
-for i in `find /data/joy/BBL/projects/pncReproc2015/diffusionResourceFiles/S-lstat_extraction_lists/dtitk_rd_path_nativespace2_pncTemplateJLF_Labels_LPI_2dtitk_go1_n14_template_lstat/subjects/ -name *_mean.csv` ; do vals=`tr -s '\n' ',' < ${i} | tr -d '"'` ; echo "${i},${vals}" ; done >> /data/joy/BBL/projects/pncReproc2015/diffusion/prepRDGMValues/tmpVals2.csv
+for i in `find /data/joy/BBL/projects/pncReproc2015/diffusionResourceFiles/S-lstat_extraction_lists/dtitk_ad_path_nativespace2_pncTemplateJLF_Labels_LPI_2dtitk_go1_n14_template_lstat/subjects/ -name *_mean.csv` ; do vals=`tr -s '\n' ',' < ${i} | tr -d '"'` ; echo "${i},${vals}" ; done >> /data/joy/BBL/projects/pncReproc2015/diffusion/prepADGMValues/tmpVals2.csv
 rm /data/joy/BBL/projects/pncReproc2015/diffusion/prepADGMValues/tmpVals3.csv
 for i in `find /data/joy/BBL/projects/pncReproc2015/diffusionResourceFiles/S-lstat_extraction_lists/dtitk_fa_ad_tr_rd_jlf_path_nativespace3_pncTemplateJLF_Labels_LPI_2dtitk_go1_n14_template_lstat/subjects -name *_ad_*_mean.csv` ; do vals=`tr -s '\n' ',' < ${i} | tr -d '"'` ; echo "${i},${vals}" ; done >> /data/joy/BBL/projects/pncReproc2015/diffusion/prepADGMValues/tmpVals3.csv
 rm /data/joy/BBL/projects/pncReproc2015/diffusion/prepADGMValues/merged.csv
