@@ -15,29 +15,18 @@ mdVals <- read.csv('/data/joy/BBL/projects/pncReproc2015/diffusion/prepMDValues/
 mdVals <- mdVals[,-c(136)]
 n1601.subjs <- read.csv('/data/joy/BBL/projects/pncReproc2015/antsCT/n1601_bblid_scanid_dateid.csv')
 n1601.subjs <- n1601.subjs[,c(2,1)]
-original.data <- read.csv('/data/joy/BBL/studies/pnc/subjectData/n1601_go1_datarel_020716.csv')
-namesToAdd <- read.csv('/data/joy/BBL/projects/pncReproc2015/diffusion/prepMDValues/mdJlfNames.csv')
+columnNames <- read.csv('/data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts/jlf/labelList/inclusionCheck.csv')
+columnNames <- columnNames[-31,]
+namesToAdd <- gsub(x=gsub(x=columnNames$JLF.Column.Names, pattern='%MODALITY%', replacement='dti'), pattern='%MEASURE%', replacement='tr')
 
 # Now fix the subject identifier column
 mdVals[,1] <- strSplitMatrixReturn(strSplitMatrixReturn((strSplitMatrixReturn(strSplitMatrixReturn(mdVals[,1], 'subjects/')[,2], 'dti'))[,1], 'x')[,2], '_')
-
-namesToAdd <- gsub(x=namesToAdd$X, pattern='_md_', replacement='_tr_')
 
 # Now fix the column names
 colnames(mdVals) <- c('scanid', 'bblid', as.character(namesToAdd))
 
 # Now remove ROI's we do not have confidence in 
-namesToRm <- c('Ventricle', 'Cerebellum', 'White', 'CSF', 'Vent', 'Vessel', 
-               'Ventral_DC', 'OpticChiasm', 'WM', 'fornix', 'antlimb_InC', 
-               'postlimbcerebr', 'corpus_callosum', 'BasForebr')
-colsToRm <- NULL
-# Now go through a loop and grep the columns that we need to rm
-# and append those values to the colsToRm variable
-for(value in namesToRm){
-  valuesToRm <- grep(value, names(mdVals))
-  colsToRm <- append(colsToRm, valuesToRm)
-}
-mdVals <- mdVals[,-colsToRm]
+mdVals <- mdVals[,c(1,2,which(columnNames$MD==0)+2)]
 
 # Now I need to add rows for the subjects that do not have data for the n1601
 output.df <- merge(n1601.subjs, mdVals, by=c('bblid', 'scanid'))
@@ -47,6 +36,7 @@ tmpToAdd <- as.data.frame(matrix(rep(NA, length(bblidToAdd) * (ncol(output.df)-2
 tmpToAdd <- cbind(bblidToAdd, scanidToAdd, tmpToAdd)
 colnames(tmpToAdd) <- colnames(output.df)
 output.df <- rbind(output.df, tmpToAdd)
+output.df <- output.df[!duplicated(output.df),]
 
 # Now write the csv
-write.csv(output.df, '/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/neuroimaging/dti/n1601_jlfTRValues.csv', quote=F, row.names=F)
+write.csv(output.df, paste('/data/joy/BBL/studies/pnc/n1601_dataFreeze/neuroimaging/dti/n1601_jlfTRValues_',format(Sys.Date(), format="%Y%m%d"),'.csv', sep=''), quote=F, row.names=F)
