@@ -1,9 +1,9 @@
 #Glasser
 
-data <- read.csv("/data/joy/BBL/studies/pnc/n2416_dataFreezeJan2017/neuroimaging/idemo/n2416_idemo_FinalQA.csv")
+data <- read.csv("/data/joy/BBL/studies/pnc/n2416_dataFreeze/neuroimaging//idemo//n2416_idemo_FinalQA.csv")
 
 glasser <- as.data.frame(matrix(NA, ncol = 6000, nrow=2416))
-namesglasser <- read.csv("/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/neuroimaging/pncTemplate/glasser/glasser_lookup.csv", header = F)
+namesglasser <- read.csv("/data/joy/BBL/studies/pnc/n1601_dataFreeze/neuroimaging/pncTemplate/glasser/glasser_lookup.csv", header = F)
 namesglasser$V1 <- as.character(namesglasser$V1)
 namesglasser$V2 <- as.character(namesglasser$V2)
 
@@ -68,15 +68,15 @@ for (i in 1:6000) {
 index <- index[-1]
 glasser2 <- glasser[,-index]
 
-write.csv(glasser2, "/data/joy/BBL/studies/pnc/n2416_dataFreezeJan2017/neuroimaging/idemo/n2416_idemo_glasser_roivals.csv", row.names=F)
+write.csv(glasser2, "/data/joy/BBL/studies/pnc/n2416_dataFreeze/neuroimaging/idemo/n2416_idemo_glasser_roivals_26April2017.csv", row.names=F)
 
 
 
 #JLF
-data <- read.csv("/data/joy/BBL/studies/pnc/n2416_dataFreezeJan2017/neuroimaging/idemo/n2416_idemo_FinalQA.csv")
+data <- read.csv("/data/joy/BBL/studies/pnc/n2416_dataFreeze/neuroimaging/idemo/n2416_idemo_FinalQA.csv")
 
 jlf <- as.data.frame(matrix(NA, ncol = 3500, nrow=2416))
-namesjlf <- read.csv("/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/neuroimaging/pncTemplate/jlf/jlf_lookup.csv", header = F)
+namesjlf <- read.csv("/data/joy/BBL/studies/pnc/n1601_dataFreeze/neuroimaging/pncTemplate/jlf/jlf_lookup.csv", header = F)
 namesjlf$V1 <- as.character(namesjlf$V1)
 namesjlf$V2 <- as.character(namesjlf$V2)
 
@@ -152,7 +152,7 @@ for (i in 1:2416) {
 }
 
 names(jlf)[1:2] <- c("bblid","scanid")
-jlfindex <- read.csv("/data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts_mv_20161007/restbold/quality/JLF_index.csv", header=F)
+jlfindex <- read.csv("/data/joy/BBL/projects/pncReproc2015/template/roinames/JLF_index.csv", header=F)
 
 index <- c(1,2)
 for (i in 1:15) {
@@ -162,17 +162,17 @@ for (i in 1:15) {
 
 jlf2 <- jlf[, index]
 
-write.csv(jlf2, "/data/joy/BBL/studies/pnc/n2416_dataFreezeJan2017/neuroimaging/idemo/n2416_idemo_jlf_roivals.csv", row.names=F)
+write.csv(jlf2, "/data/joy/BBL/studies/pnc/n2416_dataFreeze/neuroimaging/idemo/n2416_idemo_jlf_roivals_26April2017.csv", row.names=F)
 
 
 
 
 
 #JLF Intersect
-data <- read.csv("/data/joy/BBL/studies/pnc/n2416_dataFreezeJan2017/neuroimaging/idemo/n2416_idemo_FinalQA.csv")
+data <- read.csv("/data/joy/BBL/studies/pnc/n2416_dataFreeze/neuroimaging/idemo/n2416_idemo_FinalQA.csv")
 
 jlf <- as.data.frame(matrix(NA, ncol = 3500, nrow=2416))
-namesjlf <- read.csv("/data/joy/BBL/studies/pnc/n1601_dataFreeze2016/neuroimaging/pncTemplate/jlf/jlf_lookup.csv", header = F)
+namesjlf <- read.csv("/data/joy/BBL/studies/pnc/n1601_dataFreeze/neuroimaging/pncTemplate/jlf/jlf_lookup.csv", header = F)
 namesjlf$V1 <- as.character(namesjlf$V1)
 namesjlf$V2 <- as.character(namesjlf$V2)
 
@@ -248,7 +248,7 @@ for (i in 1:2416) {
 }
 
 names(jlf)[1:2] <- c("bblid","scanid")
-jlfindex <- read.csv("/data/joy/BBL/projects/pncReproc2015/pncReproc2015Scripts_mv_20161007/restbold/quality/JLF_index.csv", header=F)
+jlfindex <- read.csv("/data/joy/BBL/projects/pncReproc2015/template/roinames/JLF_index.csv", header=F)
 
 index <- c(1,2)
 for (i in 1:15) {
@@ -258,4 +258,4 @@ for (i in 1:15) {
 
 jlf2 <- jlf[, index]
 
-write.csv(jlf2, "/data/joy/BBL/studies/pnc/n2416_dataFreezeJan2017/neuroimaging/idemo/n2416_idemo_jlf_intersect_roivals.csv", row.names=F)
+write.csv(jlf2, "/data/joy/BBL/studies/pnc/n2416_dataFreeze/neuroimaging/idemo/n2416_idemo_jlf_intersect_roivals_26April2017.csv", row.names=F)
