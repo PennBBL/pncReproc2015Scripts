@@ -69,5 +69,4 @@ data1601bblid <- read.csv("/data/joy/BBL/projects/pncReproc2015/idemo/goReproces
 data1601bblid <- data1601bblid[,1:2]
 
 dataQAout1601 <- merge(data1601bblid, dataQAout, by=c("bblid","scanid"))
-write.csv(dataQAout, "/data/joy/BBL/projects/pncReproc2015/idemo/goReprocesingWholeSample_2017Mar24/n1601_idemo_FinalQA.csv", row.names=F)
-
+write.csv(dataQAout1601, "/data/joy/BBL/projects/pncReproc2015/idemo/goReprocesingWholeSample_2017Mar24/n1601_idemo_FinalQA.csv", row.names=F)
