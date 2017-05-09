@@ -1,6 +1,6 @@
 #Glasser
 
-data <- read.csv("/data/joy/BBL/studies/pnc/n2416_dataFreeze/neuroimaging//idemo//n2416_idemo_FinalQA_26April2017.csv")
+data <- read.csv("/data/joy/BBL/studies/pnc/n2416_dataFreeze/neuroimaging//idemo//n2416_idemo_QA_20170426.csv")
 
 glasser <- as.data.frame(matrix(NA, ncol = 6000, nrow=2416))
 namesglasser <- read.csv("/data/joy/BBL/studies/pnc/n1601_dataFreeze/neuroimaging/pncTemplate/glasser/glasser_lookup.csv", header = F)
@@ -69,7 +69,7 @@ index <- index[-1]
 glasser2 <- glasser[,-index]
 
 write.csv(glasser2, 
-          "/data/joy/BBL/studies/pnc/n2416_dataFreeze/neuroimaging/idemo/n2416_idemo_glasser_roivals_26April2017.csv", 
+          "/data/joy/BBL/studies/pnc/n2416_dataFreeze/neuroimaging/idemo/n2416_idemo_glasser_roivals_20170426.csv", 
           row.names=F)
 
 
