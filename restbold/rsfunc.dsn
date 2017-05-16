@@ -11,7 +11,7 @@
 # You may execute the analysis specified in this design file by
 # calling (in any bash terminal):
 #
-# xcpEngine rsfunc.dsn
+# xcpEngine /data/joy/BBL/applications/xcpEngine/designs/rsfc_cedric_xcp_201607151622.dsn
 #
 # Variables fall into five general categories:
 # * ANALYSIS VARIABLES are used at all stages of this analysis.
@@ -33,10 +33,9 @@
 # ANALYSIS VARIABLES
 ###################################################################
 
-analysis=rsfc
-design=rsfunc.dsn
-path_cohort=/data/joy/BBL/projects/pncReproc2015/restbold/xcp/cohort/restboldAllCohort.csv
-subjects_ct=1405
+analysis=resting
+design=${0}
+path_cohort=/data/joy/BBL/projects/pncReproc2015/restbold/xcp/cohort/cohort.csv
 img=${subject[2]}
 struct=${subject[3]}/ExtractedBrain0N4.nii.gz
 prefix=${subject[0]}_${subject[1]}
