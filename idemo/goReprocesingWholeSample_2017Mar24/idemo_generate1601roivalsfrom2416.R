@@ -9,5 +9,5 @@ data1601 <- data1601[,c(1,2)]
 data1601jlf <- merge(data1601, datajlf, by=c("bblid","scanid"))
 data1601glasser <- merge(data1601, dataglasser, by=c("bblid","scanid"))
 
-write.csv(data1601jlf, "/data/joy/BBL-extend/tmp/datafreeze/n1601_idemo_jlf_roivals_20170710.csv")
-write.csv(data1601glasser, "//data/joy/BBL-extend/tmp/datafreeze/n1601_idemo_glasser_roivals_20170710.csv")
+write.csv(data1601jlf, "/data/joy/BBL-extend/tmp/datafreeze/n1601_idemo_jlf_roivals_20170710.csv", row.names=F)
+write.csv(data1601glasser, "//data/joy/BBL-extend/tmp/datafreeze/n1601_idemo_glasser_roivals_20170710.csv", row.names=F)
