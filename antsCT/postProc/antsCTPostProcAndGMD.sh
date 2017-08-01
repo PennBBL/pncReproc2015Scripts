@@ -143,14 +143,16 @@ done
 ## Now I need to warp our output to the template
 ${AP}antsApplyTransforms -d 3 -i ${outputImg}_prob02.nii.gz \
                          -r ${templateImg} -o ${outputImg}_prob02SubjToTemp.nii.gz \
+			 -t ${antsDirectory}SubjectToTemplate1Warp.nii.gz \
                          -t ${antsDirectory}SubjectToTemplate0GenericAffine.mat \
-                         -t ${antsDirectory}SubjectToTemplate1Warp.nii.gz
+			 -n Gaussian
+
 
 ## Now I need to warp the JLF labels into template space using the same steps as above
 ${AP}antsApplyTransforms -d 3 -i ${parcMask} \
                          -r ${templateImg} -o ${antsDirectory}${parcDir}_subjectToTemplate.nii.gz \
-                         -t ${antsDirectory}SubjectToTemplate0GenericAffine.mat \
                          -t ${antsDirectory}SubjectToTemplate1Warp.nii.gz \
+                         -t ${antsDirectory}SubjectToTemplate0GenericAffine.mat \
 			 -n MultiLabel
 
 ## Now create the jacobian mask so I can create a 
@@ -275,8 +277,9 @@ qa_coverage=$(echo "scale=10; ${qa_cov_obs} / ${qa_cov_max}" | bc)
 ### This should be rm'ed afgr is including this just so I can get work done quicker
 
 ## Now resample so we have a regressor for our CBF data
-${AP}antsApplyTransforms -d 3 -i ${outputImg}_prob02SubjToTemp.nii.gz -r /data/joy/BBL/studies/pnc/template/priors/prior_grey_thr01_2mm.nii.gz -o ${outputImg}_prob02SubjToTemp2mm.nii.gz
-${AP}antsApplyTransforms -d 3 -i ${antsDirectory}CorticalThicknessNormalizedToTemplate.nii.gz -r /data/joy/BBL/studies/pnc/template/priors/prior_grey_thr01_2mm.nii.gz -o ${antsDirectory}CorticalThicknessNormalizedToTemplate2mm.nii.gz
+${AP}antsApplyTransforms -d 3 -i ${outputImg}_prob02SubjToTemp.nii.gz -r /data/joy/BBL/studies/pnc/template/priors/prior_grey_thr01_2mm.nii.gz -o ${outputImg}_prob02SubjToTemp2mm.nii.gz -n Gaussian
+${AP}antsApplyTransforms -d 3 -i ${antsDirectory}CorticalThicknessNormalizedToTemplate.nii.gz -r /data/joy/BBL/studies/pnc/template/priors/prior_grey_thr01_2mm.nii.gz -o ${antsDirectory}CorticalThicknessNormalizedToTemplate2mm.nii.gz -n Gaussian
+
 # Now compute average GMD over GM compartment
 gmValue=`${AFP}3dROIstats -mask /data/joy/BBL/studies/pnc/template/priors/prior_grey_thr01_2mm.nii.gz ${outputImg}_prob02SubjToTemp2mm.nii.gz | cut -f 3 | tail -n 1`
 
