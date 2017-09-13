@@ -14,4 +14,4 @@ dataQA <- merge(data1601, dataQA, by=c("bblid","scanid"))
 
 write.csv(data1601jlf, "/data/joy/BBL-extend/tmp/datafreeze/n1601_idemo_jlf_roivals_20170710.csv", row.names=F)
 write.csv(data1601glasser, "//data/joy/BBL-extend/tmp/datafreeze/n1601_idemo_glasser_roivals_20170710.csv", row.names=F)
-write.csv(data1601jlf, "/data/joy/BBL-extend/data_repository/Dec2016/pnc/n1601_idemo_jlf_QA_20170907.csv", row.names=F)
+write.csv(dataQA, "/data/joy/BBL-extend/data_repository/Dec2016/pnc/n1601_idemo_jlf_QA_20170907.csv", row.names=F)
