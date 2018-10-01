@@ -27,7 +27,7 @@ data2$nbackMeanRelRMSMotionExclude <- as.numeric(data2$rel_mean_rms_motion > 0.5
 data2$nbackMaxRelRMSMotionExclude <- as.numeric(data2$nbackMaxRelRMS > 6)
 
 data2$nbackExclude <- as.numeric(!data2$nbackProtocolValidationStatus  | data2$nbackMeanRelRMSMotionExclude | data2$nbackMaxRelRMSMotionExclude | data2$nbackMeanActivationExclude)
-data2$nbackExcludeVoxelwise <- as.numeric(!data2$nbackProtocolValidationStatus | data2$nbackMeanRelRMSMotionExclude | data2$nbackMaxRelRMSMotionExclude | data2$nbackMeanActivationExclude | !data2$nbackVoxelwiseCoverageInclude)
+data2$nbackExcludeVoxelwise <- as.numeric(!data2$nbackProtocolValidationStatus | data2$nbackMeanRelRMSMotionExclude | data2$nbackMaxRelRMSMotionExclude | data2$nbackMeanActivationExclude && !data2$nbackVoxelwiseCoverageInclude)
 
 ###################################################################
 # Generate the final quality file.
